@@ -1,7 +1,7 @@
 import Header from '@/components/app/header';
-import React from 'react';
+import { Container } from '@/components/layout';
 
-export default function HomeLayout({
+export default function UserLayout({
   children
 }: {
   children: React.ReactNode;
@@ -9,7 +9,7 @@ export default function HomeLayout({
   return (
     <>
       <Header />
-      {children}
+      <Container>{children}</Container>
     </>
   );
 }

@@ -6,6 +6,7 @@ import type { Metadata } from 'next';
 import { Suspense } from 'react';
 import ToastPortal from '@/components/toast-portal';
 import { AppProvider, QueryProvider } from '@/components/providers';
+import BodyLoad from '@/components/app/body-load';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -31,16 +32,16 @@ export default async function RootLayout({
       <body
         className={`${inter.variable} ${inter.className} text-foreground antialiased transition-all duration-200 ease-linear`}
       >
+        {/* <BodyLoad /> */}
         <QueryProvider>
           <AppProvider>
             <ThemeProvider
               attribute='class'
-              defaultTheme='system'
-              enableSystem
+              defaultTheme='light'
               disableTransitionOnChange
             >
               {/* <WebVitals /> */}
-              <NextTopLoader showSpinner={false} />
+              <NextTopLoader color='#64b496' showSpinner={false} />
               <Suspense>{children}</Suspense>
             </ThemeProvider>
             <ToastPortal />
