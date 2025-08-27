@@ -1,4 +1,4 @@
-import { ErrorMaps } from '@/types/form-error.type';
+import { ErrorMaps } from '@/types';
 import { FieldValues, UseFormReturn } from 'react-hook-form';
 
 export const applyFormErrors = <TFields extends FieldValues>(

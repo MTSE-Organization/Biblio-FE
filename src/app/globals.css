@@ -40,8 +40,7 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
-  --spacing-header: 70px;
-  --spacing-search-form: 44.8px;
+  --spacing-search-form: 45px;
   --spacing-1\/24: 4.166667%;
   --spacing-2\/24: 8.333333%;
   --spacing-3\/24: 12.5%;
@@ -66,11 +65,9 @@
   --spacing-22\/24: 91.666667%;
   --spacing-23\/24: 95.833333%;
   --spacing-24\/24: 100%;
-  --color-transparent-white: #ffffff10;
-  --color-gunmetal-blue: #2f3346;
-  --color-light-gray: #aaa;
-  --color-light-golden-yellow: #ffd875;
-  --color-statuary: #9fa0a5;
+  --color-green-primary: #64b496;
+  --text-md: 16px;
+  --color-breadcrumb: #e4f2ed;
 }
 
 body {

@@ -1,4 +1,5 @@
 'use client';
+
 import { Button } from '@/components/form';
 import {
   FormControl,
@@ -94,25 +95,27 @@ export default function PasswordField<T extends FieldValues>({
                   {...field}
                   value={value}
                   style={{ paddingTop: 0 }}
-                  className={cn(className, 'focus-visible:ring-[1px]', {
+                  className={cn(className, 'py-0! focus-visible:ring-[1px]', {
                     'cursor-not-allowed opacity-50': disabled
                   })}
                 />
-                <Button
-                  variant='ghost'
-                  className='text-muted-foreground/80 hover:text-foreground focus-visible:border-ring focus-visible:ring-ring/50 absolute inset-y-0 end-0 flex h-full w-9 items-center justify-center rounded-e-md transition-[color,box-shadow] outline-none hover:bg-transparent! focus:z-10 focus-visible:ring-[3px] disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50'
-                  type='button'
-                  onClick={toggleVisibility}
-                  aria-label={isVisible ? 'Hide password' : 'Show password'}
-                  aria-pressed={isVisible}
-                  aria-controls='password'
-                >
-                  {isVisible ? (
-                    <EyeOffIcon size={16} aria-hidden='true' />
-                  ) : (
-                    <EyeIcon size={16} aria-hidden='true' />
-                  )}
-                </Button>
+                {value && (
+                  <Button
+                    variant='ghost'
+                    className='text-muted-foreground/80 hover:text-foreground focus-visible:border-ring focus-visible:ring-ring/50 absolute inset-y-0 end-0 flex h-full w-9 items-center justify-center rounded-e-md transition-[color,box-shadow] outline-none hover:bg-transparent! focus:z-10 focus-visible:ring-[3px] disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50'
+                    type='button'
+                    onClick={toggleVisibility}
+                    aria-label={isVisible ? 'Hide password' : 'Show password'}
+                    aria-pressed={isVisible}
+                    aria-controls='password'
+                  >
+                    {isVisible ? (
+                      <EyeOffIcon size={16} aria-hidden='true' />
+                    ) : (
+                      <EyeIcon size={16} aria-hidden='true' />
+                    )}
+                  </Button>
+                )}
               </div>
             </FormControl>
             {description && <FormDescription>{description}</FormDescription>}
