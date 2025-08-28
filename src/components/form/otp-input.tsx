@@ -2,12 +2,17 @@
 
 import {
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage
 } from '@/components/ui/form';
-import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSlot
+} from '@/components/ui/input-otp';
 import { Control, FieldPath, FieldValues } from 'react-hook-form';
 import { cn } from '@/lib/utils';
 
@@ -21,6 +26,8 @@ type OtpFieldProps<T extends FieldValues> = {
   formItemClassName?: string;
   containerClassName?: string;
   groupClassName?: string;
+  labelClassName?: string;
+  description?: React.ReactNode;
 };
 
 export default function OtpField<T extends FieldValues>({
@@ -32,7 +39,9 @@ export default function OtpField<T extends FieldValues>({
   className,
   formItemClassName,
   containerClassName,
-  groupClassName
+  groupClassName,
+  labelClassName,
+  description
 }: OtpFieldProps<T>) {
   return (
     <FormField
@@ -43,7 +52,7 @@ export default function OtpField<T extends FieldValues>({
           className={cn('flex flex-col items-center', formItemClassName)}
         >
           {label && (
-            <FormLabel className='mb-2'>
+            <FormLabel className={cn('mb-2', labelClassName)}>
               {label}
               {required && <span className='text-destructive'>*</span>}
             </FormLabel>
@@ -68,6 +77,7 @@ export default function OtpField<T extends FieldValues>({
               </InputOTPGroup>
             </InputOTP>
           </FormControl>
+          {description && <FormDescription>{description}</FormDescription>}
           <FormMessage className='mt-1' />
         </FormItem>
       )}

@@ -5,8 +5,10 @@ const route = defineRoute({
   login: '/login',
   register: '/register',
   forgotPassword: '/forgot-password',
+  verifyOtp: '/verify-otp',
   user: {
-    profile: '/user/profile'
+    profile: '/user/profile',
+    changePassword: '/user/change-password'
   }
 });
 

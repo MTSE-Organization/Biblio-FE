@@ -1,5 +1,9 @@
 'use client';
 
+import { logger } from '@/logger';
+import { useProfileQuery } from '@/queries';
+import { useAuthStore } from '@/store';
+import { getAccessTokenFromLocalStorage } from '@/utils';
 import { useTheme } from 'next-themes';
 import { useEffect } from 'react';
 
@@ -10,5 +14,31 @@ export default function AppProvider({
 }) {
   const { setTheme } = useTheme();
   useEffect(() => setTheme('light'), [setTheme]);
+  const { setProfile, setLoading } = useAuthStore();
+  const profileQuery = useProfileQuery();
+
+  useEffect(() => {
+    const accessToken = getAccessTokenFromLocalStorage();
+    if (!accessToken) {
+      setLoading(false);
+      return;
+    }
+
+    const handleGetProfile = async () => {
+      setLoading(true);
+      try {
+        const response = await profileQuery.refetch();
+        const profile = response.data?.data;
+        setProfile(profile!);
+      } catch (error) {
+        logger.error('Error fetching profile:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    handleGetProfile();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   return <>{children}</>;
 }

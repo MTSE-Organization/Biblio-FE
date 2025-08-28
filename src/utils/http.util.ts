@@ -96,7 +96,7 @@ const sendRequest = async <T>(
     const result = await response.json();
     return result;
   } catch (error: any) {
-    throw new Error(`Error in API request: ${error.message}`);
+    throw new Error(`Error in API request: ${error?.cause?.code || error}`);
   }
 };
 

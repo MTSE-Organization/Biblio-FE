@@ -4,18 +4,43 @@ import { whiteLogo } from '@/assets';
 import { Breadcrumb, Button, Col, Row } from '@/components/form';
 import { BaseForm } from '@/components/form/base-form';
 import OtpField from '@/components/form/otp-input';
+import ButtonLoading from '@/components/loading/button-loading';
+import { storageKeys } from '@/constants';
+import { cn } from '@/lib';
+import { logger } from '@/logger';
+import { useVerifyOtpMutation } from '@/queries';
 import route from '@/routes';
 import { otpSchema } from '@/schemaValidations';
 import { OtpBodyType } from '@/types/auth.type';
+import { getData, notify, removeData } from '@/utils';
+import { Loader2 } from 'lucide-react';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import { useTopLoader } from 'nextjs-toploader';
 
 export default function VerifyOTPForm() {
+  const verifyOtpMutation = useVerifyOtpMutation();
+  const router = useRouter();
+  const loader = useTopLoader();
   const defaultValues: OtpBodyType = {
-    email: '',
+    email: getData(storageKeys.EMAIL) ?? '',
     otp: ''
   };
-  const onSubmit = (values: OtpBodyType) => {
-    console.log('🚀 ~ onSubmit ~ values:', values);
+  const onSubmit = async (values: OtpBodyType) => {
+    try {
+      const res = await verifyOtpMutation.mutateAsync(values);
+      if (res.result) {
+        notify.success('Xác thực OTP thành công');
+        removeData(storageKeys.EMAIL);
+        router.push(route.login);
+        loader.start();
+      } else {
+        notify.error('Mã OTP không hợp lệ');
+      }
+    } catch (error) {
+      logger.error('Error while verifying otp: ', error);
+      notify.error('Có lỗi xảy ra khi xác thực OTP');
+    }
   };
   return (
     <div>
@@ -53,14 +78,30 @@ export default function VerifyOTPForm() {
                         control={form.control}
                         label='Nhập OTP'
                         required
+                        description={
+                          <p className='text-center text-sm'>
+                            Mã OTP đã được gửi đến email của bạn.
+                            <br />
+                            Mã có thời hạn sử dụng trong vòng 5 phút
+                          </p>
+                        }
                       />
                     </Col>
                   </Row>
                   <Button
                     type='submit'
-                    className='bg-green-primary block w-full hover:bg-emerald-700'
+                    className={cn(
+                      'bg-green-primary block w-full hover:bg-emerald-700',
+                      {
+                        'pointer-events-none': verifyOtpMutation.isPending
+                      }
+                    )}
                   >
-                    Xác thực
+                    {verifyOtpMutation.isPending ? (
+                      <ButtonLoading />
+                    ) : (
+                      'Xác thực'
+                    )}
                   </Button>
                 </>
               )}

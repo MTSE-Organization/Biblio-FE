@@ -1,14 +1,14 @@
 import { toast, ToastOptions, Bounce } from 'react-toastify';
 
 const defaultOptions: ToastOptions = {
-  position: 'top-center',
+  position: 'top-right',
   autoClose: 3000,
   hideProgressBar: false,
   closeOnClick: true,
   pauseOnHover: true,
   draggable: true,
   progress: undefined,
-  theme: 'light',
+  theme: 'dark',
   transition: Bounce,
   className: `
     bg-secondary! text-foreground!

@@ -163,6 +163,11 @@ body {
   }
 }
 
+input::selection {
+  background-color: var(--color-green-primary);
+  color: white;
+}
+
 .scrollbar-none::-webkit-scrollbar {
   display: none;
 }
