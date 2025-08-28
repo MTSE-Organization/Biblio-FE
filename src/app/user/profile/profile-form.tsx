@@ -1,8 +1,6 @@
 'use client';
-
 import { whiteLogo } from '@/assets';
 import {
-  AutoCompleteField,
   Breadcrumb,
   Button,
   Col,
@@ -11,28 +9,83 @@ import {
   UploadImageField
 } from '@/components/form';
 import { BaseForm } from '@/components/form/base-form';
-import { GENDER_MALE, genderOptions } from '@/constants';
+import { accountErrorMaps, storageKeys } from '@/constants';
 import { cn } from '@/lib';
+import { logger } from '@/logger';
 import route from '@/routes';
 import { profileSchema } from '@/schemaValidations/account.schema';
-import { ProfileResType } from '@/types';
+import { useAuthStore } from '@/store';
+import { useProfileMutation } from '@/queries/use-account';
+import {
+  ProfileResType,
+  UpdateProfileBodyType,
+  UpdateProfileType
+} from '@/types';
+import { applyFormErrors, notify, setData } from '@/utils';
 import Image from 'next/image';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
+import { UseFormReturn } from 'react-hook-form';
+import Link from 'next/link';
+import { useForgotPasswordMutation } from '@/queries';
+import { Loader2 } from 'lucide-react';
+import ButtonLoading from '@/components/loading/button-loading';
 
 export default function ProfileForm() {
   const [avatarPath, setAvatarPath] = useState<string>('');
   const [isFormChanged, setIsFormChanged] = useState(false);
-  const defaultValues: ProfileResType = {
-    id: 0,
+  const { profile } = useAuthStore();
+  const profileMutation = useProfileMutation();
+  const forgotPasswordMutation = useForgotPasswordMutation();
+  const defaultValues: UpdateProfileType = {
     fullName: '',
     email: '',
     phone: '',
-    username: '',
-    gender: GENDER_MALE,
-    avatarPath: '',
-    address: ''
+    avatarPath: ''
   };
-  const onSubmit = (values: ProfileResType) => {};
+
+  const initialValues = useMemo<ProfileResType>(
+    () => ({
+      fullName: profile?.fullName || '',
+      email: profile?.email || '',
+      phone: profile?.phone || '',
+      avatarPath: profile?.avatarPath || ''
+    }),
+    [profile?.avatarPath, profile?.email, profile?.fullName, profile?.phone]
+  );
+
+  const onSubmit = async (
+    values: UpdateProfileBodyType,
+    form: UseFormReturn<UpdateProfileBodyType>
+  ) => {
+    try {
+      const res = await profileMutation.mutateAsync(values);
+      if (res.result) {
+        notify.success('Cập nhật hồ sơ thành công');
+        setIsFormChanged(false);
+      } else {
+        const errCode = res.code;
+        if (errCode) {
+          applyFormErrors(form, errCode, accountErrorMaps);
+        } else {
+          notify.error('Cập nhật hồ sơ thất bại');
+        }
+      }
+    } catch (error) {
+      logger.error('Error while updating profile', error);
+      notify.error('Có lỗi xảy ra khi cập nhật hồ sơ');
+    }
+  };
+
+  const handleChangePassword = async () => {
+    try {
+      const email = profile?.email!;
+      await forgotPasswordMutation.mutateAsync({ email });
+      setData(storageKeys.EMAIL, email);
+    } catch (error) {
+      logger.error('Error while sending otp: ', error);
+    }
+  };
+
   return (
     <div>
       <Breadcrumb
@@ -55,13 +108,15 @@ export default function ProfileForm() {
               schema={profileSchema}
               onSubmit={onSubmit}
               defaultValues={defaultValues}
+              initialValues={initialValues}
+              onChange={() => setIsFormChanged(true)}
             >
               {(form) => (
                 <>
                   <Row>
                     <Col>
                       <UploadImageField
-                        label='Ảnh đại diện'
+                        label={<p className='text-md'>Ảnh đại diện</p>}
                         value={avatarPath}
                         size={100}
                         onChange={(url) => {
@@ -83,7 +138,8 @@ export default function ProfileForm() {
                         label='Họ và tên'
                         required
                         placeholder='Nhập họ và tên'
-                        className='text-sm'
+                        className='text-md!'
+                        labelClassName='text-md!'
                       />
                     </Col>
                     <Col span={12}>
@@ -93,21 +149,13 @@ export default function ProfileForm() {
                         label='Email'
                         required
                         placeholder='Nhập email'
-                        className='text-sm'
+                        className='text-md!'
+                        labelClassName='text-md!'
+                        disabled
                       />
                     </Col>
                   </Row>
                   <Row>
-                    <Col span={12}>
-                      <InputField
-                        control={form.control}
-                        name='username'
-                        label='Tên đăng nhập'
-                        required
-                        placeholder='Nhập tên đăng nhập'
-                        className='text-sm'
-                      />
-                    </Col>
                     <Col span={12}>
                       <InputField
                         control={form.control}
@@ -115,60 +163,44 @@ export default function ProfileForm() {
                         label='Số điện thoại'
                         required
                         placeholder='Nhập số điện thoại'
-                        className='text-sm'
+                        className='text-md!'
+                        labelClassName='text-md!'
                       />
                     </Col>
-                  </Row>
-                  <Row>
-                    <Col>
-                      <AutoCompleteField
-                        control={form.control}
-                        options={genderOptions}
-                        name='gender'
-                        label='Giới tính'
-                        required
-                        getLabel={(opt) => opt.label}
-                        getValue={(opt) => opt.value}
-                        placeholder='Chọn giới tính'
-                        onValueChange={() => setIsFormChanged(true)}
-                        className='text-sm'
-                      />
-                    </Col>
-                    <Col>
-                      <AutoCompleteField
-                        control={form.control}
-                        options={genderOptions}
-                        name='address'
-                        label='Địa chỉ'
-                        required
-                        getLabel={(opt) => opt.label}
-                        getValue={(opt) => opt.value}
-                        placeholder='Chọn địa chỉ'
-                        onValueChange={() => setIsFormChanged(true)}
-                        className='text-sm'
-                      />
-                    </Col>
+                    <Col span={12}></Col>
                   </Row>
                   <Row>
                     <Col>
                       <Button
-                        type='submit'
-                        className={cn('ml-2 bg-orange-500 hover:bg-orange-500')}
+                        type='button'
+                        className={cn(
+                          'text-md bg-orange-500 hover:bg-orange-500'
+                        )}
+                        onClick={handleChangePassword}
                       >
-                        Đổi mật khẩu
+                        <Link
+                          href={route.user.changePassword}
+                          className='block w-full'
+                        >
+                          Đổi mật khẩu
+                        </Link>
                       </Button>
                     </Col>
                     <Col>
                       <Button
                         type='submit'
                         className={cn(
-                          'bg-green-primary hover:bg-green-primary ml-2',
+                          'bg-green-primary hover:bg-green-primary text-md',
                           {
                             'cursor-not-allowed opacity-50': !isFormChanged
                           }
                         )}
                       >
-                        Cập nhật
+                        {profileMutation.isPending ? (
+                          <ButtonLoading />
+                        ) : (
+                          'Cập nhật'
+                        )}
                       </Button>
                     </Col>
                   </Row>

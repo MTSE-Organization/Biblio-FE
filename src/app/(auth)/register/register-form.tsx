@@ -1,22 +1,61 @@
 'use client';
+
 import { whiteLogo } from '@/assets';
 import { Breadcrumb, Button, Col, InputField, Row } from '@/components/form';
 import { BaseForm } from '@/components/form/base-form';
 import PasswordField from '@/components/form/password-field';
+import ButtonLoading from '@/components/loading/button-loading';
+import { registerErrorMaps, storageKeys } from '@/constants';
+import { cn } from '@/lib';
+import { logger } from '@/logger';
+import { useRegisterMutation } from '@/queries';
 import route from '@/routes';
 import { registerSchema } from '@/schemaValidations';
 import { RegisterBodyType } from '@/types/auth.type';
+import { applyFormErrors, notify, setData } from '@/utils';
+import { Loader2 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useTopLoader } from 'nextjs-toploader';
+import { UseFormReturn } from 'react-hook-form';
 
 export default function RegisterForm() {
+  const registerMutation = useRegisterMutation();
+  const router = useRouter();
+  const loader = useTopLoader();
   const defaultValues: RegisterBodyType = {
     email: '',
     password: '',
     confirmPassword: ''
   };
-  const onSubmit = (values: RegisterBodyType) => {
-    console.log('🚀 ~ onSubmit ~ values:', values);
+  const onSubmit = async (
+    values: RegisterBodyType,
+    form: UseFormReturn<RegisterBodyType>
+  ) => {
+    try {
+      const res = await registerMutation.mutateAsync(values);
+      if (res.result) {
+        notify.success(
+          'Đăng ký thành công.\nMã OTP đã được gửi đến email của bạn',
+          {
+            style: { whiteSpace: 'pre-line' }
+          }
+        );
+        setData(storageKeys.EMAIL, values.email);
+        router.push(route.verifyOtp);
+        loader.start();
+      } else {
+        if (res.code) {
+          applyFormErrors(form, res.code, registerErrorMaps);
+        } else {
+          notify.error('Đăng ký thất bại');
+        }
+      }
+    } catch (error) {
+      logger.error('Error while registering: ', error);
+      notify.error('Có lỗi xảy ra khi đăng ký');
+    }
   };
   return (
     <div>
@@ -83,8 +122,15 @@ export default function RegisterForm() {
                       />
                     </Col>
                   </Row>
-                  <Button className='bg-green-primary block w-full hover:bg-emerald-700'>
-                    Đăng ký
+                  <Button
+                    className={cn(
+                      'bg-green-primary block w-full hover:bg-emerald-700',
+                      {
+                        'pointer-events-none': registerMutation.isPending
+                      }
+                    )}
+                  >
+                    {registerMutation.isPending ? <ButtonLoading /> : 'Đăng ký'}
                   </Button>
                 </>
               )}

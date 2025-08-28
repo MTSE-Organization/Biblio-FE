@@ -95,12 +95,13 @@ export default function PasswordField<T extends FieldValues>({
                   {...field}
                   value={value}
                   style={{ paddingTop: 0 }}
-                  className={cn(className, 'py-0! focus-visible:ring-[1px]', {
+                  className={cn(className, 'py-1! focus-visible:ring-[1px]', {
                     'cursor-not-allowed opacity-50': disabled
                   })}
                 />
                 {value && (
                   <Button
+                    tabIndex={-1}
                     variant='ghost'
                     className='text-muted-foreground/80 hover:text-foreground focus-visible:border-ring focus-visible:ring-ring/50 absolute inset-y-0 end-0 flex h-full w-9 items-center justify-center rounded-e-md transition-[color,box-shadow] outline-none hover:bg-transparent! focus:z-10 focus-visible:ring-[3px] disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50'
                     type='button'

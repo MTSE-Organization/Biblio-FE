@@ -4,19 +4,53 @@ import { whiteLogo } from '@/assets';
 import { Breadcrumb, Button, Col, InputField, Row } from '@/components/form';
 import { BaseForm } from '@/components/form/base-form';
 import PasswordField from '@/components/form/password-field';
+import ButtonLoading from '@/components/loading/button-loading';
+import { ErrorCode, storageKeys } from '@/constants';
+import { cn } from '@/lib';
+import { logger } from '@/logger';
+import { useLoginMutation, useProfileQuery } from '@/queries';
 import route from '@/routes';
 import { loginSchema } from '@/schemaValidations';
+import { useAuthStore } from '@/store';
 import { LoginBodyType } from '@/types/auth.type';
+import { notify, setData } from '@/utils';
+import { Loader2 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 export default function LoginForm() {
+  const profileQuery = useProfileQuery();
+  const loginMutation = useLoginMutation();
+  const router = useRouter();
+  const { setProfile } = useAuthStore();
   const defaultValues: LoginBodyType = {
     email: '',
     password: ''
   };
-  const onSubmit = (values: LoginBodyType) => {
-    console.log('🚀 ~ onSubmit ~ values:', values);
+  const onSubmit = async (values: LoginBodyType) => {
+    try {
+      const res = await loginMutation.mutateAsync(values);
+      if (res.result) {
+        const accessToken = res.data?.token!;
+        setData(storageKeys.ACCESS_TOKEN, accessToken);
+        notify.success('Đăng nhập thành công');
+        const profileRes = await profileQuery.refetch();
+        const profile = profileRes.data?.data!;
+        setProfile(profile);
+        router.push(route.home);
+      } else {
+        const errorCode = res.code;
+        if (errorCode === ErrorCode.NETWORK_ECONNREFUSED) {
+          notify.error('Có lỗi kết nối đến server');
+        } else {
+          notify.error('Email hoặc mật khẩu không chính xác');
+        }
+      }
+    } catch (error) {
+      logger.error('Error while logging in: ', error);
+      notify.error('Có lỗi xảy ra khi đăng nhập');
+    }
   };
   return (
     <div>
@@ -83,8 +117,15 @@ export default function LoginForm() {
                       </Link>
                     </Col>
                   </Row>
-                  <Button className='bg-green-primary block w-full hover:bg-emerald-700'>
-                    Đăng nhập
+                  <Button
+                    className={cn(
+                      'bg-green-primary block w-full hover:bg-emerald-700',
+                      {
+                        'pointer-events-none': loginMutation.isPending
+                      }
+                    )}
+                  >
+                    {loginMutation.isPending ? <ButtonLoading /> : 'Đăng nhập'}
                   </Button>
                 </>
               )}

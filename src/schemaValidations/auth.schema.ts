@@ -2,14 +2,7 @@ import z from 'zod';
 
 export const loginSchema = z.object({
   email: z.string().nonempty('Bắt buộc').email('Email không hợp lệ'),
-  password: z
-    .string()
-    .nonempty('Bắt buộc')
-    .min(8, 'Mật khẩu tối thiểu 8 ký tự')
-    .regex(/[A-Z]/, 'Phải có ít nhất 1 chữ hoa')
-    .regex(/[a-z]/, 'Phải có ít nhất 1 chữ thường')
-    .regex(/[0-9]/, 'Phải có ít nhất 1 chữ số')
-    .regex(/[^A-Za-z0-9]/, 'Phải có ít nhất 1 ký tự đặc biệt')
+  password: z.string().nonempty('Bắt buộc')
 });
 
 export const registerSchema = z
@@ -48,12 +41,9 @@ export const forgotPasswordStep1Schema = z.object({
   email: z.string().nonempty('Bắt buộc').email('Email không hợp lệ')
 });
 
-export const forgotPasswordStep2Schema = z.object({
-  otp: z.string().nonempty('Bắt buộc')
-});
-
-export const forgotPasswordStep3Schema = z
+export const forgotPasswordStep2Schema = z
   .object({
+    otp: z.string().nonempty('Bắt buộc'),
     password: z
       .string()
       .nonempty('Bắt buộc')
