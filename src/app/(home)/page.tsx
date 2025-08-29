@@ -2,7 +2,7 @@
 
 import { Breadcrumb } from '@/components/form';
 import route from '@/routes';
-import HeroSlider from './hero-slider';
+import HeroSlider from './_components/hero-slider';
 
 export default function HomePage() {
   return (
