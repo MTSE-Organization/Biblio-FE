@@ -3,8 +3,7 @@
 import { logger } from '@/logger';
 import { useProfileQuery } from '@/queries';
 import { useAuthStore } from '@/store';
-import { getAccessTokenFromLocalStorage } from '@/utils';
-import { useTheme } from 'next-themes';
+import { getAccessTokenFromLocalStorage, setData } from '@/utils';
 import { useEffect } from 'react';
 
 export default function AppProvider({
@@ -12,8 +11,7 @@ export default function AppProvider({
 }: {
   children: React.ReactNode;
 }) {
-  const { setTheme } = useTheme();
-  useEffect(() => setTheme('light'), [setTheme]);
+  useEffect(() => setData('theme', 'light'));
   const { setProfile, setLoading } = useAuthStore();
   const profileQuery = useProfileQuery();
 
