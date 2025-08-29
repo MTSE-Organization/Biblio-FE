@@ -8,4 +8,4 @@ Week 1:
 
 - Lê Tấn Trụ - Build base fe, Call api Login, Register, Verify OTP, Forgot Password, Get Profile, Update Profile
 
-- Lê Nhựt Anh - Xây dựng Form Login, Register, Verify OTP, Forgot Password, Profile
+- Lê Nhựt Anh - Xây dựng Form Login, Register, Verify OTP, Forgot Password, Profile, Trang Home
