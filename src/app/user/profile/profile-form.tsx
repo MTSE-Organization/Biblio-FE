@@ -15,7 +15,7 @@ import { logger } from '@/logger';
 import route from '@/routes';
 import { profileSchema } from '@/schemaValidations/account.schema';
 import { useAuthStore } from '@/store';
-import { useProfileMutation } from '@/queries/use-account';
+import { useProfileMutation } from '@/queries/use-account.query';
 import {
   ProfileResType,
   UpdateProfileBodyType,
