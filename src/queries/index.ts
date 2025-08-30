@@ -1,3 +1,3 @@
-export * from './use-upload';
-export * from './use-auth';
-export * from './use-account';
+export * from './use-upload.query';
+export * from './use-auth.query';
+export * from './use-account.query';
