@@ -92,12 +92,17 @@ export default function PasswordField<T extends FieldValues>({
                   type={isVisible ? 'text' : type}
                   disabled={disabled}
                   readOnly={readOnly}
+                  autoComplete='off'
                   {...field}
                   value={value}
                   style={{ paddingTop: 0 }}
-                  className={cn(className, 'py-1! focus-visible:ring-[1px]', {
-                    'cursor-not-allowed opacity-50': disabled
-                  })}
+                  className={cn(
+                    className,
+                    'py-0! pb-0.5! focus-visible:ring-[1px]',
+                    {
+                      'cursor-not-allowed opacity-50': disabled
+                    }
+                  )}
                 />
                 {value && (
                   <Button

@@ -1,8 +1,8 @@
 'use client';
+
 import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   ArrowLeftIcon,
-  Loader2,
   UploadIcon,
   XIcon,
   ZoomInIcon,
@@ -184,7 +184,7 @@ export default function UploadImageField({
             {!!value ? (
               <AvatarField
                 disablePreview
-                // src={`${apiConfig.imageProxy.baseUrl}${value}`}
+                src={`${value}`}
                 className='size-full object-cover'
                 size={size}
               />
@@ -241,7 +241,7 @@ export default function UploadImageField({
               </div>
               <Button
                 type='button'
-                className='-my-1 w-25'
+                className='bg-green-primary hover:bg-green-primary/80 -my-1 w-25'
                 onClick={handleApply}
                 disabled={!previewUrl || loading}
               >

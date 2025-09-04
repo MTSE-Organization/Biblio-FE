@@ -5,6 +5,7 @@ import emptyCart from './empty-cart.webp';
 import whiteLogo from './logo.webp';
 import banner1 from './banner1.jpg';
 import banner2 from './banner2.jpg';
+import product from './product.jpg';
 
 export {
   defaultAvatar,
@@ -13,5 +14,6 @@ export {
   emptyCart,
   whiteLogo,
   banner1,
-  banner2
+  banner2,
+  product
 };

@@ -14,7 +14,6 @@ import { loginSchema } from '@/schemaValidations';
 import { useAuthStore } from '@/store';
 import { LoginBodyType } from '@/types/auth.type';
 import { notify, setData } from '@/utils';
-import { Loader2 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -29,28 +28,30 @@ export default function LoginForm() {
     password: ''
   };
   const onSubmit = async (values: LoginBodyType) => {
-    try {
-      const res = await loginMutation.mutateAsync(values);
-      if (res.result) {
-        const accessToken = res.data?.token!;
-        setData(storageKeys.ACCESS_TOKEN, accessToken);
-        notify.success('Đăng nhập thành công');
-        const profileRes = await profileQuery.refetch();
-        const profile = profileRes.data?.data!;
-        setProfile(profile);
-        router.push(route.home);
-      } else {
-        const errorCode = res.code;
-        if (errorCode === ErrorCode.NETWORK_ECONNREFUSED) {
-          notify.error('Có lỗi kết nối đến server');
+    await loginMutation.mutateAsync(values, {
+      onSuccess: async (res) => {
+        if (res.result) {
+          const accessToken = res.data?.token!;
+          setData(storageKeys.ACCESS_TOKEN, accessToken);
+          notify.success('Đăng nhập thành công');
+          const profileRes = await profileQuery.refetch();
+          const profile = profileRes.data?.data!;
+          setProfile(profile);
+          router.push(route.home);
         } else {
-          notify.error('Email hoặc mật khẩu không chính xác');
+          const errorCode = res.code;
+          if (errorCode === ErrorCode.NETWORK_ECONNREFUSED) {
+            notify.error('Có lỗi kết nối đến server');
+          } else {
+            notify.error('Email hoặc mật khẩu không chính xác');
+          }
         }
+      },
+      onError: (error) => {
+        logger.error('Error while logging in: ', error);
+        notify.error('Có lỗi xảy ra khi đăng nhập');
       }
-    } catch (error) {
-      logger.error('Error while logging in: ', error);
-      notify.error('Có lỗi xảy ra khi đăng nhập');
-    }
+    });
   };
   return (
     <div>
@@ -119,7 +120,7 @@ export default function LoginForm() {
                   </Row>
                   <Button
                     className={cn(
-                      'bg-green-primary block w-full hover:bg-emerald-700',
+                      'bg-green-primary w-full hover:bg-emerald-700',
                       {
                         'pointer-events-none': loginMutation.isPending
                       }

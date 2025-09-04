@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import { whiteLogo } from '@/assets';
 import { Breadcrumb, Button, Col, Row } from '@/components/form';
 import { BaseForm } from '@/components/form/base-form';
@@ -16,7 +15,6 @@ import { applyFormErrors, getData, notify, removeData } from '@/utils';
 import { ErrorCode, formatPasswordErrorMaps, storageKeys } from '@/constants';
 import { UseFormReturn } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
-import { Loader2 } from 'lucide-react';
 import { cn } from '@/lib';
 import ButtonLoading from '@/components/loading/button-loading';
 
@@ -35,27 +33,31 @@ export default function ChangePasswordForm() {
     values: ForgotPasswordBodyType,
     form: UseFormReturn<ForgotPasswordBodyType>
   ) => {
-    try {
-      const res = await changePasswordMutation.mutateAsync({
+    await changePasswordMutation.mutateAsync(
+      {
         ...values,
         email: getData(storageKeys.EMAIL)!
-      });
-
-      if (res.result) {
-        notify.success('Đổi mật khẩu thành công');
-        removeData(storageKeys.EMAIL);
-        router.push(route.login);
-      } else {
-        const errorCode = res.code;
-        if (errorCode === ErrorCode.AUTH_ERROR_OTP_INVALID_OR_EXPIRED) {
-          notify.error('Mã OTP không hợp lệ hoặc đã hết hạn');
-          applyFormErrors(form, errorCode, formatPasswordErrorMaps);
+      },
+      {
+        onSuccess: (res) => {
+          if (res.result) {
+            notify.success('Đổi mật khẩu thành công');
+            removeData(storageKeys.EMAIL);
+            router.push(route.login);
+          } else {
+            const errorCode = res.code;
+            if (errorCode === ErrorCode.AUTH_ERROR_OTP_INVALID_OR_EXPIRED) {
+              notify.error('Mã OTP không hợp lệ hoặc đã hết hạn');
+              applyFormErrors(form, errorCode, formatPasswordErrorMaps);
+            }
+          }
+        },
+        onError: (error) => {
+          logger.error('Error while changing password: ', error);
+          notify.error('Có lỗi xảy ra khi đổi mật khẩu');
         }
       }
-    } catch (error) {
-      logger.error('Error while changing password: ', error);
-      notify.error('Có lỗi xảy ra khi đổi mật khẩu');
-    }
+    );
   };
 
   return (
@@ -63,7 +65,7 @@ export default function ChangePasswordForm() {
       <Breadcrumb
         items={[
           { label: 'Trang chủ', href: route.home },
-          { label: 'Quên mật khẩu' }
+          { label: 'Đổi mật khẩu' }
         ]}
         separator='/'
       />
@@ -97,10 +99,10 @@ export default function ChangePasswordForm() {
                         label='Nhập OTP'
                         required
                         description={
-                          <p className='tex-sm text-center'>
+                          <span className='tex-sm block text-center'>
                             Mã OTP đã được gửi đến email của bạn. <br /> Mã có
                             thời gian sử dụng trong vòng 5 phút
-                          </p>
+                          </span>
                         }
                       />
                     </Col>

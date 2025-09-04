@@ -4,8 +4,16 @@
     Fe - Bibilo Book Selling Website
 </p>
 
-Week 1:
+Week 2:
 
-- Lê Tấn Trụ - Build base fe, Call api Login, Register, Verify OTP, Forgot Password, Get Profile, Update Profile
+- Lê Tấn Trụ
+  - Xử lý đăng nhập, hiển thị họ tên user.
+  - Hiển thị menu dropdown **Thông tin cá nhân, Đơn hàng, Đăng xuất**.
+  - Xử lý cập nhật thông tin user
+  - Xử lý đăng xuất
 
-- Lê Nhựt Anh - Xây dựng Form Login, Register, Verify OTP, Forgot Password, Profile, Trang Home
+- Lê Nhựt Anh: Xây dựng UI
+  - 08 sản phẩm mới nhất
+  - 06 sản phẩm bán chạy nhất
+  - 04 sản phẩm khuyến mãi cao nhất
+  - Chi tiết sản phẩm
