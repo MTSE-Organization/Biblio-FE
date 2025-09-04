@@ -13,7 +13,6 @@ import route from '@/routes';
 import { otpSchema } from '@/schemaValidations';
 import { OtpBodyType } from '@/types/auth.type';
 import { getData, notify, removeData } from '@/utils';
-import { Loader2 } from 'lucide-react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useTopLoader } from 'nextjs-toploader';
@@ -27,20 +26,22 @@ export default function VerifyOTPForm() {
     otp: ''
   };
   const onSubmit = async (values: OtpBodyType) => {
-    try {
-      const res = await verifyOtpMutation.mutateAsync(values);
-      if (res.result) {
-        notify.success('Xác thực OTP thành công');
-        removeData(storageKeys.EMAIL);
-        router.push(route.login);
-        loader.start();
-      } else {
-        notify.error('Mã OTP không hợp lệ');
+    await verifyOtpMutation.mutateAsync(values, {
+      onSuccess: (res) => {
+        if (res.result) {
+          notify.success('Xác thực OTP thành công');
+          removeData(storageKeys.EMAIL);
+          router.push(route.login);
+          loader.start();
+        } else {
+          notify.error('Mã OTP không hợp lệ');
+        }
+      },
+      onError: (error) => {
+        logger.error('Error while verifying otp: ', error);
+        notify.error('Có lỗi xảy ra khi xác thực OTP');
       }
-    } catch (error) {
-      logger.error('Error while verifying otp: ', error);
-      notify.error('Có lỗi xảy ra khi xác thực OTP');
-    }
+    });
   };
   return (
     <div>
@@ -79,11 +80,11 @@ export default function VerifyOTPForm() {
                         label='Nhập OTP'
                         required
                         description={
-                          <p className='text-center text-sm'>
+                          <span className='block text-center text-sm'>
                             Mã OTP đã được gửi đến email của bạn.
                             <br />
                             Mã có thời hạn sử dụng trong vòng 5 phút
-                          </p>
+                          </span>
                         }
                       />
                     </Col>

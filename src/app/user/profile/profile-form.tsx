@@ -62,33 +62,41 @@ export default function ProfileForm() {
     values: UpdateProfileBodyType,
     form: UseFormReturn<UpdateProfileBodyType>
   ) => {
-    try {
-      const res = await profileMutation.mutateAsync({ ...values, avatarPath });
-      if (res.result) {
-        notify.success('Cập nhật hồ sơ thành công');
-        setIsFormChanged(false);
-      } else {
-        const errCode = res.code;
-        if (errCode) {
-          applyFormErrors(form, errCode, accountErrorMaps);
-        } else {
-          notify.error('Cập nhật hồ sơ thất bại');
+    await profileMutation.mutateAsync(
+      { ...values, avatarPath },
+      {
+        onSuccess: (res) => {
+          if (res.result) {
+            notify.success('Cập nhật hồ sơ thành công');
+            setIsFormChanged(false);
+          } else {
+            const errCode = res.code;
+            if (errCode) {
+              applyFormErrors(form, errCode, accountErrorMaps);
+            } else {
+              notify.error('Cập nhật hồ sơ thất bại');
+            }
+          }
+        },
+        onError: (error) => {
+          logger.error('Error while updating profile', error);
+          notify.error('Có lỗi xảy ra khi cập nhật hồ sơ');
         }
       }
-    } catch (error) {
-      logger.error('Error while updating profile', error);
-      notify.error('Có lỗi xảy ra khi cập nhật hồ sơ');
-    }
+    );
   };
 
   const handleChangePassword = async () => {
-    try {
-      const email = profile?.email!;
-      await forgotPasswordMutation.mutateAsync({ email });
-      setData(storageKeys.EMAIL, email);
-    } catch (error) {
-      logger.error('Error while sending otp: ', error);
-    }
+    const email = profile?.email!;
+    await forgotPasswordMutation.mutateAsync(
+      { email },
+      {
+        onError: (error) => {
+          logger.error('Error while sending otp: ', error);
+        }
+      }
+    );
+    setData(storageKeys.EMAIL, email);
   };
 
   return (

@@ -33,27 +33,31 @@ export default function ChangePasswordForm() {
     values: ForgotPasswordBodyType,
     form: UseFormReturn<ForgotPasswordBodyType>
   ) => {
-    try {
-      const res = await changePasswordMutation.mutateAsync({
+    await changePasswordMutation.mutateAsync(
+      {
         ...values,
         email: getData(storageKeys.EMAIL)!
-      });
-
-      if (res.result) {
-        notify.success('Đổi mật khẩu thành công');
-        removeData(storageKeys.EMAIL);
-        router.push(route.login);
-      } else {
-        const errorCode = res.code;
-        if (errorCode === ErrorCode.AUTH_ERROR_OTP_INVALID_OR_EXPIRED) {
-          notify.error('Mã OTP không hợp lệ hoặc đã hết hạn');
-          applyFormErrors(form, errorCode, formatPasswordErrorMaps);
+      },
+      {
+        onSuccess: (res) => {
+          if (res.result) {
+            notify.success('Đổi mật khẩu thành công');
+            removeData(storageKeys.EMAIL);
+            router.push(route.login);
+          } else {
+            const errorCode = res.code;
+            if (errorCode === ErrorCode.AUTH_ERROR_OTP_INVALID_OR_EXPIRED) {
+              notify.error('Mã OTP không hợp lệ hoặc đã hết hạn');
+              applyFormErrors(form, errorCode, formatPasswordErrorMaps);
+            }
+          }
+        },
+        onError: (error) => {
+          logger.error('Error while changing password: ', error);
+          notify.error('Có lỗi xảy ra khi đổi mật khẩu');
         }
       }
-    } catch (error) {
-      logger.error('Error while changing password: ', error);
-      notify.error('Có lỗi xảy ra khi đổi mật khẩu');
-    }
+    );
   };
 
   return (

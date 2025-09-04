@@ -24,21 +24,23 @@ export default function DropdownAccount() {
   const { profile, setAuthenticated, setProfile } = useAuthStore();
 
   const handleLogout = async () => {
-    try {
-      const res = await logoutMutation.mutateAsync();
-      if (res.result) {
-        removeData(storageKeys.ACCESS_TOKEN);
-        notify.success('Đăng xuất thành công');
-        setAuthenticated(false);
-        setProfile(null);
-        setOpen(false);
-        router.push(route.home);
-        router.refresh();
+    await logoutMutation.mutateAsync(undefined, {
+      onSuccess: (res) => {
+        if (res.result) {
+          removeData(storageKeys.ACCESS_TOKEN);
+          notify.success('Đăng xuất thành công');
+          setAuthenticated(false);
+          setProfile(null);
+          setOpen(false);
+          router.push(route.home);
+          router.refresh();
+        }
+      },
+      onError: (error) => {
+        logger.error('Error while logging out: ', error);
+        notify.error('Đăng xuất thất bại');
       }
-    } catch (error) {
-      logger.error('Error while logging out: ', error);
-      notify.error('Đăng xuất thất bại');
-    }
+    });
   };
 
   return (
