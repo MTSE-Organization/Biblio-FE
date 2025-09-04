@@ -1,4 +1,4 @@
-import authApiRequest from '@/api-requests/auth.api-request';
+import { authApiRequest } from '@/api-requests';
 import {
   ForgotPasswordBodyType,
   LoginBodyType,

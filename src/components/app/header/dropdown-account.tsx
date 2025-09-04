@@ -13,7 +13,6 @@ import { storageKeys } from '@/constants';
 import { useRouter } from 'next/navigation';
 import { useLogoutMutation } from '@/queries';
 import { logger } from '@/logger';
-import { Loader2 } from 'lucide-react';
 import { useAuthStore } from '@/store';
 import ButtonLoading from '@/components/loading/button-loading';
 
@@ -22,7 +21,7 @@ export default function DropdownAccount() {
   const [open, setOpen] = useState(false);
   const accessToken = getData(storageKeys.ACCESS_TOKEN);
   const router = useRouter();
-  const { setAuthenticated } = useAuthStore();
+  const { profile, setAuthenticated, setProfile } = useAuthStore();
 
   const handleLogout = async () => {
     try {
@@ -31,7 +30,10 @@ export default function DropdownAccount() {
         removeData(storageKeys.ACCESS_TOKEN);
         notify.success('Đăng xuất thành công');
         setAuthenticated(false);
+        setProfile(null);
+        setOpen(false);
         router.push(route.home);
+        router.refresh();
       }
     } catch (error) {
       logger.error('Error while logging out: ', error);
@@ -50,7 +52,7 @@ export default function DropdownAccount() {
         className='text-md hover:text-green-primary group size-full rounded-full p-0! hover:bg-transparent! focus:outline-none focus-visible:ring-0'
       >
         <RiUser3Line className='size-[21px]' />
-        Tài khoản
+        {profile?.fullName ?? 'Tài khoản'}
         <FaChevronDown
           className={`transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
         />
@@ -96,6 +98,14 @@ export default function DropdownAccount() {
                       href={route.user.profile}
                     >
                       Thông tin cá nhân
+                    </Link>
+                  </ListItem>
+                  <ListItem>
+                    <Link
+                      className='block px-4 py-2 transition-all duration-200 ease-linear hover:bg-slate-100'
+                      href={route.user.order}
+                    >
+                      Đơn hàng của tôi
                     </Link>
                   </ListItem>
                   <ListItem>

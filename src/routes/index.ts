@@ -8,7 +8,8 @@ const route = defineRoute({
   verifyOtp: '/verify-otp',
   user: {
     profile: '/user/profile',
-    changePassword: '/user/change-password'
+    changePassword: '/user/change-password',
+    order: '/user/order'
   }
 });
 

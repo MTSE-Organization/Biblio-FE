@@ -1,4 +1,10 @@
-import { GENDER_FEMALE, GENDER_MALE, GENDER_OTHER } from '@/constants/constant';
+import {
+  GENDER_FEMALE,
+  GENDER_MALE,
+  GENDER_OTHER,
+  UPLOAD_AVATAR,
+  UPLOAD_SYSTEM
+} from '@/constants/constant';
 
 export const masterData = {};
 
@@ -13,3 +19,8 @@ export const genderOptions: OptionType[] = [
   { value: GENDER_FEMALE, label: 'Nữ' },
   { value: GENDER_OTHER, label: 'Khác' }
 ];
+
+export const uploadOptions = {
+  SYSTEM: UPLOAD_SYSTEM,
+  AVATAR: UPLOAD_AVATAR
+};

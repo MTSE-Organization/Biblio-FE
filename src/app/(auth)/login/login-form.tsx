@@ -119,7 +119,7 @@ export default function LoginForm() {
                   </Row>
                   <Button
                     className={cn(
-                      'bg-green-primary block w-full hover:bg-emerald-700',
+                      'bg-green-primary w-full hover:bg-emerald-700',
                       {
                         'pointer-events-none': loginMutation.isPending
                       }

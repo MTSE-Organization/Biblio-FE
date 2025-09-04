@@ -9,27 +9,27 @@ const defineApiConfig = <T extends ApiConfigGroup>(config: T) => config;
 const apiConfig = defineApiConfig({
   auth: {
     register: {
-      baseUrl: `${AppConstants.apiUrl}/auth/register`,
+      baseUrl: `${AppConstants.apiUrl}v1/auth/register`,
       headers: baseHeader,
       method: 'POST'
     },
     verifyOtp: {
-      baseUrl: `${AppConstants.apiUrl}/auth/verify-otp`,
+      baseUrl: `${AppConstants.apiUrl}v1/auth/verify-otp`,
       headers: baseHeader,
       method: 'POST'
     },
     forgotPassword: {
-      baseUrl: `${AppConstants.apiUrl}/auth/forgot-password`,
+      baseUrl: `${AppConstants.apiUrl}v1/auth/forgot-password`,
       headers: baseHeader,
       method: 'POST'
     },
     changePassword: {
-      baseUrl: `${AppConstants.apiUrl}/auth/change-password`,
+      baseUrl: `${AppConstants.apiUrl}v1/auth/change-password`,
       headers: baseHeader,
       method: 'POST'
     },
     login: {
-      baseUrl: `${AppConstants.apiUrl}/auth/login`,
+      baseUrl: `${AppConstants.apiUrl}v1/auth/login`,
       headers: baseHeader,
       method: 'POST'
     },
@@ -48,14 +48,22 @@ const apiConfig = defineApiConfig({
   },
   user: {
     getProfile: {
-      baseUrl: `${AppConstants.apiUrl}/account/profile`,
+      baseUrl: `${AppConstants.apiUrl}v1/account/profile`,
       headers: baseHeader,
       method: 'GET'
     },
     updateProfile: {
-      baseUrl: `${AppConstants.apiUrl}/account/update-profile`,
+      baseUrl: `${AppConstants.apiUrl}v1/account/update-profile`,
       headers: baseHeader,
       method: 'PUT'
+    }
+  },
+  file: {
+    upload: {
+      baseUrl: `${AppConstants.apiUrl}v1/file/upload`,
+      method: 'POST',
+      headers: multipartHeader,
+      isUpload: true
     }
   }
 });
