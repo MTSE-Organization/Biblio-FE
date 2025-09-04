@@ -10,7 +10,8 @@ const route = defineRoute({
     profile: '/user/profile',
     changePassword: '/user/change-password',
     order: '/user/order'
-  }
+  },
+  book: '/book'
 });
 
 export default route;
