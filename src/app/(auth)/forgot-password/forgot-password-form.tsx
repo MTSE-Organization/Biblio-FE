@@ -22,7 +22,6 @@ import { applyFormErrors, getData, notify, removeData, setData } from '@/utils';
 import { ErrorCode, formatPasswordErrorMaps, storageKeys } from '@/constants';
 import { UseFormReturn } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
-import { Loader2 } from 'lucide-react';
 import { cn } from '@/lib';
 import ButtonLoading from '@/components/loading/button-loading';
 
@@ -46,44 +45,52 @@ export default function ForgotPasswordForm() {
     form: UseFormReturn<ForgotPasswordBodyType>
   ) => {
     if (step === 1) {
-      try {
-        const res = await forgotPasswordMutation.mutateAsync(values);
-        setData(storageKeys.EMAIL, values.email);
-        if (res.result) {
-          notify.success('Mã OTP đã được gửi đến email của bạn');
-          setStep(2);
-        } else {
-          const errorCode = res.code;
-          if (errorCode === ErrorCode.ACCOUNT_ERROR_NOT_FOUND) {
-            notify.error('Email không tồn tại');
+      await forgotPasswordMutation.mutateAsync(values, {
+        onSuccess: (res) => {
+          setData(storageKeys.EMAIL, values.email);
+          if (res.result) {
+            notify.success('Mã OTP đã được gửi đến email của bạn');
+            setStep(2);
           } else {
-            notify.error('Có lỗi xảy ra khi gửi OTP');
+            const errorCode = res.code;
+            if (errorCode === ErrorCode.ACCOUNT_ERROR_NOT_FOUND) {
+              notify.error('Email không tồn tại');
+            } else {
+              notify.error('Có lỗi xảy ra khi gửi OTP');
+            }
           }
+        },
+        onError: (error) => {
+          logger.error('Error while sending otp: ', error);
+          notify.error('Có lỗi xảy ra khi gửi OTP');
         }
-      } catch (error) {
-        logger.error('Error while sending otp: ', error);
-      }
+      });
     } else if (step === 2) {
-      try {
-        const res = await changePasswordMutation.mutateAsync({
+      await changePasswordMutation.mutateAsync(
+        {
           ...values,
           email: getData(storageKeys.EMAIL)!
-        });
-        if (res.result) {
-          notify.success('Đặt lại mật khẩu thành công');
-          removeData(storageKeys.EMAIL);
-          router.push(route.login);
-        } else {
-          const errorCode = res.code;
-          if (errorCode === ErrorCode.AUTH_ERROR_OTP_INVALID_OR_EXPIRED) {
-            notify.error('Mã OTP không hợp lệ hoặc đã hết hạn');
-            applyFormErrors(form, errorCode, formatPasswordErrorMaps);
+        },
+        {
+          onSuccess: (res) => {
+            if (res.result) {
+              notify.success('Đặt lại mật khẩu thành công');
+              removeData(storageKeys.EMAIL);
+              router.push(route.login);
+            } else {
+              const errorCode = res.code;
+              if (errorCode === ErrorCode.AUTH_ERROR_OTP_INVALID_OR_EXPIRED) {
+                notify.error('Mã OTP không hợp lệ hoặc đã hết hạn');
+                applyFormErrors(form, errorCode, formatPasswordErrorMaps);
+              }
+            }
+          },
+          onError: (error) => {
+            logger.error('Error while changing password: ', error);
+            notify.error('Có lỗi xảy ra khi đặt lại mật khẩu');
           }
         }
-      } catch (error) {
-        logger.error('Error while changing password: ', error);
-        notify.error('Có lỗi xảy ra khi đặt lại mật khẩu');
-      }
+      );
     }
   };
 

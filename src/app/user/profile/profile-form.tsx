@@ -1,4 +1,5 @@
 'use client';
+
 import { whiteLogo } from '@/assets';
 import {
   Breadcrumb,
@@ -9,13 +10,13 @@ import {
   UploadImageField
 } from '@/components/form';
 import { BaseForm } from '@/components/form/base-form';
-import { accountErrorMaps, storageKeys } from '@/constants';
+import { accountErrorMaps, AppConstants, storageKeys } from '@/constants';
 import { cn } from '@/lib';
 import { logger } from '@/logger';
 import route from '@/routes';
 import { profileSchema } from '@/schemaValidations/account.schema';
 import { useAuthStore } from '@/store';
-import { useProfileMutation } from '@/queries/use-account.query';
+import { useProfileMutation } from '@/queries/account.query';
 import {
   ProfileResType,
   UpdateProfileBodyType,
@@ -23,11 +24,10 @@ import {
 } from '@/types';
 import { applyFormErrors, notify, setData } from '@/utils';
 import Image from 'next/image';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import Link from 'next/link';
-import { useForgotPasswordMutation } from '@/queries';
-import { Loader2 } from 'lucide-react';
+import { useForgotPasswordMutation, useUploadImageMutation } from '@/queries';
 import ButtonLoading from '@/components/loading/button-loading';
 
 export default function ProfileForm() {
@@ -35,6 +35,7 @@ export default function ProfileForm() {
   const [isFormChanged, setIsFormChanged] = useState(false);
   const { profile } = useAuthStore();
   const profileMutation = useProfileMutation();
+  const fileMutation = useUploadImageMutation();
   const forgotPasswordMutation = useForgotPasswordMutation();
   const defaultValues: UpdateProfileType = {
     fullName: '',
@@ -53,37 +54,49 @@ export default function ProfileForm() {
     [profile?.avatarPath, profile?.email, profile?.fullName, profile?.phone]
   );
 
+  useEffect(() => {
+    if (profile?.avatarPath) setAvatarPath(profile?.avatarPath);
+  }, [profile?.avatarPath]);
+
   const onSubmit = async (
     values: UpdateProfileBodyType,
     form: UseFormReturn<UpdateProfileBodyType>
   ) => {
-    try {
-      const res = await profileMutation.mutateAsync(values);
-      if (res.result) {
-        notify.success('Cập nhật hồ sơ thành công');
-        setIsFormChanged(false);
-      } else {
-        const errCode = res.code;
-        if (errCode) {
-          applyFormErrors(form, errCode, accountErrorMaps);
-        } else {
-          notify.error('Cập nhật hồ sơ thất bại');
+    await profileMutation.mutateAsync(
+      { ...values, avatarPath },
+      {
+        onSuccess: (res) => {
+          if (res.result) {
+            notify.success('Cập nhật hồ sơ thành công');
+            setIsFormChanged(false);
+          } else {
+            const errCode = res.code;
+            if (errCode) {
+              applyFormErrors(form, errCode, accountErrorMaps);
+            } else {
+              notify.error('Cập nhật hồ sơ thất bại');
+            }
+          }
+        },
+        onError: (error) => {
+          logger.error('Error while updating profile', error);
+          notify.error('Có lỗi xảy ra khi cập nhật hồ sơ');
         }
       }
-    } catch (error) {
-      logger.error('Error while updating profile', error);
-      notify.error('Có lỗi xảy ra khi cập nhật hồ sơ');
-    }
+    );
   };
 
   const handleChangePassword = async () => {
-    try {
-      const email = profile?.email!;
-      await forgotPasswordMutation.mutateAsync({ email });
-      setData(storageKeys.EMAIL, email);
-    } catch (error) {
-      logger.error('Error while sending otp: ', error);
-    }
+    const email = profile?.email!;
+    await forgotPasswordMutation.mutateAsync(
+      { email },
+      {
+        onError: (error) => {
+          logger.error('Error while sending otp: ', error);
+        }
+      }
+    );
+    setData(storageKeys.EMAIL, email);
   };
 
   return (
@@ -116,17 +129,21 @@ export default function ProfileForm() {
                   <Row>
                     <Col>
                       <UploadImageField
-                        label={<p className='text-md'>Ảnh đại diện</p>}
-                        value={avatarPath}
-                        size={100}
+                        value={
+                          avatarPath
+                            ? `${AppConstants.contentRootUrl}${avatarPath}`
+                            : ''
+                        }
+                        loading={fileMutation.isPending}
                         onChange={(url) => {
                           setAvatarPath(url);
                           setIsFormChanged(true);
                         }}
-                        uploadImageFn={async (blob) => {
-                          return '';
+                        size={100}
+                        uploadImageFn={async (file: Blob) => {
+                          const res = await fileMutation.mutateAsync(file);
+                          return res.data?.filePath ?? '';
                         }}
-                        // loading={uploadImageMutation.isPending}
                       />
                     </Col>
                   </Row>
