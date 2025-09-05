@@ -1,3 +1,4 @@
+import Footer from '@/components/app/footer';
 import Header from '@/components/app/header';
 import { Breadcrumb } from '@/components/form';
 import { Container } from '@/components/layout';
@@ -21,6 +22,7 @@ export default function BookLayout({
       <Container className='mx-auto pt-25 min-[1200px]:max-w-[1140px] min-[1400px]:max-w-[1320px]'>
         {children}
       </Container>
+      <Footer />
     </>
   );
 }
