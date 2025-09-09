@@ -11,6 +11,7 @@ Week 2:
   - Hiển thị menu dropdown **Thông tin cá nhân, Đơn hàng, Đăng xuất**.
   - Xử lý cập nhật thông tin user
   - Xử lý đăng xuất
+  - Call api product
 
 - Lê Nhựt Anh: Xây dựng UI
   - 08 sản phẩm mới nhất
