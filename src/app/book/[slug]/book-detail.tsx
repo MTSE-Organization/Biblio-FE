@@ -1,14 +1,21 @@
 'use client';
 
 import { product } from '@/assets';
-import { Button, Col, InputField, Row } from '@/components/form';
+import { Button, Col, Row } from '@/components/form';
 import List from '@/components/list';
 import ListItem from '@/components/list/ListItem';
 import Image from 'next/image';
 import { RiStarFill } from 'react-icons/ri';
 import BookTabs from '../_components/book-tabs';
+import { useParams } from 'next/navigation';
+import { useProductQuery } from '@/queries';
+import { formatDate, formatPrice } from '@/utils';
 
 export default function BookDetail() {
+  const { slug } = useParams<{ slug: string }>();
+  const id = slug.split('.')[1];
+  const bookQuery = useProductQuery(id);
+  const book = bookQuery.data?.data;
   return (
     <>
       <Row className='my-0'>
@@ -24,7 +31,7 @@ export default function BookDetail() {
         <Col className='mb-24 w-full min-[768px]:w-1/2 min-[1200px]:w-12/24 min-[1400px]:w-2/3'>
           <div className='border-b border-solid border-b-gray-200 pb-5'>
             <h2 className='mb-[15px] block text-2xl leading-[1.5] font-semibold text-slate-800'>
-              Tên sách
+              {book?.name}
             </h2>
           </div>
           <div className='mt-5 flex items-center'>
@@ -57,7 +64,7 @@ export default function BookDetail() {
                 Ngày XB
                 <span>:</span>
               </label>
-              01/01/1970
+              {formatDate(book?.releaseDate ?? '')}
             </ListItem>
             <ListItem className='flex py-[5px] text-[#777]'>
               <label className='mr-2.5 flex min-w-25 justify-between font-bold text-[#2b2b2d]'>
@@ -69,7 +76,7 @@ export default function BookDetail() {
           </List>
           <div className='pt-5'>
             <span className='text-green-primary text-2xl leading-[1.167] font-bold'>
-              180.000 ₫
+              {formatPrice(book?.price ?? 0)} ₫
             </span>
           </div>
           <div className='flex items-center pt-5'>
