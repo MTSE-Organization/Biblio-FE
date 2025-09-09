@@ -1,4 +1,4 @@
-import BookDetail from '@/app/book/[id]/book-detail';
+import BookDetail from '@/app/book/[slug]/book-detail';
 
 export default function BookDetailPage() {
   return (

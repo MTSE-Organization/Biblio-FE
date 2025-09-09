@@ -65,6 +65,33 @@ const apiConfig = defineApiConfig({
       headers: multipartHeader,
       isUpload: true
     }
+  },
+  product: {
+    getList: {
+      baseUrl: `${AppConstants.apiUrl}v1/product/list`,
+      headers: baseHeader,
+      method: 'GET'
+    },
+    getById: {
+      baseUrl: `${AppConstants.apiUrl}v1/product/get/:id`,
+      headers: baseHeader,
+      method: 'GET'
+    },
+    getLatest: {
+      baseUrl: `${AppConstants.apiUrl}v1/product/latest`,
+      headers: baseHeader,
+      method: 'GET'
+    },
+    getBestSeller: {
+      baseUrl: `${AppConstants.apiUrl}v1/product/best-seller`,
+      headers: baseHeader,
+      method: 'GET'
+    },
+    getTopDiscount: {
+      baseUrl: `${AppConstants.apiUrl}v1/product/top-discount`,
+      headers: baseHeader,
+      method: 'GET'
+    }
   }
 });
 

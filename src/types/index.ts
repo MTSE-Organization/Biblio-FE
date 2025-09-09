@@ -6,3 +6,5 @@ export * from './master-data.type';
 export * from './search.type';
 export * from './store.type';
 export * from './upload.type';
+export * from './category.type';
+export * from './product.type';
