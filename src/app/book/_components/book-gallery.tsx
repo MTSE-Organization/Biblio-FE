@@ -13,8 +13,25 @@ import './swiper.css';
 
 export default function BookGallery() {
   const [thumbsSwiper, setThumbsSwiper] = useState<SwiperType | null>(null);
+  const [activeIndex, setActiveIndex] = useState(0);
 
-  const images = [product, banner1, banner2, product, product];
+  const images = [
+    product,
+    banner1,
+    banner2,
+    product,
+    banner1,
+    banner2,
+    product,
+    banner1,
+    banner2,
+    product,
+    banner1,
+    banner2,
+    product,
+    banner1,
+    banner2
+  ];
 
   return (
     <div className='w-full'>
@@ -22,13 +39,11 @@ export default function BookGallery() {
         modules={[Navigation, Thumbs, Autoplay]}
         navigation
         thumbs={{ swiper: thumbsSwiper }}
-        autoplay={{
-          delay: 3000,
-          disableOnInteraction: false
-        }}
+        autoplay={{ delay: 3000, disableOnInteraction: false }}
         loop={true}
         grabCursor={true}
         className='mb-8 w-full'
+        onSlideChange={(swiper) => setActiveIndex(swiper.realIndex)}
       >
         {images.map((img, index) => (
           <SwiperSlide key={index}>
@@ -50,13 +65,18 @@ export default function BookGallery() {
         slidesPerView={5}
         spaceBetween={10}
         watchSlidesProgress
-        centeredSlides={true}
+        centeredSlides={false}
         slideToClickedSlide={true}
-        className='w-full'
       >
         {images.map((img, index) => (
           <SwiperSlide key={index}>
-            <div className='relative h-[80px] w-full cursor-pointer'>
+            <div
+              className={`relative h-[80px] w-full cursor-pointer overflow-hidden rounded border-2 transition-all duration-200 ${
+                index === activeIndex
+                  ? 'border-green-primary'
+                  : 'border-transparent'
+              }`}
+            >
               <Image
                 src={img}
                 alt={`Thumbnail ${index}`}
