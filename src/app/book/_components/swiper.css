@@ -1,0 +1,9 @@
+.swiper-button-next,
+.swiper-button-prev {
+  @apply z-10 text-[#64b496] opacity-0 transition-opacity duration-300;
+}
+
+.swiper:hover .swiper-button-next,
+.swiper:hover .swiper-button-prev {
+  @apply opacity-100;
+}

@@ -5,10 +5,11 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/thumbs';
-import { Navigation, Thumbs } from 'swiper/modules';
+import { Navigation, Thumbs, Autoplay } from 'swiper/modules';
 import type { Swiper as SwiperType } from 'swiper';
 
 import { product, banner1, banner2 } from '@/assets';
+import './swiper.css';
 
 export default function BookGallery() {
   const [thumbsSwiper, setThumbsSwiper] = useState<SwiperType | null>(null);
@@ -18,9 +19,15 @@ export default function BookGallery() {
   return (
     <div className='w-full'>
       <Swiper
-        modules={[Navigation, Thumbs]}
+        modules={[Navigation, Thumbs, Autoplay]}
         navigation
         thumbs={{ swiper: thumbsSwiper }}
+        autoplay={{
+          delay: 3000,
+          disableOnInteraction: false
+        }}
+        loop={true}
+        grabCursor={true}
         className='mb-8 w-full'
       >
         {images.map((img, index) => (
@@ -43,6 +50,8 @@ export default function BookGallery() {
         slidesPerView={5}
         spaceBetween={10}
         watchSlidesProgress
+        centeredSlides={true}
+        slideToClickedSlide={true}
         className='w-full'
       >
         {images.map((img, index) => (
