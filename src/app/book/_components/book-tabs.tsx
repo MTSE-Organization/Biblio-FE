@@ -18,7 +18,7 @@ const BookTabs = () => {
   return (
     <Row className='my-0 mb-12'>
       <Col className='w-full'>
-        <div className='mt-10 rounded-sm border p-6'>
+        <div className='rounded-sm border p-6'>
           <ul className='flex gap-[30px] border-b'>
             {tabs.map((tab) => (
               <li key={tab.key} className='relative'>

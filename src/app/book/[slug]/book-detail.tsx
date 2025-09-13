@@ -10,6 +10,7 @@ import BookTabs from '../_components/book-tabs';
 import { useParams } from 'next/navigation';
 import { useProductQuery } from '@/queries';
 import { formatDate, formatPrice } from '@/utils';
+import BookGallery from '../_components/book-gallery';
 
 export default function BookDetail() {
   const { slug } = useParams<{ slug: string }>();
@@ -20,13 +21,7 @@ export default function BookDetail() {
     <>
       <Row className='my-0'>
         <Col className='mb-24 w-full min-[768px]:w-1/2 min-[1200px]:w-10/24 min-[1400px]:w-1/3'>
-          <Image
-            src={product.src}
-            alt='Product detail'
-            width={400}
-            height={400}
-            className='h-full w-full object-cover'
-          />
+          <BookGallery />
         </Col>
         <Col className='mb-24 w-full min-[768px]:w-1/2 min-[1200px]:w-12/24 min-[1400px]:w-2/3'>
           <div className='border-b border-solid border-b-gray-200 pb-5'>

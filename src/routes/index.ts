@@ -11,7 +11,8 @@ const route = defineRoute({
     changePassword: '/user/change-password',
     order: '/user/order'
   },
-  book: '/book'
+  book: '/book',
+  cart: '/cart'
 });
 
 export default route;
