@@ -44,6 +44,16 @@ const apiConfig = defineApiConfig({
         headers: baseHeader,
         method: 'POST'
       }
+    },
+    getGoogleLoginUrl: {
+      baseUrl: `${AppConstants.apiUrl}v1/auth/google`,
+      headers: baseHeader,
+      method: 'GET'
+    },
+    loginGoogle: {
+      baseUrl: `${AppConstants.apiUrl}v1/auth/google/callback`,
+      headers: baseHeader,
+      method: 'POST'
     }
   },
   user: {

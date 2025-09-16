@@ -6,6 +6,7 @@ import whiteLogo from './logo.webp';
 import banner1 from './banner1.jpg';
 import banner2 from './banner2.jpg';
 import product from './product.jpg';
+import googleIcon from './google.png';
 
 export {
   defaultAvatar,
@@ -15,5 +16,6 @@ export {
   whiteLogo,
   banner1,
   banner2,
-  product
+  product,
+  googleIcon
 };
