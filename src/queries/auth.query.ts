@@ -5,7 +5,7 @@ import {
   OtpBodyType,
   RegisterBodyType
 } from '@/types';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 
 export const useRegisterMutation = () => {
   return useMutation({
@@ -50,5 +50,19 @@ export const useLogoutMutation = () => {
   return useMutation({
     mutationKey: ['logout'],
     mutationFn: async () => await authApiRequest.logout()
+  });
+};
+
+export const useLoginGoogleQuery = () => {
+  return useQuery({
+    queryKey: ['loginGoogle'],
+    queryFn: () => authApiRequest.getGoogleLoginUrl(),
+    enabled: false
+  });
+};
+
+export const useLoginGoogleMutation = () => {
+  return useMutation({
+    mutationFn: (code: string) => authApiRequest.loginGoogle(code)
   });
 };

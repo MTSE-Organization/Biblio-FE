@@ -22,22 +22,22 @@ export default function HomePage() {
         <HeroSlider />
       </div>
       <Container className='mx-auto mb-12 max-w-[1320px]'>
-        <BookList
+        {/* <BookList
           title='Sách mới nhất'
           useQueryHook={useLatestProductListQuery}
         />
         <BookList
           title='Sách bán chạy nhất'
           useQueryHook={useBestSellerProductListQuery}
-        />
+        /> */}
         {/* <BookList
           title='Sách được xem nhiều nhất'
           books={Array(8).fill(null)}
         /> */}
-        <BookList
+        {/* <BookList
           title='Sách khuyến mãi cao nhất'
           useQueryHook={useTopDiscountProductListQuery}
-        />
+        /> */}
       </Container>
     </>
   );

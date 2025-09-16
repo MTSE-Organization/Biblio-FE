@@ -1,6 +1,6 @@
 'use client';
 
-import { whiteLogo } from '@/assets';
+import { whiteLogo, googleIcon } from '@/assets';
 import { Breadcrumb, Button, Col, InputField, Row } from '@/components/form';
 import { BaseForm } from '@/components/form/base-form';
 import PasswordField from '@/components/form/password-field';
@@ -17,6 +17,7 @@ import { notify, setData } from '@/utils';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import ButtonLoginGoogle from './button-login-google';
 
 export default function LoginForm() {
   const profileQuery = useProfileQuery();
@@ -114,7 +115,7 @@ export default function LoginForm() {
                         href={route.forgotPassword}
                         className='text-green-primary font-medium transition-all ease-linear hover:opacity-80'
                       >
-                        Quên mật khẩu
+                        Quên mật khẩu?
                       </Link>
                     </Col>
                   </Row>
@@ -136,11 +137,16 @@ export default function LoginForm() {
               <span className='text-muted-foreground text-sm'>Hoặc</span>
               <div className='bg-border h-px flex-1'></div>
             </div>
-            <Button className='block w-full border bg-white text-black hover:bg-slate-100'>
-              <Link className='block w-full' href={route.register}>
+            <ButtonLoginGoogle />
+            <div className='mt-6 space-x-1 text-center text-sm'>
+              <span>Bạn chưa có tài khoản?</span>
+              <Link
+                href={route.register}
+                className='hover:text-green-primary underline'
+              >
                 Đăng ký
               </Link>
-            </Button>
+            </div>
           </div>
         </div>
       </div>
