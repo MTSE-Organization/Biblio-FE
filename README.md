@@ -4,17 +4,12 @@
     Fe - Bibilo Book Selling Website
 </p>
 
-Week 2:
+Week 3:
 
 - Lê Tấn Trụ
-  - Xử lý đăng nhập, hiển thị họ tên user.
-  - Hiển thị menu dropdown **Thông tin cá nhân, Đơn hàng, Đăng xuất**.
-  - Xử lý cập nhật thông tin user
-  - Xử lý đăng xuất
-  - Call api product
+  - Lazy load sản phẩm
+  - Giỏ hàng
 
-- Lê Nhựt Anh: Xây dựng UI
-  - 08 sản phẩm mới nhất
-  - 06 sản phẩm bán chạy nhất
-  - 04 sản phẩm khuyến mãi cao nhất
-  - Chi tiết sản phẩm
+- Lê Nhựt Anh:
+  - Thanh toán
+  - Theo dõi đơn hàng
