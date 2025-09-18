@@ -10,6 +10,6 @@ Week 3:
   - Lazy load sản phẩm
   - Giỏ hàng
 
-- Lê Nhựt Anh: Xây dựng UI
+- Lê Nhựt Anh:
   - Thanh toán
   - Theo dõi đơn hàng
