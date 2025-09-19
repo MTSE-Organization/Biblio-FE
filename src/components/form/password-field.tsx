@@ -98,34 +98,37 @@ export default function PasswordField<T extends FieldValues>({
                   style={{ paddingTop: 0 }}
                   className={cn(
                     className,
-                    'pt-0! pb-0.5! placeholder:text-gray-300 focus-visible:ring-[1px]',
+                    'pt-0! pb-0! placeholder:text-gray-300 focus-visible:ring-[2px]',
                     {
                       'cursor-not-allowed opacity-50': disabled
                     },
                     {
                       'cursor-not-allowed opacity-50': disabled,
-                      'border-red-500 focus-visible:border-red-500 focus-visible:ring-red-500':
+                      'border-red-500 focus-visible:border-red-500 focus-visible:ring-[1px] focus-visible:ring-red-500':
                         fieldState.error
                     },
                     !fieldState.error &&
                       'focus-visible:ring-green-primary focus-visible:border-transparent'
                   )}
                 />
-                <Button
-                  variant='ghost'
-                  className='text-muted-foreground/80 hover:text-foreground focus-visible:border-ring focus-visible:ring-ring/50 absolute inset-y-0 end-0 flex h-full w-9 items-center justify-center rounded-e-md transition-[color,box-shadow] outline-none hover:bg-transparent! focus:z-10 focus-visible:ring-[3px] disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50'
-                  type='button'
-                  onClick={toggleVisibility}
-                  aria-label={isVisible ? 'Hide password' : 'Show password'}
-                  aria-pressed={isVisible}
-                  aria-controls='password'
-                >
-                  {isVisible ? (
-                    <EyeOffIcon size={16} aria-hidden='true' />
-                  ) : (
-                    <EyeIcon size={16} aria-hidden='true' />
-                  )}
-                </Button>
+                {value && (
+                  <Button
+                    tabIndex={-1}
+                    variant='ghost'
+                    className='text-muted-foreground/80 hover:text-foreground focus-visible:border-ring focus-visible:ring-ring/50 absolute inset-y-0 end-0 flex h-full w-9 items-center justify-center rounded-e-md transition-[color,box-shadow] outline-none hover:bg-transparent! focus:z-10 focus-visible:ring-[3px] disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50'
+                    type='button'
+                    onClick={toggleVisibility}
+                    aria-label={isVisible ? 'Hide password' : 'Show password'}
+                    aria-pressed={isVisible}
+                    aria-controls='password'
+                  >
+                    {isVisible ? (
+                      <EyeOffIcon size={16} aria-hidden='true' />
+                    ) : (
+                      <EyeIcon size={16} aria-hidden='true' />
+                    )}
+                  </Button>
+                )}
               </div>
             </FormControl>
             {description && <FormDescription>{description}</FormDescription>}

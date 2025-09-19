@@ -34,10 +34,10 @@ export default function HomePage() {
           title='Sách được xem nhiều nhất'
           books={Array(8).fill(null)}
         /> */}
-        {/* <BookList
+        <BookList
           title='Sách khuyến mãi cao nhất'
           useQueryHook={useTopDiscountProductListQuery}
-        /> */}
+        />
       </Container>
     </>
   );

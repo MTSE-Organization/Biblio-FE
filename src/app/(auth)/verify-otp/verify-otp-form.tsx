@@ -90,12 +90,9 @@ export default function VerifyOTPForm() {
                   </Row>
                   <Button
                     type='submit'
-                    className={cn(
-                      'bg-green-primary block w-full hover:bg-emerald-700',
-                      {
-                        'pointer-events-none': verifyOtpMutation.isPending
-                      }
-                    )}
+                    disabled={verifyOtpMutation.isPending}
+                    variant={'primary'}
+                    className={'w-full'}
                   >
                     {verifyOtpMutation.isPending ? (
                       <CircleLoading />

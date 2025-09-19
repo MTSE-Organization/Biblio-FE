@@ -29,6 +29,7 @@ import { UseFormReturn } from 'react-hook-form';
 import Link from 'next/link';
 import { useForgotPasswordMutation, useUploadImageMutation } from '@/queries';
 import { CircleLoading } from '@/components/loading';
+import Footer from '@/components/app/footer';
 
 export default function ProfileForm() {
   const [avatarPath, setAvatarPath] = useState<string>('');
@@ -108,7 +109,7 @@ export default function ProfileForm() {
       <div className='py-25 max-[1600px]:py-20'>
         <div className='mx-auto min-[1200px]:w-180 min-[1440px]:w-200'>
           <div className='rounded-xl border border-solid border-gray-100 bg-white p-5'>
-            <div className='mb-7.5 text-center'>
+            <div className='text-center'>
               <Image
                 src={whiteLogo.src}
                 width={200}
@@ -146,6 +147,7 @@ export default function ProfileForm() {
                           const res = await fileMutation.mutateAsync(file);
                           return res.data?.filePath ?? '';
                         }}
+                        label='Ảnh đại diện'
                       />
                     </Col>
                   </Row>
@@ -229,6 +231,7 @@ export default function ProfileForm() {
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 }

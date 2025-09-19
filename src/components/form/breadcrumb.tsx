@@ -1,5 +1,3 @@
-'use client';
-
 import Link from 'next/link';
 import {
   Breadcrumb as OriginBreadcrumb,
@@ -10,66 +8,42 @@ import {
   BreadcrumbSeparator
 } from '@/components/ui/breadcrumb';
 import { Fragment } from 'react';
+import Row from '@/components/form/row';
 import { ReusableBreadcrumbProps } from '@/types';
-import { useIsMounted } from '@/hooks';
-import { Skeleton } from '@/components/ui/skeleton';
-
-function BreadcrumbSkeleton({ count = 3 }: { count?: number }) {
-  return (
-    <OriginBreadcrumb>
-      <BreadcrumbList className='gap-1.5!'>
-        {Array.from({ length: count }).map((_, i) => {
-          const isLast = i === count - 1;
-          return (
-            <Fragment key={i}>
-              <BreadcrumbItem>
-                {!isLast ? (
-                  <Skeleton className='h-4 w-16 rounded bg-gray-200' />
-                ) : (
-                  <Skeleton className='h-4 w-20 rounded bg-gray-200' />
-                )}
-              </BreadcrumbItem>
-              {!isLast && <BreadcrumbSeparator />}
-            </Fragment>
-          );
-        })}
-      </BreadcrumbList>
-    </OriginBreadcrumb>
-  );
-}
 
 export default function Breadcrumb({
   items,
   separator = <BreadcrumbSeparator />
 }: ReusableBreadcrumbProps) {
-  const isMounted = useIsMounted();
-
-  if (!isMounted) {
-    return <BreadcrumbSkeleton count={items.length} />;
-  }
-
   return (
-    <OriginBreadcrumb>
-      <BreadcrumbList className='gap-1.5!'>
-        {items.map((item, index) => {
-          const isLast = index === items.length - 1;
-          return (
-            <Fragment key={index}>
-              <BreadcrumbItem>
-                {item.href && !isLast ? (
-                  <BreadcrumbLink asChild>
-                    <Link className='text-breadcrumb' href={item.href}>
-                      {item.label}
-                    </Link>
-                  </BreadcrumbLink>
-                ) : (
-                  <BreadcrumbPage>{item.label}</BreadcrumbPage>
-                )}
-              </BreadcrumbItem>
-              {!isLast && separator}
-            </Fragment>
-          );
-        })}
+    <OriginBreadcrumb className='block'>
+      <BreadcrumbList className='bg-breadcrumb relative flex h-17.5 w-full items-center'>
+        <div className='mx-auto min-[1200px]:w-285 min-[1440px]:w-330'>
+          <Row className='text-md my-0 gap-x-2'>
+            {items.map((item, index) => {
+              const isLast = index === items.length - 1;
+              return (
+                <Fragment key={index}>
+                  <BreadcrumbItem>
+                    {item.href && !isLast ? (
+                      <BreadcrumbLink asChild>
+                        <Link
+                          className='text-green-primary hover:text-green-primary font-semibold transition-all duration-200 ease-linear hover:opacity-80!'
+                          href={item.href}
+                        >
+                          {item.label}
+                        </Link>
+                      </BreadcrumbLink>
+                    ) : (
+                      <BreadcrumbPage>{item.label}</BreadcrumbPage>
+                    )}
+                  </BreadcrumbItem>
+                  {!isLast && separator}
+                </Fragment>
+              );
+            })}
+          </Row>
+        </div>
       </BreadcrumbList>
     </OriginBreadcrumb>
   );

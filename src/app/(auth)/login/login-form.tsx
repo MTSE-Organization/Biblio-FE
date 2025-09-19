@@ -86,7 +86,7 @@ export default function LoginForm() {
                     <Col>
                       <InputField
                         name='email'
-                        className='text-md! focus-visible:ring-green-primary h-10! py-2!'
+                        className='text-md! focus-visible:ring-green-primary h-10!'
                         labelClassName='text-md'
                         control={form.control}
                         label='Email'
@@ -99,7 +99,7 @@ export default function LoginForm() {
                   <Row>
                     <Col>
                       <PasswordField
-                        className='text-md! focus-visible:ring-green-primary h-10! py-2!'
+                        className='text-md! focus-visible:ring-green-primary h-10!'
                         labelClassName='text-md'
                         name='password'
                         control={form.control}
@@ -120,12 +120,9 @@ export default function LoginForm() {
                     </Col>
                   </Row>
                   <Button
-                    className={cn(
-                      'bg-green-primary w-full hover:bg-emerald-700',
-                      {
-                        'pointer-events-none': loginMutation.isPending
-                      }
-                    )}
+                    disabled={loginMutation.isPending}
+                    variant={'primary'}
+                    className={'w-full'}
                   >
                     {loginMutation.isPending ? <CircleLoading /> : 'Đăng nhập'}
                   </Button>

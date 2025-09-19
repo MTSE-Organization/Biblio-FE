@@ -86,7 +86,7 @@ export default function RegisterForm() {
                     <Col>
                       <InputField
                         name='email'
-                        className='text-md! focus-visible:ring-green-primary h-10! py-2!'
+                        className='text-md! focus-visible:ring-green-primary h-10!'
                         labelClassName='text-md'
                         control={form.control}
                         label='Email'
@@ -99,7 +99,7 @@ export default function RegisterForm() {
                   <Row>
                     <Col>
                       <PasswordField
-                        className='text-md! focus-visible:ring-green-primary h-10! py-2!'
+                        className='text-md! focus-visible:ring-green-primary h-10!'
                         labelClassName='text-md'
                         name='password'
                         control={form.control}
@@ -112,7 +112,7 @@ export default function RegisterForm() {
                   <Row>
                     <Col>
                       <PasswordField
-                        className='text-md! focus-visible:ring-green-primary h-10! py-2!'
+                        className='text-md! focus-visible:ring-green-primary h-10!'
                         labelClassName='text-md'
                         name='confirmPassword'
                         control={form.control}
@@ -123,12 +123,9 @@ export default function RegisterForm() {
                     </Col>
                   </Row>
                   <Button
-                    className={cn(
-                      'bg-green-primary w-full hover:bg-emerald-700',
-                      {
-                        'pointer-events-none': registerMutation.isPending
-                      }
-                    )}
+                    disabled={registerMutation.isPending}
+                    variant={'primary'}
+                    className={'w-full'}
                   >
                     {registerMutation.isPending ? <CircleLoading /> : 'Đăng ký'}
                   </Button>

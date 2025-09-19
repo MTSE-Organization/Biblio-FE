@@ -109,7 +109,7 @@ export default function ChangePasswordForm() {
                   <Row>
                     <Col>
                       <PasswordField
-                        className='text-md! focus-visible:ring-green-primary h-10! py-2!'
+                        className='text-md! focus-visible:ring-green-primary h-10!'
                         labelClassName='text-md'
                         name='password'
                         control={form.control}
@@ -122,7 +122,7 @@ export default function ChangePasswordForm() {
                   <Row>
                     <Col>
                       <PasswordField
-                        className='text-md! focus-visible:ring-green-primary h-10! py-2!'
+                        className='text-md! focus-visible:ring-green-primary h-10!'
                         labelClassName='text-md'
                         name='confirmPassword'
                         control={form.control}
@@ -136,7 +136,7 @@ export default function ChangePasswordForm() {
                     <Col>
                       <Button
                         className={cn(
-                          'bg-green-primary block w-full hover:bg-emerald-700',
+                          'bg-green-primary block w-full hover:opacity-80',
                           {
                             'pointer-events-none':
                               changePasswordMutation.isPending
