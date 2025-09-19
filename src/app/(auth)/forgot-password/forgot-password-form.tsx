@@ -2,9 +2,15 @@
 
 import { useState } from 'react';
 import { whiteLogo } from '@/assets';
-import { Breadcrumb, Button, Col, InputField, Row } from '@/components/form';
+import {
+  Breadcrumb,
+  Button,
+  Col,
+  InputField,
+  OtpField,
+  Row
+} from '@/components/form';
 import { BaseForm } from '@/components/form/base-form';
-import OTPField from '@/components/form/otp-input';
 import PasswordField from '@/components/form/password-field';
 import route from '@/routes';
 import Image from 'next/image';
@@ -23,7 +29,7 @@ import { ErrorCode, formatPasswordErrorMaps, storageKeys } from '@/constants';
 import { UseFormReturn } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 import { cn } from '@/lib';
-import ButtonLoading from '@/components/loading/button-loading';
+import { CircleLoading } from '@/components/loading';
 
 type ForgotPasswordStepType = 1 | 2;
 
@@ -153,7 +159,7 @@ export default function ForgotPasswordForm() {
                         )}
                       >
                         {forgotPasswordMutation.isPending ? (
-                          <ButtonLoading />
+                          <CircleLoading />
                         ) : (
                           'Gửi OTP'
                         )}
@@ -165,7 +171,7 @@ export default function ForgotPasswordForm() {
                     <>
                       <Row>
                         <Col>
-                          <OTPField
+                          <OtpField
                             labelClassName='text-md'
                             className='w-full!'
                             name='otp'
@@ -219,7 +225,7 @@ export default function ForgotPasswordForm() {
                             )}
                           >
                             {changePasswordMutation.isPending ? (
-                              <ButtonLoading />
+                              <CircleLoading />
                             ) : (
                               'Đặt lại mật khẩu'
                             )}

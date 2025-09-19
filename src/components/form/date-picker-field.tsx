@@ -1,6 +1,7 @@
 'use client';
+
 import { Control } from 'react-hook-form';
-import { format, Locale, parse } from 'date-fns';
+import { format, Locale } from 'date-fns';
 import {
   FormControl,
   FormDescription,
@@ -19,6 +20,16 @@ import { CalendarIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { vi } from 'date-fns/locale';
 import { Button } from '@/components/form';
+import { useState, useRef } from 'react';
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select';
+import { DropdownProps } from 'react-day-picker';
 
 type Props = {
   control: Control<any>;
@@ -39,22 +50,30 @@ export default function DatePickerField({
   label,
   description,
   className,
-  format: dateFormat = 'yyyy-MM-dd',
+  format: dateFormat = 'dd/MM/yyyy',
   disabled,
   required,
   placeholder,
   labelClassName
 }: Props) {
   const calendarLocale: Locale = vi;
+  const [open, setOpen] = useState(false);
+  // const [popoverWidth, setPopoverWidth] = useState<number | undefined>();
+  const triggerRef = useRef<HTMLButtonElement>(null);
+
+  // useEffect(() => {
+  //   if (triggerRef.current) {
+  //     setPopoverWidth(triggerRef.current.offsetWidth);
+  //   }
+  // }, [open]);
+
   return (
     <FormField
       control={control}
       name={name}
       render={({ field }) => {
         const parsedValue =
-          typeof field.value === 'string'
-            ? parse(field.value, dateFormat, new Date())
-            : field.value;
+          typeof field.value === 'string' ? new Date(field.value) : field.value;
 
         return (
           <FormItem
@@ -68,47 +87,127 @@ export default function DatePickerField({
                 {required && <span className='text-destructive'>*</span>}
               </FormLabel>
             )}
-            <Popover>
+            <Popover open={open} onOpenChange={setOpen}>
               <PopoverTrigger asChild>
                 <FormControl>
                   <Button
+                    ref={triggerRef}
                     variant='outline'
                     className={cn(
-                      'w-full justify-start text-left font-normal',
+                      'w-full justify-start text-left font-normal text-black opacity-100',
+                      'focus:ring-0 focus-visible:border-gray-200 focus-visible:ring-0',
+                      'data-[state=open]:border-green-primary data-[state=open]:ring-green-primary data-[state=open]:ring-1',
                       !field.value && 'text-muted-foreground'
                     )}
                     disabled={disabled}
                   >
-                    <CalendarIcon className='mr-2 h-4 w-4' />
+                    <CalendarIcon className='mr-1 h-4 w-4' />
                     {field.value
-                      ? format(parsedValue, dateFormat)
+                      ? format(parsedValue, dateFormat, {
+                          locale: calendarLocale
+                        })
                       : placeholder}
                   </Button>
                 </FormControl>
               </PopoverTrigger>
-              <PopoverContent className='w-auto space-y-2 p-4' align='start'>
+              <PopoverContent
+                className='w-90 origin-top space-y-2 p-4'
+                align='center'
+              >
                 <Calendar
                   locale={calendarLocale}
+                  className='w-full'
                   mode='single'
                   selected={parsedValue}
+                  components={{ Dropdown: CustomSelectDropdown }}
                   onSelect={(date) => {
-                    if (!date) return;
-                    const withTime = parsedValue || new Date();
-                    withTime.setFullYear(
-                      date.getFullYear(),
-                      date.getMonth(),
-                      date.getDate()
+                    if (date) {
+                      field.onChange(date);
+                      setOpen(false);
+                    }
+                  }}
+                  classNames={{
+                    day_button:
+                      'data-[selected-single=true]:bg-green-primary data-[selected-single=true]:text-white cursor-pointer !ring-0 !focus-visible:ring-0 !focus-visible:ring-offset-0',
+                    button_next:
+                      'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-[color,box-shadow] disabled:pointer-events-none disabled:opacity-50 transition-all ease-linear duration-200 outline-none focus-visible:border-transparent focus-visible:ring-transparent focus-visible:ring-0 hover:bg-transparent size-8 -mr-2 aria-disabled:opacity-50 p-0 select-none rdp-button_previous cursor-pointer hover:text-green-primary',
+                    button_previous:
+                      'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-[color,box-shadow] disabled:pointer-events-none disabled:opacity-50 transition-all ease-linear duration-200 outline-none focus-visible:border-transparent focus-visible:ring-transparent focus-visible:ring-0 hover:bg-transparent size-8 -ml-2 aria-disabled:opacity-50 p-0 select-none rdp-button_previous cursor-pointer hover:text-green-primary'
+                  }}
+                  captionLayout='dropdown'
+                  defaultMonth={new Date(field.value)}
+                  startMonth={new Date(1900, 0)}
+                  endMonth={new Date(2050, 12)}
+                  formatters={{
+                    formatMonthDropdown: (date) =>
+                      date.toLocaleString('vi-VN', { month: 'long' })
+                  }}
+                  onMonthChange={(month: Date) => {
+                    const firstDay = new Date(
+                      month.getFullYear(),
+                      month.getMonth(),
+                      1
                     );
-                    field.onChange(format(withTime, dateFormat));
+                    field.onChange(firstDay);
                   }}
                 />
+                <Button
+                  type='button'
+                  variant='outline'
+                  className='w-full'
+                  onClick={() => {
+                    const today = new Date();
+                    field.onChange(today);
+                    setOpen(false);
+                  }}
+                >
+                  Hôm nay
+                </Button>
               </PopoverContent>
             </Popover>
             {description && <FormDescription>{description}</FormDescription>}
-            <FormMessage className={'mb-0 ml-1'} />
+            <FormMessage className='mb-0 ml-1' />
           </FormItem>
         );
       }}
     />
+  );
+}
+
+function CustomSelectDropdown(props: DropdownProps) {
+  const { options, value, onChange } = props;
+
+  const handleValueChange = (newValue: string) => {
+    if (onChange) {
+      const syntheticEvent = {
+        target: {
+          value: newValue
+        }
+      } as React.ChangeEvent<HTMLSelectElement>;
+
+      onChange(syntheticEvent);
+    }
+  };
+
+  return (
+    <Select value={value?.toString()} onValueChange={handleValueChange}>
+      <SelectTrigger className='z-9999 cursor-pointer justify-center gap-1!'>
+        <SelectValue />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectGroup>
+          {options?.map((option) => (
+            <SelectItem
+              className='cursor-pointer text-center'
+              key={option.value}
+              value={option.value.toString()}
+              disabled={option.disabled}
+            >
+              {option.label}
+            </SelectItem>
+          ))}
+        </SelectGroup>
+      </SelectContent>
+    </Select>
   );
 }

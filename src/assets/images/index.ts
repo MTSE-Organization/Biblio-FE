@@ -7,6 +7,7 @@ import banner1 from './banner1.jpg';
 import banner2 from './banner2.jpg';
 import product from './product.jpg';
 import googleIcon from './google.png';
+import emptyData from './empty-data.webp';
 
 export {
   defaultAvatar,
@@ -17,5 +18,6 @@ export {
   banner1,
   banner2,
   product,
-  googleIcon
+  googleIcon,
+  emptyData
 };

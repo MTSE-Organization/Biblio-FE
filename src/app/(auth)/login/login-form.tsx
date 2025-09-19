@@ -1,10 +1,9 @@
 'use client';
 
-import { whiteLogo, googleIcon } from '@/assets';
+import { whiteLogo } from '@/assets';
 import { Breadcrumb, Button, Col, InputField, Row } from '@/components/form';
 import { BaseForm } from '@/components/form/base-form';
 import PasswordField from '@/components/form/password-field';
-import ButtonLoading from '@/components/loading/button-loading';
 import { ErrorCode, storageKeys } from '@/constants';
 import { cn } from '@/lib';
 import { logger } from '@/logger';
@@ -18,6 +17,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import ButtonLoginGoogle from './button-login-google';
+import { CircleLoading } from '@/components/loading';
 
 export default function LoginForm() {
   const profileQuery = useProfileQuery();
@@ -127,7 +127,7 @@ export default function LoginForm() {
                       }
                     )}
                   >
-                    {loginMutation.isPending ? <ButtonLoading /> : 'Đăng nhập'}
+                    {loginMutation.isPending ? <CircleLoading /> : 'Đăng nhập'}
                   </Button>
                 </>
               )}

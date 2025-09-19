@@ -1,10 +1,9 @@
 'use client';
 
 import { whiteLogo } from '@/assets';
-import { Breadcrumb, Button, Col, Row } from '@/components/form';
+import { Breadcrumb, Button, Col, OtpField, Row } from '@/components/form';
 import { BaseForm } from '@/components/form/base-form';
-import OtpField from '@/components/form/otp-input';
-import ButtonLoading from '@/components/loading/button-loading';
+import { CircleLoading } from '@/components/loading';
 import { storageKeys } from '@/constants';
 import { cn } from '@/lib';
 import { logger } from '@/logger';
@@ -99,7 +98,7 @@ export default function VerifyOTPForm() {
                     )}
                   >
                     {verifyOtpMutation.isPending ? (
-                      <ButtonLoading />
+                      <CircleLoading />
                     ) : (
                       'Xác thực'
                     )}

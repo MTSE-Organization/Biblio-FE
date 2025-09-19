@@ -14,7 +14,7 @@ import { useRouter } from 'next/navigation';
 import { useLogoutMutation } from '@/queries';
 import { logger } from '@/logger';
 import { useAuthStore } from '@/store';
-import ButtonLoading from '@/components/loading/button-loading';
+import { CircleLoading } from '@/components/loading';
 
 export default function DropdownAccount() {
   const logoutMutation = useLogoutMutation();
@@ -118,7 +118,7 @@ export default function DropdownAccount() {
                       className='text-md flex w-full justify-start rounded-none! px-4 py-3! text-left font-normal text-black transition-all duration-200 ease-linear hover:bg-slate-100'
                     >
                       {logoutMutation.isPending ? (
-                        <ButtonLoading />
+                        <CircleLoading />
                       ) : (
                         'Đăng xuất'
                       )}

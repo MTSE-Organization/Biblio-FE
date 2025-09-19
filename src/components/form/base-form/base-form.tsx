@@ -1,7 +1,7 @@
 'use client';
 
 import { Form } from '@/components/ui/form';
-import { logger } from '@/logger';
+import { cn } from '@/lib';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect } from 'react';
 import { DefaultValues, useForm, UseFormReturn } from 'react-hook-form';
@@ -44,7 +44,10 @@ export default function BaseForm<T extends Record<string, any>>({
   return (
     <Form {...form}>
       <form
-        className={className}
+        className={cn(
+          'relative w-4/5 rounded-lg bg-white p-4 max-[1560px]:w-full',
+          className
+        )}
         onSubmit={form.handleSubmit((values) => onSubmit(values, form))}
         onChange={onChange}
       >

@@ -1,9 +1,8 @@
 'use client';
 
 import { whiteLogo } from '@/assets';
-import { Breadcrumb, Button, Col, Row } from '@/components/form';
+import { Breadcrumb, Button, Col, OtpField, Row } from '@/components/form';
 import { BaseForm } from '@/components/form/base-form';
-import OTPField from '@/components/form/otp-input';
 import PasswordField from '@/components/form/password-field';
 import route from '@/routes';
 import Image from 'next/image';
@@ -16,7 +15,7 @@ import { ErrorCode, formatPasswordErrorMaps, storageKeys } from '@/constants';
 import { UseFormReturn } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 import { cn } from '@/lib';
-import ButtonLoading from '@/components/loading/button-loading';
+import { CircleLoading } from '@/components/loading';
 
 export default function ChangePasswordForm() {
   const changePasswordMutation = useChangePasswordMutation();
@@ -91,7 +90,7 @@ export default function ChangePasswordForm() {
                 <>
                   <Row>
                     <Col>
-                      <OTPField
+                      <OtpField
                         labelClassName='text-md'
                         className='w-full!'
                         name='otp'
@@ -145,7 +144,7 @@ export default function ChangePasswordForm() {
                         )}
                       >
                         {changePasswordMutation.isPending ? (
-                          <ButtonLoading />
+                          <CircleLoading />
                         ) : (
                           'Đổi mật khẩu'
                         )}

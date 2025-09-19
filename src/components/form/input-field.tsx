@@ -50,7 +50,7 @@ export default function InputField<T extends FieldValues>({
     <FormField
       control={control}
       name={name}
-      render={({ field }) => (
+      render={({ field, fieldState }) => (
         <FormItem
           className={cn(
             { 'cursor-not-allowed opacity-50': disabled },
@@ -66,7 +66,7 @@ export default function InputField<T extends FieldValues>({
           <FormControl>
             <div className='relative'>
               {prefixIcon && (
-                <div className='text-muted-foreground absolute top-1/2 left-3 h-full -translate-y-1/2'>
+                <div className='text-muted-foreground absolute top-1/2 left-3 -translate-y-1/2'>
                   {prefixIcon}
                 </div>
               )}
@@ -76,14 +76,22 @@ export default function InputField<T extends FieldValues>({
                 disabled={disabled}
                 readOnly={readOnly}
                 {...field}
-                className={cn(className, 'focus-visible:ring-[1px]', {
-                  'pl-10': prefixIcon,
-                  'pr-10': suffixIcon,
-                  'cursor-not-allowed opacity-50': disabled
-                })}
+                className={cn(
+                  className,
+                  'pt-0! pb-0 pb-[0.5px] font-normal placeholder:text-gray-300 focus-visible:border-transparent focus-visible:ring-[2px]',
+                  {
+                    'pl-10': prefixIcon,
+                    'pr-10': suffixIcon,
+                    'cursor-not-allowed opacity-50': disabled,
+                    'border-red-500 focus-visible:border-red-500 focus-visible:ring-[1px] focus-visible:ring-red-500':
+                      fieldState.error
+                  },
+                  !fieldState.error &&
+                    'focus-visible:ring-green-primary focus-visible:border-transparent'
+                )}
               />
               {suffixIcon && (
-                <div className='text-muted-foreground absolute top-1/2 right-3 h-full -translate-y-1/2'>
+                <div className='text-muted-foreground absolute top-1/2 right-3 -translate-y-1/2'>
                   {suffixIcon}
                 </div>
               )}

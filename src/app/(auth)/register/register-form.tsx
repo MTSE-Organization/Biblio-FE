@@ -3,7 +3,7 @@ import { whiteLogo } from '@/assets';
 import { Breadcrumb, Button, Col, InputField, Row } from '@/components/form';
 import { BaseForm } from '@/components/form/base-form';
 import PasswordField from '@/components/form/password-field';
-import ButtonLoading from '@/components/loading/button-loading';
+import { CircleLoading } from '@/components/loading';
 import { registerErrorMaps, storageKeys } from '@/constants';
 import { cn } from '@/lib';
 import { logger } from '@/logger';
@@ -130,7 +130,7 @@ export default function RegisterForm() {
                       }
                     )}
                   >
-                    {registerMutation.isPending ? <ButtonLoading /> : 'Đăng ký'}
+                    {registerMutation.isPending ? <CircleLoading /> : 'Đăng ký'}
                   </Button>
                 </>
               )}

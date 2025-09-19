@@ -28,7 +28,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import Link from 'next/link';
 import { useForgotPasswordMutation, useUploadImageMutation } from '@/queries';
-import ButtonLoading from '@/components/loading/button-loading';
+import { CircleLoading } from '@/components/loading';
 
 export default function ProfileForm() {
   const [avatarPath, setAvatarPath] = useState<string>('');
@@ -129,6 +129,8 @@ export default function ProfileForm() {
                   <Row>
                     <Col>
                       <UploadImageField
+                        control={form.control}
+                        name='avatarPath'
                         value={
                           avatarPath
                             ? `${AppConstants.contentRootUrl}${avatarPath}`
@@ -214,7 +216,7 @@ export default function ProfileForm() {
                         )}
                       >
                         {profileMutation.isPending ? (
-                          <ButtonLoading />
+                          <CircleLoading />
                         ) : (
                           'Cập nhật'
                         )}
