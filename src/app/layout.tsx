@@ -1,5 +1,5 @@
 import './globals.css';
-import { Inter } from 'next/font/google';
+import { Be_Vietnam_Pro } from 'next/font/google';
 import { ThemeProvider } from '@/components/theme-provider';
 import NextTopLoader from 'nextjs-toploader';
 import type { Metadata } from 'next';
@@ -8,9 +8,10 @@ import ToastPortal from '@/components/toast-portal';
 import { AppProvider, QueryProvider } from '@/components/providers';
 import BodyLoad from '@/components/app/body-load';
 
-const inter = Inter({
-  subsets: ['latin'],
-  variable: '--font-inter',
+const beVietnamPro = Be_Vietnam_Pro({
+  subsets: ['latin', 'vietnamese'],
+  weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'],
+  variable: '--font-be-vietnam-pro',
   display: 'swap'
 });
 
@@ -30,7 +31,7 @@ export default async function RootLayout({
   return (
     <html suppressHydrationWarning lang='vi'>
       <body
-        className={`${inter.variable} ${inter.className} text-foreground antialiased transition-all duration-200 ease-linear`}
+        className={`${beVietnamPro.variable} ${beVietnamPro.className} text-foreground antialiased transition-all duration-200 ease-linear`}
       >
         <BodyLoad />
         <QueryProvider>

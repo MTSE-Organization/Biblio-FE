@@ -66,7 +66,7 @@ export default function PasswordField<T extends FieldValues>({
     <FormField
       control={control}
       name={name}
-      render={({ field }) => {
+      render={({ field, fieldState }) => {
         const value = field.value || '';
 
         const strength = checkStrength(value);
@@ -98,10 +98,17 @@ export default function PasswordField<T extends FieldValues>({
                   style={{ paddingTop: 0 }}
                   className={cn(
                     className,
-                    'py-0! pb-0.5! focus-visible:ring-[1px]',
+                    'pt-[1px]! pb-0! placeholder:text-gray-300 focus-visible:ring-[2px]',
                     {
                       'cursor-not-allowed opacity-50': disabled
-                    }
+                    },
+                    {
+                      'cursor-not-allowed opacity-50': disabled,
+                      'border-red-500 focus-visible:border-red-500 focus-visible:ring-[1px] focus-visible:ring-red-500':
+                        fieldState.error
+                    },
+                    !fieldState.error &&
+                      'focus-visible:ring-green-primary focus-visible:border-transparent'
                   )}
                 />
                 {value && (

@@ -6,7 +6,7 @@ import { RiShoppingCartLine } from 'react-icons/ri';
 import { FaTimes } from 'react-icons/fa';
 import { AnimatePresence, motion } from 'framer-motion';
 import Image from 'next/image';
-import { emptyCart, product } from '@/assets';
+import { product } from '@/assets';
 import Link from 'next/link';
 import route from '@/routes';
 
@@ -18,7 +18,7 @@ export default function CartSidebar() {
       <Button
         variant='ghost'
         onClick={() => setOpen(true)}
-        className='text-md hover:text-green-primary group size-full rounded-full p-0! hover:bg-transparent! focus:outline-none focus-visible:ring-0'
+        className='over:text-green-primary group size-full rounded-full p-0! hover:bg-transparent! focus:outline-none focus-visible:ring-0'
       >
         <div className='relative'>
           <RiShoppingCartLine className='size-[21px]' />

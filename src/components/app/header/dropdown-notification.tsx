@@ -22,7 +22,7 @@ export default function DropdownNotification() {
     >
       <Button
         variant='ghost'
-        className='group text-md hover:text-green-primary size-full rounded-full p-0! transition-all duration-200 ease-linear hover:bg-transparent! focus:outline-none focus-visible:ring-0'
+        className='group hover:text-green-primary size-full rounded-full p-0! transition-all duration-200 ease-linear hover:bg-transparent! focus:outline-none focus-visible:ring-0'
       >
         <div className='relative'>
           <RiNotification3Line className='size-[21px]' />

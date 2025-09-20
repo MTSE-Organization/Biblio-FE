@@ -28,7 +28,8 @@ import { useEffect, useMemo, useState } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import Link from 'next/link';
 import { useForgotPasswordMutation, useUploadImageMutation } from '@/queries';
-import ButtonLoading from '@/components/loading/button-loading';
+import { CircleLoading } from '@/components/loading';
+import Footer from '@/components/app/footer';
 
 export default function ProfileForm() {
   const [avatarPath, setAvatarPath] = useState<string>('');
@@ -101,14 +102,14 @@ export default function ProfileForm() {
 
   return (
     <div>
-      <Breadcrumb
+      {/* <Breadcrumb
         items={[{ label: 'Trang chủ', href: route.home }, { label: 'Hồ sơ' }]}
         separator='/'
-      />
+      /> */}
       <div className='py-25 max-[1600px]:py-20'>
         <div className='mx-auto min-[1200px]:w-180 min-[1440px]:w-200'>
           <div className='rounded-xl border border-solid border-gray-100 bg-white p-5'>
-            <div className='mb-7.5 text-center'>
+            <div className='text-center'>
               <Image
                 src={whiteLogo.src}
                 width={200}
@@ -129,6 +130,8 @@ export default function ProfileForm() {
                   <Row>
                     <Col>
                       <UploadImageField
+                        control={form.control}
+                        name='avatarPath'
                         value={
                           avatarPath
                             ? `${AppConstants.contentRootUrl}${avatarPath}`
@@ -144,6 +147,7 @@ export default function ProfileForm() {
                           const res = await fileMutation.mutateAsync(file);
                           return res.data?.filePath ?? '';
                         }}
+                        label='Ảnh đại diện'
                       />
                     </Col>
                   </Row>
@@ -155,8 +159,6 @@ export default function ProfileForm() {
                         label='Họ và tên'
                         required
                         placeholder='Nhập họ và tên'
-                        className='text-md!'
-                        labelClassName='text-md!'
                       />
                     </Col>
                     <Col span={12}>
@@ -166,8 +168,6 @@ export default function ProfileForm() {
                         label='Email'
                         required
                         placeholder='Nhập email'
-                        className='text-md!'
-                        labelClassName='text-md!'
                         disabled
                       />
                     </Col>
@@ -180,19 +180,14 @@ export default function ProfileForm() {
                         label='Số điện thoại'
                         required
                         placeholder='Nhập số điện thoại'
-                        className='text-md!'
-                        labelClassName='text-md!'
                       />
                     </Col>
-                    <Col span={12}></Col>
                   </Row>
                   <Row>
                     <Col>
                       <Button
                         type='button'
-                        className={cn(
-                          'text-md bg-orange-500 hover:bg-orange-500'
-                        )}
+                        className={'bg-orange-500 hover:bg-orange-500'}
                         onClick={handleChangePassword}
                       >
                         <Link
@@ -207,14 +202,14 @@ export default function ProfileForm() {
                       <Button
                         type='submit'
                         className={cn(
-                          'bg-green-primary hover:bg-green-primary text-md',
+                          'bg-green-primary hover:bg-green-primary',
                           {
                             'cursor-not-allowed opacity-50': !isFormChanged
                           }
                         )}
                       >
                         {profileMutation.isPending ? (
-                          <ButtonLoading />
+                          <CircleLoading />
                         ) : (
                           'Cập nhật'
                         )}
@@ -227,6 +222,7 @@ export default function ProfileForm() {
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 }

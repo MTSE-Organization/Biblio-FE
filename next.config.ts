@@ -8,6 +8,11 @@ const nextConfig: NextConfig = {
         protocol: 'http',
         hostname: 'localhost',
         pathname: '/**'
+      },
+      {
+        protocol: 'https',
+        hostname: 'api-book.moviehub.biz',
+        pathname: '/**'
       }
     ]
   }

@@ -8,3 +8,4 @@ export * from './store.type';
 export * from './upload.type';
 export * from './category.type';
 export * from './product.type';
+export * from './breadcrumb.type';

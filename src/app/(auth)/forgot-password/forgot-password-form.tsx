@@ -1,10 +1,15 @@
 'use client';
-
 import { useState } from 'react';
 import { whiteLogo } from '@/assets';
-import { Breadcrumb, Button, Col, InputField, Row } from '@/components/form';
+import {
+  Breadcrumb,
+  Button,
+  Col,
+  InputField,
+  OtpField,
+  Row
+} from '@/components/form';
 import { BaseForm } from '@/components/form/base-form';
-import OTPField from '@/components/form/otp-input';
 import PasswordField from '@/components/form/password-field';
 import route from '@/routes';
 import Image from 'next/image';
@@ -21,9 +26,8 @@ import { logger } from '@/logger';
 import { applyFormErrors, getData, notify, removeData, setData } from '@/utils';
 import { ErrorCode, formatPasswordErrorMaps, storageKeys } from '@/constants';
 import { UseFormReturn } from 'react-hook-form';
-import { useRouter } from 'next/navigation';
-import { cn } from '@/lib';
-import ButtonLoading from '@/components/loading/button-loading';
+import { CircleLoading } from '@/components/loading';
+import { useNavigate } from '@/hooks';
 
 type ForgotPasswordStepType = 1 | 2;
 
@@ -31,7 +35,7 @@ export default function ForgotPasswordForm() {
   const [step, setStep] = useState<ForgotPasswordStepType>(1);
   const forgotPasswordMutation = useForgotPasswordMutation();
   const changePasswordMutation = useChangePasswordMutation();
-  const router = useRouter();
+  const navigate = useNavigate();
 
   const defaultValues: ForgotPasswordBodyType = {
     email: '',
@@ -76,7 +80,7 @@ export default function ForgotPasswordForm() {
             if (res.result) {
               notify.success('Đặt lại mật khẩu thành công');
               removeData(storageKeys.EMAIL);
-              router.push(route.login);
+              navigate(route.login);
             } else {
               const errorCode = res.code;
               if (errorCode === ErrorCode.AUTH_ERROR_OTP_INVALID_OR_EXPIRED) {
@@ -96,13 +100,13 @@ export default function ForgotPasswordForm() {
 
   return (
     <div>
-      <Breadcrumb
+      {/* <Breadcrumb
         items={[
           { label: 'Trang chủ', href: route.home },
           { label: 'Quên mật khẩu' }
         ]}
         separator='/'
-      />
+      /> */}
       <div className='py-25 max-[1600px]:py-20'>
         <div className='container mx-auto'>
           <div className='mx-auto max-w-120 rounded border border-solid border-gray-100 bg-white p-7.5'>
@@ -133,8 +137,6 @@ export default function ForgotPasswordForm() {
                         <Col>
                           <InputField
                             name='email'
-                            className='text-md! focus-visible:ring-green-primary h-10! py-2!'
-                            labelClassName='text-md'
                             control={form.control}
                             label='Email'
                             placeholder='Nhập email...'
@@ -144,16 +146,12 @@ export default function ForgotPasswordForm() {
                         </Col>
                       </Row>
                       <Button
-                        className={cn(
-                          'bg-green-primary block w-full hover:bg-emerald-700',
-                          {
-                            'pointer-events-none':
-                              forgotPasswordMutation.isPending
-                          }
-                        )}
+                        disabled={forgotPasswordMutation.isPending}
+                        variant={'primary'}
+                        className={'w-full'}
                       >
                         {forgotPasswordMutation.isPending ? (
-                          <ButtonLoading />
+                          <CircleLoading />
                         ) : (
                           'Gửi OTP'
                         )}
@@ -165,8 +163,7 @@ export default function ForgotPasswordForm() {
                     <>
                       <Row>
                         <Col>
-                          <OTPField
-                            labelClassName='text-md'
+                          <OtpField
                             className='w-full!'
                             name='otp'
                             control={form.control}
@@ -184,8 +181,6 @@ export default function ForgotPasswordForm() {
                       <Row>
                         <Col>
                           <PasswordField
-                            className='text-md! focus-visible:ring-green-primary h-10! py-2!'
-                            labelClassName='text-md'
                             name='password'
                             control={form.control}
                             label='Mật khẩu'
@@ -197,8 +192,6 @@ export default function ForgotPasswordForm() {
                       <Row>
                         <Col>
                           <PasswordField
-                            className='text-md! focus-visible:ring-green-primary h-10! py-2!'
-                            labelClassName='text-md'
                             name='confirmPassword'
                             control={form.control}
                             label='Nhập lại mật khẩu'
@@ -210,16 +203,12 @@ export default function ForgotPasswordForm() {
                       <Row>
                         <Col>
                           <Button
-                            className={cn(
-                              'bg-green-primary block w-full hover:bg-emerald-700',
-                              {
-                                'pointer-events-none':
-                                  changePasswordMutation.isPending
-                              }
-                            )}
+                            disabled={changePasswordMutation.isPending}
+                            variant={'primary'}
+                            className={'w-full'}
                           >
                             {changePasswordMutation.isPending ? (
-                              <ButtonLoading />
+                              <CircleLoading />
                             ) : (
                               'Đặt lại mật khẩu'
                             )}

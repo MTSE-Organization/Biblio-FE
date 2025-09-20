@@ -8,9 +8,9 @@ import Link from 'next/link';
 
 export default function Header() {
   return (
-    <header className='border-b border-solid border-gray-100 bg-white'>
+    <header className='relative z-9 border-b border-solid border-gray-100 bg-white shadow-[0px_0px_8px_2px] shadow-gray-200'>
       <Container className='mx-auto max-w-[1320px]'>
-        <div className='relative z-4 flex flex-row justify-between gap-2.5 px-0 py-5'>
+        <div className='z-4 flex flex-row justify-between gap-2.5 px-0 py-5'>
           <Link href={route.home}>
             <Image
               src={logo.src}
