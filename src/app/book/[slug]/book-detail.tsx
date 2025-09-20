@@ -75,7 +75,7 @@ export default function BookDetail() {
             </span>
           </div>
           <div className='flex items-center pt-5'>
-            <h5 className='text-md mb-0 leading-[1.556] text-[#2b2b2d]'>
+            <h5 className='mb-0 leading-[1.556] text-[#2b2b2d]'>
               Tình trạng <span>:</span>
             </h5>
             <div className='pl-2.5'>

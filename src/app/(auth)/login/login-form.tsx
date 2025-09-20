@@ -1,11 +1,9 @@
 'use client';
-
 import { whiteLogo } from '@/assets';
 import { Breadcrumb, Button, Col, InputField, Row } from '@/components/form';
 import { BaseForm } from '@/components/form/base-form';
 import PasswordField from '@/components/form/password-field';
 import { ErrorCode, storageKeys } from '@/constants';
-import { cn } from '@/lib';
 import { logger } from '@/logger';
 import { useLoginMutation, useProfileQuery } from '@/queries';
 import route from '@/routes';
@@ -15,14 +13,14 @@ import { LoginBodyType } from '@/types/auth.type';
 import { notify, setData } from '@/utils';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import ButtonLoginGoogle from './button-login-google';
 import { CircleLoading } from '@/components/loading';
+import { useNavigate } from '@/hooks';
 
 export default function LoginForm() {
   const profileQuery = useProfileQuery();
   const loginMutation = useLoginMutation();
-  const router = useRouter();
+  const navigate = useNavigate();
   const { setProfile } = useAuthStore();
   const defaultValues: LoginBodyType = {
     email: '',
@@ -38,7 +36,7 @@ export default function LoginForm() {
           const profileRes = await profileQuery.refetch();
           const profile = profileRes.data?.data!;
           setProfile(profile);
-          router.push(route.home);
+          navigate(route.home);
         } else {
           const errorCode = res.code;
           if (errorCode === ErrorCode.NETWORK_ECONNREFUSED) {
@@ -56,16 +54,16 @@ export default function LoginForm() {
   };
   return (
     <div>
-      <Breadcrumb
+      {/* <Breadcrumb
         items={[
           { label: 'Trang chủ', href: route.home },
           { label: 'Đăng nhập' }
         ]}
         separator='/'
-      />
+      /> */}
       <div className='py-25 max-[1600px]:py-20'>
         <div className='container mx-auto'>
-          <div className='mx-auto max-w-120 rounded border border-solid border-gray-100 bg-white p-7.5'>
+          <div className='mx-auto max-w-120 rounded-md border border-solid border-gray-100 bg-white p-7.5 shadow-[0px_0px_10px_2px] shadow-gray-100'>
             <div className='mb-7.5 flex h-full w-full items-center justify-center'>
               <Image
                 src={whiteLogo.src}
@@ -86,8 +84,6 @@ export default function LoginForm() {
                     <Col>
                       <InputField
                         name='email'
-                        className='text-md! focus-visible:ring-green-primary h-10!'
-                        labelClassName='text-md'
                         control={form.control}
                         label='Email'
                         placeholder='Nhập email...'
@@ -99,8 +95,6 @@ export default function LoginForm() {
                   <Row>
                     <Col>
                       <PasswordField
-                        className='text-md! focus-visible:ring-green-primary h-10!'
-                        labelClassName='text-md'
                         name='password'
                         control={form.control}
                         label='Mật khẩu'

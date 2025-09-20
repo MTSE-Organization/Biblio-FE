@@ -5,7 +5,7 @@ import { BaseForm } from '@/components/form/base-form';
 import PasswordField from '@/components/form/password-field';
 import { CircleLoading } from '@/components/loading';
 import { registerErrorMaps, storageKeys } from '@/constants';
-import { cn } from '@/lib';
+import { useNavigate } from '@/hooks';
 import { logger } from '@/logger';
 import { useRegisterMutation } from '@/queries';
 import route from '@/routes';
@@ -14,14 +14,11 @@ import { RegisterBodyType } from '@/types/auth.type';
 import { applyFormErrors, notify, setData } from '@/utils';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { useTopLoader } from 'nextjs-toploader';
 import { UseFormReturn } from 'react-hook-form';
 
 export default function RegisterForm() {
   const registerMutation = useRegisterMutation();
-  const router = useRouter();
-  const loader = useTopLoader();
+  const navigate = useNavigate();
   const defaultValues: RegisterBodyType = {
     email: '',
     password: '',
@@ -41,8 +38,7 @@ export default function RegisterForm() {
             }
           );
           setData(storageKeys.EMAIL, values.email);
-          router.push(route.verifyOtp);
-          loader.start();
+          navigate(route.verifyOtp);
         } else {
           if (res.code) {
             applyFormErrors(form, res.code, registerErrorMaps);
@@ -59,10 +55,10 @@ export default function RegisterForm() {
   };
   return (
     <div>
-      <Breadcrumb
+      {/* <Breadcrumb
         items={[{ label: 'Trang chủ', href: route.home }, { label: 'Đăng ký' }]}
         separator='/'
-      />
+      /> */}
       <div className='py-25 max-[1600px]:py-20'>
         <div className='container mx-auto'>
           <div className='mx-auto max-w-120 rounded border border-solid border-gray-100 bg-white p-7.5'>
@@ -86,8 +82,6 @@ export default function RegisterForm() {
                     <Col>
                       <InputField
                         name='email'
-                        className='text-md! focus-visible:ring-green-primary h-10!'
-                        labelClassName='text-md'
                         control={form.control}
                         label='Email'
                         placeholder='Nhập email...'
@@ -99,8 +93,6 @@ export default function RegisterForm() {
                   <Row>
                     <Col>
                       <PasswordField
-                        className='text-md! focus-visible:ring-green-primary h-10!'
-                        labelClassName='text-md'
                         name='password'
                         control={form.control}
                         label='Mật khẩu'
@@ -112,8 +104,6 @@ export default function RegisterForm() {
                   <Row>
                     <Col>
                       <PasswordField
-                        className='text-md! focus-visible:ring-green-primary h-10!'
-                        labelClassName='text-md'
                         name='confirmPassword'
                         control={form.control}
                         label='Nhập lại mật khẩu'

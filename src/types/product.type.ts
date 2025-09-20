@@ -1,4 +1,7 @@
 import { CategoryAutoType } from '@/types/category.type';
+import { ContributorAutoType } from '@/types/contributor.type';
+import { ProductImageResType } from '@/types/product-image.type';
+import { PublisherAutoType } from '@/types/publisher.type';
 import { BaseSearchParamType } from '@/types/search.type';
 
 export type ProductResType = {
@@ -8,15 +11,17 @@ export type ProductResType = {
   description: string;
   price: number;
   releaseDate: string;
-  length: number;
-  width: number;
-  height: number;
   ageRating: number;
+  language: string;
   isFeatured: boolean;
-  quantity: number;
+  metaData: string;
+  discount: number;
   category: CategoryAutoType;
-  createdDate: Date;
-  modifiedDate: Date;
+  images: ProductImageResType[];
+  publisher: PublisherAutoType;
+  contributors: ContributorAutoType[];
+  createdDate: string;
+  modifiedDate: string;
   status: number;
 };
 

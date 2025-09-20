@@ -3,6 +3,7 @@
 import { googleIcon } from '@/assets';
 import { Button } from '@/components/form';
 import envConfig from '@/config';
+import { useNavigate } from '@/hooks';
 import { logger } from '@/logger';
 import {
   useLoginGoogleMutation,
@@ -14,13 +15,12 @@ import { useAuthStore } from '@/store';
 import { notify, setAccessTokenToLocalStorage } from '@/utils';
 import { LucideLoader2 } from 'lucide-react';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
 export default function ButtonLoginGoogle() {
   const profileQuery = useProfileQuery();
   const { setProfile } = useAuthStore();
-  const router = useRouter();
+  const navigate = useNavigate();
   const authStore = useAuthStore();
   const loginGoogleQuery = useLoginGoogleQuery();
   const loginGoogleMutation = useLoginGoogleMutation();
@@ -67,7 +67,7 @@ export default function ButtonLoginGoogle() {
         const profileRes = await profileQuery.refetch();
         const profile = profileRes.data?.data!;
         setProfile(profile);
-        router.push(route.home);
+        navigate(route.home);
         setTimeout(() => {
           authStore.setAuthenticated(true);
         }, 100);

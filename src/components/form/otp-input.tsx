@@ -69,7 +69,7 @@ export default function OtpField<T extends FieldValues>({
               >
                 {Array.from({ length: length }).map((_, i) => (
                   <InputOTPSlot
-                    className='text-md data-[active=true]:ring-green-primary h-12 w-12 rounded-md border-l data-[active=true]:border-none'
+                    className='data-[active=true]:ring-green-primary h-12 w-12 rounded-md border-l data-[active=true]:border-none'
                     key={i}
                     index={i}
                   />

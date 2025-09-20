@@ -1,11 +1,10 @@
 'use client';
-
 import { whiteLogo } from '@/assets';
 import { Breadcrumb, Button, Col, OtpField, Row } from '@/components/form';
 import { BaseForm } from '@/components/form/base-form';
 import { CircleLoading } from '@/components/loading';
 import { storageKeys } from '@/constants';
-import { cn } from '@/lib';
+import { useNavigate } from '@/hooks';
 import { logger } from '@/logger';
 import { useVerifyOtpMutation } from '@/queries';
 import route from '@/routes';
@@ -13,13 +12,10 @@ import { otpSchema } from '@/schemaValidations';
 import { OtpBodyType } from '@/types/auth.type';
 import { getData, notify, removeData } from '@/utils';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
-import { useTopLoader } from 'nextjs-toploader';
 
 export default function VerifyOTPForm() {
   const verifyOtpMutation = useVerifyOtpMutation();
-  const router = useRouter();
-  const loader = useTopLoader();
+  const navigate = useNavigate();
   const defaultValues: OtpBodyType = {
     email: getData(storageKeys.EMAIL) ?? '',
     otp: ''
@@ -30,8 +26,7 @@ export default function VerifyOTPForm() {
         if (res.result) {
           notify.success('Xác thực OTP thành công');
           removeData(storageKeys.EMAIL);
-          router.push(route.login);
-          loader.start();
+          navigate(route.login);
         } else {
           notify.error('Mã OTP không hợp lệ');
         }
@@ -44,13 +39,13 @@ export default function VerifyOTPForm() {
   };
   return (
     <div>
-      <Breadcrumb
+      {/* <Breadcrumb
         items={[
           { label: 'Trang chủ', href: route.home },
           { label: 'Xác thực OTP' }
         ]}
         separator='/'
-      />
+      /> */}
       <div className='py-25 max-[1600px]:py-20'>
         <div className='container mx-auto'>
           <div className='mx-auto max-w-120 rounded border border-solid border-gray-100 bg-white p-7.5'>

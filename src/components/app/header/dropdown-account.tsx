@@ -10,17 +10,17 @@ import { useState } from 'react';
 import route from '@/routes';
 import { getData, notify, removeData } from '@/utils';
 import { storageKeys } from '@/constants';
-import { useRouter } from 'next/navigation';
 import { useLogoutMutation } from '@/queries';
 import { logger } from '@/logger';
 import { useAuthStore } from '@/store';
 import { CircleLoading } from '@/components/loading';
+import { useNavigate } from '@/hooks';
 
 export default function DropdownAccount() {
   const logoutMutation = useLogoutMutation();
   const [open, setOpen] = useState(false);
   const accessToken = getData(storageKeys.ACCESS_TOKEN);
-  const router = useRouter();
+  const navigate = useNavigate();
   const { profile, setAuthenticated, setProfile } = useAuthStore();
 
   const handleLogout = async () => {
@@ -32,8 +32,7 @@ export default function DropdownAccount() {
           setAuthenticated(false);
           setProfile(null);
           setOpen(false);
-          router.push(route.home);
-          router.refresh();
+          navigate(route.home);
         }
       },
       onError: (error) => {
@@ -51,7 +50,7 @@ export default function DropdownAccount() {
     >
       <Button
         variant='ghost'
-        className='text-md hover:text-green-primary group size-full rounded-full p-0! hover:bg-transparent! focus:outline-none focus-visible:ring-0'
+        className='hover:text-green-primary group size-full rounded-full p-0! hover:bg-transparent! focus:outline-none focus-visible:ring-0'
       >
         <RiUser3Line className='size-[21px]' />
         {profile?.fullName ?? 'Tài khoản'}
@@ -115,10 +114,10 @@ export default function DropdownAccount() {
                       variant={'ghost'}
                       onClick={handleLogout}
                       size={'lg'}
-                      className='text-md flex w-full justify-start rounded-none! px-4 py-3! text-left font-normal text-black transition-all duration-200 ease-linear hover:bg-slate-100'
+                      className='flex w-full justify-start rounded-none! px-4 py-3! text-left font-normal text-black transition-all duration-200 ease-linear hover:bg-slate-100 hover:bg-transparent!'
                     >
                       {logoutMutation.isPending ? (
-                        <CircleLoading />
+                        <CircleLoading className='stroke-gray-500' />
                       ) : (
                         'Đăng xuất'
                       )}

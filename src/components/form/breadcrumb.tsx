@@ -19,7 +19,7 @@ export default function Breadcrumb({
     <OriginBreadcrumb className='block'>
       <BreadcrumbList className='bg-breadcrumb relative flex h-17.5 w-full items-center'>
         <div className='mx-auto min-[1200px]:w-285 min-[1440px]:w-330'>
-          <Row className='text-md my-0 gap-x-2'>
+          <Row className='my-0 gap-x-2'>
             {items.map((item, index) => {
               const isLast = index === items.length - 1;
               return (

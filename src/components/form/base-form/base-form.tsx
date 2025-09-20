@@ -44,7 +44,7 @@ export default function BaseForm<T extends Record<string, any>>({
   return (
     <Form {...form}>
       <form
-        className={cn('relative rounded-lg bg-white p-4', className)}
+        className={cn('relative bg-white', className)}
         onSubmit={form.handleSubmit((values) => onSubmit(values, form))}
         onChange={onChange}
       >
