@@ -9,3 +9,5 @@ export * from './upload.type';
 export * from './category.type';
 export * from './product.type';
 export * from './breadcrumb.type';
+export * from './cart.type';
+export * from './cart-item.type';
