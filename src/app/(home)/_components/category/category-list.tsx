@@ -8,14 +8,17 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import './category.css';
 import { useCategoryListQuery } from '@/queries';
+import CategorySkeleton from '@/app/(home)/_components/category/category-skeleton';
+import { Row } from '@/components/form';
 
 export default function CategoryList() {
   const categoryListQuery = useCategoryListQuery({});
+  const loading = categoryListQuery.isLoading || categoryListQuery.isFetching;
   const categories = categoryListQuery.data?.data.content || [];
   const swiper = useSwiper();
 
   return (
-    <div className='mb-4 rounded-lg bg-white p-4 shadow-[0px_0px_10px_10px] shadow-gray-200'>
+    <div className='mb-4 rounded-lg bg-white px-4 py-6 shadow-[0px_0px_10px_10px] shadow-gray-200'>
       <h2 className='mb-4 text-center text-4xl font-bold'>Danh mục</h2>
 
       <div className='category-list-container relative'>
@@ -29,22 +32,33 @@ export default function CategoryList() {
           }}
           modules={[Navigation]}
         >
-          {categories.map((cate) => (
-            <SwiperSlide key={cate.id}>
-              <div className='rounded-lg'>
-                <Image
-                  src={renderImageUrl(cate.imageUrl)}
-                  alt={cate.name}
-                  width={200}
-                  height={80}
-                  className='w-full rounded-lg object-cover'
-                />
-              </div>
-              <p className='mt-5 text-center text-base font-medium'>
-                {cate.name}
-              </p>
-            </SwiperSlide>
-          ))}
+          {!loading ? (
+            categories.map((cate) => (
+              <SwiperSlide
+                key={cate.id}
+                className='hover:text-green-primary transition-all! duration-200 ease-linear'
+              >
+                <div className='rounded-lg'>
+                  <Image
+                    src={renderImageUrl(cate.imageUrl)}
+                    alt={cate.name}
+                    width={200}
+                    height={80}
+                    className='w-full rounded-lg object-cover'
+                  />
+                </div>
+                <p className='mt-4 text-center text-base font-medium'>
+                  {cate.name}
+                </p>
+              </SwiperSlide>
+            ))
+          ) : (
+            <Row>
+              {Array.from({ length: 8 }).map((_, index) => (
+                <CategorySkeleton key={index} />
+              ))}
+            </Row>
+          )}
         </Swiper>
         <div
           className='swiper-button-next'
