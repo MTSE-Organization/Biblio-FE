@@ -6,12 +6,58 @@ import { RiShoppingCartLine } from 'react-icons/ri';
 import { FaTimes } from 'react-icons/fa';
 import { AnimatePresence, motion } from 'framer-motion';
 import Image from 'next/image';
-import { product } from '@/assets';
+import { emptyCart, product } from '@/assets';
 import Link from 'next/link';
 import route from '@/routes';
+import { useCartQuery } from '@/queries/cart.query';
+import { storageKeys } from '@/constants';
+import { getData } from '@/utils';
+
+const CartItem = () => {
+  return (
+    <li className='mb-5 flex border-b pb-5'>
+      <Link className='m-auto basis-6/24' href='#'>
+        <Image className='rounded-sm' src={product} alt='Product' />
+      </Link>
+      <div className='relative flex basis-18/24 flex-col pl-4'>
+        <Link href='#' className='text-[15px] leading-4.5 font-medium'>
+          Product name
+        </Link>
+        <span className='text-green-primary mt-1 text-sm font-bold'>
+          100.000đ
+        </span>
+        <div className='mt-[5px] flex h-[30px] w-[80px] items-center justify-between rounded-sm border'>
+          <button className='flex w-[25px] cursor-pointer items-center justify-center'>
+            -
+          </button>
+          <input
+            type='text'
+            defaultValue={1}
+            minLength={1}
+            maxLength={20}
+            className='w-[30px] text-center'
+          />
+          <button className='flex w-[25px] cursor-pointer items-center justify-center'>
+            +
+          </button>
+        </div>
+        <button className='absolute right-0 cursor-pointer hover:text-red-500'>
+          <FaTimes size={12} />
+        </button>
+      </div>
+    </li>
+  );
+};
 
 export default function CartSidebar() {
   const [open, setOpen] = useState(false);
+  const accessToken = getData(storageKeys.ACCESS_TOKEN);
+
+  const cartQuery = useCartQuery({
+    enabled: open && !!accessToken
+  });
+
+  const cart = cartQuery?.data?.data;
 
   return (
     <div>
@@ -59,299 +105,40 @@ export default function CartSidebar() {
                 </button>
               </div>
 
-              {/* <div className='flex flex-1 flex-col items-center justify-center overflow-y-auto p-4'>
-                <p className='text-gray-500'>
-                  Vui lòng{' '}
-                  <Link
-                    className='text-green-primary transition-all duration-200 ease-linear hover:opacity-80'
-                    href={route.login}
-                  >
-                    đăng nhập
-                  </Link>{' '}
-                  để xem giỏ hàng
-                </p>
-                <Image
-                  src={emptyCart.src}
-                  alt='Empty Card'
-                  width={200}
-                  height={200}
-                />
-              </div> */}
-
-              <ul className='overflow-auto px-5 pt-5 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden'>
-                <li className='mb-5 flex border-b pb-5'>
-                  <Link className='m-auto basis-6/24' href='#'>
-                    <Image className='rounded-sm' src={product} alt='Product' />
-                  </Link>
-                  <div className='relative flex basis-18/24 flex-col pl-4'>
+              {!accessToken ? (
+                <div className='flex flex-1 flex-col items-center justify-center overflow-y-auto p-4'>
+                  <p className='text-gray-500'>
+                    Vui lòng{' '}
                     <Link
-                      href='#'
-                      className='text-[15px] leading-4.5 font-medium'
+                      className='text-green-primary transition-all duration-200 ease-linear hover:opacity-80'
+                      href={route.login}
                     >
-                      Product name
-                    </Link>
-                    <span className='text-green-primary mt-1 text-sm font-bold'>
-                      100.000đ
-                    </span>
-                    <div className='mt-[5px] flex h-[30px] w-[80px] items-center justify-between rounded-sm border'>
-                      <button className='flex w-[25px] cursor-pointer items-center justify-center'>
-                        -
-                      </button>
-                      <input
-                        type='text'
-                        defaultValue={1}
-                        minLength={1}
-                        maxLength={20}
-                        className='w-[30px] text-center'
-                      />
-                      <button className='flex w-[25px] cursor-pointer items-center justify-center'>
-                        +
-                      </button>
-                    </div>
-                    <button className='absolute right-0 cursor-pointer hover:text-red-500'>
-                      <FaTimes size={12} />
-                    </button>
-                  </div>
-                </li>
-                <li className='mb-5 flex border-b pb-5'>
-                  <Link className='m-auto basis-6/24' href='#'>
-                    <Image className='rounded-sm' src={product} alt='Product' />
-                  </Link>
-                  <div className='relative flex basis-18/24 flex-col pl-4'>
-                    <Link
-                      href='#'
-                      className='text-[15px] leading-4.5 font-medium'
-                    >
-                      Product name
-                    </Link>
-                    <span className='text-green-primary mt-1 text-sm font-bold'>
-                      100.000đ
-                    </span>
-                    <div className='mt-[5px] flex h-[30px] w-[80px] items-center justify-between rounded-sm border'>
-                      <button className='flex w-[25px] cursor-pointer items-center justify-center'>
-                        -
-                      </button>
-                      <input
-                        type='text'
-                        defaultValue={1}
-                        minLength={1}
-                        maxLength={20}
-                        className='w-[30px] text-center'
-                      />
-                      <button className='flex w-[25px] cursor-pointer items-center justify-center'>
-                        +
-                      </button>
-                    </div>
-                    <button className='absolute right-0 cursor-pointer hover:text-red-500'>
-                      <FaTimes size={12} />
-                    </button>
-                  </div>
-                </li>
-                <li className='mb-5 flex border-b pb-5'>
-                  <Link className='m-auto basis-6/24' href='#'>
-                    <Image className='rounded-sm' src={product} alt='Product' />
-                  </Link>
-                  <div className='relative flex basis-18/24 flex-col pl-4'>
-                    <Link
-                      href='#'
-                      className='text-[15px] leading-4.5 font-medium'
-                    >
-                      Product name
-                    </Link>
-                    <span className='text-green-primary mt-1 text-sm font-bold'>
-                      100.000đ
-                    </span>
-                    <div className='mt-[5px] flex h-[30px] w-[80px] items-center justify-between rounded-sm border'>
-                      <button className='flex w-[25px] cursor-pointer items-center justify-center'>
-                        -
-                      </button>
-                      <input
-                        type='text'
-                        defaultValue={1}
-                        minLength={1}
-                        maxLength={20}
-                        className='w-[30px] text-center'
-                      />
-                      <button className='flex w-[25px] cursor-pointer items-center justify-center'>
-                        +
-                      </button>
-                    </div>
-                    <button className='absolute right-0 cursor-pointer hover:text-red-500'>
-                      <FaTimes size={12} />
-                    </button>
-                  </div>
-                </li>
-                <li className='mb-5 flex border-b pb-5'>
-                  <Link className='m-auto basis-6/24' href='#'>
-                    <Image className='rounded-sm' src={product} alt='Product' />
-                  </Link>
-                  <div className='relative flex basis-18/24 flex-col pl-4'>
-                    <Link
-                      href='#'
-                      className='text-[15px] leading-4.5 font-medium'
-                    >
-                      Product name
-                    </Link>
-                    <span className='text-green-primary mt-1 text-sm font-bold'>
-                      100.000đ
-                    </span>
-                    <div className='mt-[5px] flex h-[30px] w-[80px] items-center justify-between rounded-sm border'>
-                      <button className='flex w-[25px] cursor-pointer items-center justify-center'>
-                        -
-                      </button>
-                      <input
-                        type='text'
-                        defaultValue={1}
-                        minLength={1}
-                        maxLength={20}
-                        className='w-[30px] text-center'
-                      />
-                      <button className='flex w-[25px] cursor-pointer items-center justify-center'>
-                        +
-                      </button>
-                    </div>
-                    <button className='absolute right-0 cursor-pointer hover:text-red-500'>
-                      <FaTimes size={12} />
-                    </button>
-                  </div>
-                </li>
-                <li className='mb-5 flex border-b pb-5'>
-                  <Link className='m-auto basis-6/24' href='#'>
-                    <Image className='rounded-sm' src={product} alt='Product' />
-                  </Link>
-                  <div className='relative flex basis-18/24 flex-col pl-4'>
-                    <Link
-                      href='#'
-                      className='text-[15px] leading-4.5 font-medium'
-                    >
-                      Product name
-                    </Link>
-                    <span className='text-green-primary mt-1 text-sm font-bold'>
-                      100.000đ
-                    </span>
-                    <div className='mt-[5px] flex h-[30px] w-[80px] items-center justify-between rounded-sm border'>
-                      <button className='flex w-[25px] cursor-pointer items-center justify-center'>
-                        -
-                      </button>
-                      <input
-                        type='text'
-                        defaultValue={1}
-                        minLength={1}
-                        maxLength={20}
-                        className='w-[30px] text-center'
-                      />
-                      <button className='flex w-[25px] cursor-pointer items-center justify-center'>
-                        +
-                      </button>
-                    </div>
-                    <button className='absolute right-0 cursor-pointer hover:text-red-500'>
-                      <FaTimes size={12} />
-                    </button>
-                  </div>
-                </li>
-                <li className='mb-5 flex border-b pb-5'>
-                  <Link className='m-auto basis-6/24' href='#'>
-                    <Image className='rounded-sm' src={product} alt='Product' />
-                  </Link>
-                  <div className='relative flex basis-18/24 flex-col pl-4'>
-                    <Link
-                      href='#'
-                      className='text-[15px] leading-4.5 font-medium'
-                    >
-                      Product name
-                    </Link>
-                    <span className='text-green-primary mt-1 text-sm font-bold'>
-                      100.000đ
-                    </span>
-                    <div className='mt-[5px] flex h-[30px] w-[80px] items-center justify-between rounded-sm border'>
-                      <button className='flex w-[25px] cursor-pointer items-center justify-center'>
-                        -
-                      </button>
-                      <input
-                        type='text'
-                        defaultValue={1}
-                        minLength={1}
-                        maxLength={20}
-                        className='w-[30px] text-center'
-                      />
-                      <button className='flex w-[25px] cursor-pointer items-center justify-center'>
-                        +
-                      </button>
-                    </div>
-                    <button className='absolute right-0 cursor-pointer hover:text-red-500'>
-                      <FaTimes size={12} />
-                    </button>
-                  </div>
-                </li>
-                <li className='mb-5 flex border-b pb-5'>
-                  <Link className='m-auto basis-6/24' href='#'>
-                    <Image className='rounded-sm' src={product} alt='Product' />
-                  </Link>
-                  <div className='relative flex basis-18/24 flex-col pl-4'>
-                    <Link
-                      href='#'
-                      className='text-[15px] leading-4.5 font-medium'
-                    >
-                      Product name
-                    </Link>
-                    <span className='text-green-primary mt-1 text-sm font-bold'>
-                      100.000đ
-                    </span>
-                    <div className='mt-[5px] flex h-[30px] w-[80px] items-center justify-between rounded-sm border'>
-                      <button className='flex w-[25px] cursor-pointer items-center justify-center'>
-                        -
-                      </button>
-                      <input
-                        type='text'
-                        defaultValue={1}
-                        minLength={1}
-                        maxLength={20}
-                        className='w-[30px] text-center'
-                      />
-                      <button className='flex w-[25px] cursor-pointer items-center justify-center'>
-                        +
-                      </button>
-                    </div>
-                    <button className='absolute right-0 cursor-pointer hover:text-red-500'>
-                      <FaTimes size={12} />
-                    </button>
-                  </div>
-                </li>
-                <li className='mb-5 flex border-b pb-5'>
-                  <Link className='m-auto basis-6/24' href='#'>
-                    <Image className='rounded-sm' src={product} alt='Product' />
-                  </Link>
-                  <div className='relative flex basis-18/24 flex-col pl-4'>
-                    <Link
-                      href='#'
-                      className='text-[15px] leading-4.5 font-medium'
-                    >
-                      Product name
-                    </Link>
-                    <span className='text-green-primary mt-1 text-sm font-bold'>
-                      100.000đ
-                    </span>
-                    <div className='mt-[5px] flex h-[30px] w-[80px] items-center justify-between rounded-sm border'>
-                      <button className='flex w-[25px] cursor-pointer items-center justify-center'>
-                        -
-                      </button>
-                      <input
-                        type='text'
-                        defaultValue={1}
-                        minLength={1}
-                        maxLength={20}
-                        className='w-[30px] text-center'
-                      />
-                      <button className='flex w-[25px] cursor-pointer items-center justify-center'>
-                        +
-                      </button>
-                    </div>
-                    <button className='absolute right-0 cursor-pointer hover:text-red-500'>
-                      <FaTimes size={12} />
-                    </button>
-                  </div>
-                </li>
-              </ul>
+                      đăng nhập
+                    </Link>{' '}
+                    để xem giỏ hàng
+                  </p>
+                  <Image
+                    src={emptyCart.src}
+                    alt='Empty Cart'
+                    width={200}
+                    height={200}
+                  />
+                </div>
+              ) : !cart?.cartItems?.length ? (
+                <div className='flex flex-1 flex-col items-center justify-center overflow-y-auto p-4'>
+                  <p className='text-gray-500'>Giỏ hàng của bạn đang trống</p>
+                  <Image
+                    src={emptyCart.src}
+                    alt='Empty Cart'
+                    width={200}
+                    height={200}
+                  />
+                </div>
+              ) : (
+                cart.cartItems.map((cartItem) => (
+                  <CartItem key={cartItem.id} {...cartItem} />
+                ))
+              )}
 
               <div className='border-t p-5'>
                 <Button className='bg-green-primary w-full text-white'>
