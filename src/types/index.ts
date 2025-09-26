@@ -11,3 +11,4 @@ export * from './product.type';
 export * from './breadcrumb.type';
 export * from './cart.type';
 export * from './cart-item.type';
+export * from './product-variant.type';
