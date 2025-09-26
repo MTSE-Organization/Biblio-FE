@@ -27,7 +27,11 @@ const productApiRequest = {
   getById: async (id: string) =>
     await http.get<ApiResponse<ProductResType>>(apiConfig.product.getById, {
       pathParams: { id }
-    })
+    }),
+  getFeature: async () =>
+    await http.get<ApiResponseList<ProductResType>>(
+      apiConfig.product.getFeature
+    )
 };
 
 export default productApiRequest;

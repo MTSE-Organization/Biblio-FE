@@ -1,6 +1,6 @@
 import z from 'zod';
 
-export const baseSearchParamSchema = z.object({
+export const baseSearchSchema = z.object({
   page: z.union([z.number(), z.string()]).optional(),
   size: z.union([z.number(), z.string()]).optional()
 });

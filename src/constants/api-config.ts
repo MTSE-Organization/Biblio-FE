@@ -101,6 +101,18 @@ const apiConfig = defineApiConfig({
       baseUrl: `${AppConstants.apiUrl}v1/product/top-discount`,
       headers: baseHeader,
       method: 'GET'
+    },
+    getFeature: {
+      baseUrl: `${AppConstants.apiUrl}v1/product/feature`,
+      headers: baseHeader,
+      method: 'GET'
+    }
+  },
+  category: {
+    getList: {
+      baseUrl: `${AppConstants.apiUrl}v1/category/list`,
+      headers: baseHeader,
+      method: 'GET'
     }
   }
 });

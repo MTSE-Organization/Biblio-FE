@@ -9,7 +9,7 @@ import { PhoneIcon, SendIcon } from 'lucide-react';
 
 const Footer = () => {
   return (
-    <footer className='relative border-t border-[#e9e9e9] bg-[#f7f7f8] pt-24'>
+    <footer className='relative bg-white pt-24 shadow-[0px_0px_10px_5px_] shadow-gray-200'>
       <Container className='mx-auto max-w-[1320px]'>
         <div className='flex gap-6 pb-24'>
           {/* Logo + About */}
