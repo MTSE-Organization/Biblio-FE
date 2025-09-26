@@ -11,16 +11,25 @@ export default function BookCard({ book }: { book: ProductResType }) {
     (b) => b.isDefault || b.ordering === 0
   );
   return (
-    <div className='h-full rounded-md bg-white p-3 shadow-[0px_0px_8px_2px] shadow-gray-100 transition-all duration-100 ease-linear hover:-translate-y-1'>
-      <div className='relative flex h-auto items-center justify-center rounded-md'>
+    <div className='min-h-115 rounded-md bg-white p-3 transition-all duration-100 ease-linear hover:shadow-[0px_0px_8px_2px] hover:shadow-gray-100'>
+      <div className='relative flex h-auto items-center justify-center'>
         <div className='h-70 w-full'>
-          <Link href={`${route.book}/${book.slug}.${book.id}`}>
-            <Image
-              src={renderImageUrl(defaultImage?.[0].url) || defaultBook.src}
-              fill
-              className='object-cover'
-              alt='Product'
-            />
+          <Link
+            href={`${route.book}/${book.slug}.${book.id}`}
+            className='block'
+          >
+            <div className='relative aspect-[3/4] w-full'>
+              <Image
+                src={renderImageUrl(defaultImage?.[0].url) || defaultBook.src}
+                fill
+                className='object-cover'
+                alt='Product'
+                sizes='(max-width: 768px) 50vw,
+                      (max-width: 1200px) 25vw,
+                      16vw'
+                title={book.name}
+              />
+            </div>
           </Link>
         </div>
         <div className='text-green-primary hover:bg-green-primary absolute bottom-[-16px] flex h-9 w-9 cursor-pointer items-center justify-center rounded-full bg-gray-100 transition-all duration-200 ease-linear hover:text-white'>
@@ -29,7 +38,10 @@ export default function BookCard({ book }: { book: ProductResType }) {
       </div>
       <div className='flex flex-col items-center pt-5 text-center'>
         <div className='mb-3 flex flex-col items-center'>
-          <p className='mb-2 line-clamp-1 text-sm text-gray-500'>
+          <p
+            title={book.category.name}
+            className='mb-2 line-clamp-1 text-sm text-gray-500'
+          >
             {book.category.name}
           </p>
           <div className='flex items-center justify-center'>
@@ -44,12 +56,30 @@ export default function BookCard({ book }: { book: ProductResType }) {
         <Link
           href={`${route.book}/${book.slug}.${book.id}`}
           className='hover:text-green-primary mb-3 line-clamp-1 leading-6 font-medium break-all transition-all duration-200 ease-linear'
+          title={book.name}
         >
           {book.name}
         </Link>
-        <p className='text-green-primary font-bold'>
-          {formatPrice(book.price)} đ
-        </p>
+        {book.discount === 0 && (
+          <p className='text-green-primary font-bold'>
+            {formatPrice(book.price)} ₫
+          </p>
+        )}
+        {book.discount !== 0 && (
+          <div className='flex items-center gap-2'>
+            <div>
+              <p className='text-green-primary font-bold'>
+                {formatPrice((book.price * (100 - book.discount)) / 100)} ₫
+              </p>
+              <p className='font-bold text-gray-400 line-through'>
+                {formatPrice(book.price)} ₫
+              </p>
+            </div>
+            <p className='bg-green-primary rounded p-1 text-xs text-white'>
+              -{book.discount} %
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );

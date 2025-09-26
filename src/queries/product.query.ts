@@ -58,3 +58,11 @@ export const useProductQuery = (id: string) => {
     queryFn: () => productApiRequest.getById(id)
   });
 };
+
+export const useFeaturedProductQuery = () => {
+  return useQuery({
+    queryKey: ['featured-product'],
+    queryFn: () => productApiRequest.getFeature(),
+    enabled: true
+  });
+};

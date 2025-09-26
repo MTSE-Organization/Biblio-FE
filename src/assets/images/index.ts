@@ -10,6 +10,7 @@ import googleIcon from './google.png';
 import emptyData from './empty-data.webp';
 import emptyList from './empty-list.webp';
 import defaultBook from './green-book.svg';
+import noImage from './no-image.jpg';
 
 export {
   defaultAvatar,
@@ -23,5 +24,6 @@ export {
   googleIcon,
   emptyData,
   emptyList,
-  defaultBook
+  defaultBook,
+  noImage
 };

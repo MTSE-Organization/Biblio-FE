@@ -17,7 +17,7 @@ function BookList({
 }) {
   return (
     <div className='mt-10 mb-12 text-center'>
-      <h2 className='mb-10 text-4xl font-bold'>{title}</h2>
+      <h2 className='mb-4 text-4xl font-bold'>{title}</h2>
       <div className='grid grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-5'>
         {!loading &&
           books.map((book, index) => <BookCard book={book} key={index} />)}
@@ -55,7 +55,7 @@ export default function LazyBookList({
   const query = useQueryHook({ enabled: inView });
 
   return (
-    <div ref={ref}>
+    <div ref={ref} className='mb-4 rounded-lg bg-white p-4'>
       <BookList
         loading={query.isLoading || query.isFetching}
         title={title}
