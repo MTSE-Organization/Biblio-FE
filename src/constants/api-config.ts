@@ -114,6 +114,35 @@ const apiConfig = defineApiConfig({
       headers: baseHeader,
       method: 'GET'
     }
+  },
+  cartItem: {
+    updateCartItem: {
+      baseUrl: `${AppConstants.apiUrl}v1/cart-item/update`,
+      headers: baseHeader,
+      method: 'PUT'
+    },
+    deleteCartItem: {
+      baseUrl: `${AppConstants.apiUrl}v1/cart-item/delete/:id`,
+      headers: baseHeader,
+      method: 'DELETE'
+    }
+  },
+  cart: {
+    getCart: {
+      baseUrl: `${AppConstants.apiUrl}v1/cart/get`,
+      headers: baseHeader,
+      method: 'GET'
+    },
+    addItem: {
+      baseUrl: `${AppConstants.apiUrl}v1/cart/add-item`,
+      headers: baseHeader,
+      method: 'POST'
+    },
+    checkout: {
+      baseUrl: `${AppConstants.apiUrl}v1/cart/checkout`,
+      headers: baseHeader,
+      method: 'POST'
+    }
   }
 });
 
