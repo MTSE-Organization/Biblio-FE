@@ -13,6 +13,7 @@ export default function HeroSlider() {
   const featuredProductQuery = useFeaturedProductQuery();
   const images =
     featuredProductQuery.data?.data.content.map((p) => p.image.url) || [];
+
   return (
     <Swiper
       modules={[Autoplay, Pagination]}
