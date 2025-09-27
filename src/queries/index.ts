@@ -3,3 +3,6 @@ export * from './auth.query';
 export * from './account.query';
 export * from './product.query';
 export * from './category.query';
+export * from './cart.query';
+export * from './product-variant.query';
+export * from './cart-item.query';
