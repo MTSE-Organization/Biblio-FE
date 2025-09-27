@@ -1,33 +1,69 @@
+'use client';
+
 import { defaultBook } from '@/assets';
 import route from '@/routes';
 import { ProductResType } from '@/types';
 import { formatPrice, renderImageUrl } from '@/utils';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRef } from 'react';
 import { RiShoppingBagLine, RiStarFill } from 'react-icons/ri';
 
 export default function BookCard({ book }: { book: ProductResType }) {
   const defaultImage = book?.images?.filter(
     (b) => b.isDefault || b.ordering === 0
   );
+  const imageRef = useRef<HTMLImageElement | null>(null);
+  const handleMouseOver = () => {
+    if (imageRef.current) {
+      imageRef.current.style.transform = 'scale(2.4)';
+      imageRef.current.style.cursor = 'zoom-in';
+    }
+  };
+
+  const handleMouseOut = () => {
+    if (imageRef.current) {
+      imageRef.current.style.transform = 'scale(1)';
+      imageRef.current.style.transformOrigin = 'center center';
+      imageRef.current.style.cursor = 'default';
+    }
+  };
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLImageElement>) => {
+    if (imageRef.current) {
+      const { offsetX, offsetY } = e.nativeEvent;
+      const { offsetWidth, offsetHeight } = e.currentTarget;
+
+      const xPercent = (offsetX / offsetWidth) * 100;
+      const yPercent = (offsetY / offsetHeight) * 100;
+
+      imageRef.current.style.transformOrigin = `${xPercent}% ${yPercent}%`;
+    }
+  };
+
   return (
-    <div className='min-h-115 rounded-md bg-white p-3 transition-all duration-100 ease-linear hover:shadow-[0px_0px_8px_2px] hover:shadow-gray-100'>
+    <div className='min-h-115 rounded-md bg-white p-3 transition-all duration-100 ease-linear hover:shadow-[0px_0px_8px_2px] hover:shadow-gray-200'>
       <div className='relative flex h-auto items-center justify-center'>
         <div className='h-70 w-full'>
           <Link
             href={`${route.book}/${book.slug}.${book.id}`}
             className='block'
           >
-            <div className='relative aspect-[3/4] w-full'>
+            <div className='relative aspect-[3/4] w-full overflow-hidden'>
               <Image
+                onMouseOver={handleMouseOver}
+                onMouseOut={handleMouseOut}
+                onMouseMove={handleMouseMove}
+                ref={imageRef}
                 src={renderImageUrl(defaultImage?.[0].url) || defaultBook.src}
                 fill
-                className='object-cover'
+                className='object-cover transition-all duration-50 ease-linear'
                 alt='Product'
                 sizes='(max-width: 768px) 50vw,
                       (max-width: 1200px) 25vw,
                       16vw'
                 title={book.name}
+                unoptimized
               />
             </div>
           </Link>

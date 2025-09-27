@@ -18,8 +18,10 @@ export default function CategoryList() {
   const swiper = useSwiper();
 
   return (
-    <div className='mb-4 rounded-lg bg-white px-4 py-6 shadow-[0px_0px_10px_10px] shadow-gray-200'>
-      <h2 className='mb-4 text-center text-4xl font-bold'>Danh mục</h2>
+    <div className='mb-4 rounded-lg bg-white px-4 py-6 shadow-[0px_0px_10px_2px] shadow-gray-200'>
+      <h2 className='mb-4 border-b-2 border-solid border-gray-200 pb-4 text-center text-4xl font-bold'>
+        Danh mục
+      </h2>
 
       <div className='category-list-container relative'>
         <Swiper
