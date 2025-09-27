@@ -182,12 +182,12 @@ export default function CartSidebar() {
               transition={{ duration: 0.3, ease: 'easeInOut' }}
               className='fixed top-0 right-0 z-50 flex h-full w-85 flex-col bg-white shadow-lg'
             >
-              <div className='flex items-center justify-between border-b p-4'>
+              <div className='relative flex items-center justify-between border-b p-4'>
                 <h2 className='text-lg font-semibold'>Giỏ hàng</h2>
                 <Button
                   variant={'ghost'}
                   onClick={() => setOpen(false)}
-                  className='cursor-pointer p-2 hover:text-red-500'
+                  className='absolute top-4.5 right-2 size-2 cursor-pointer p-0 hover:text-red-500'
                 >
                   <FaTimes />
                 </Button>
