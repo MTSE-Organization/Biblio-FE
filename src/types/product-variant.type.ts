@@ -6,7 +6,7 @@ export type ProductVariantResType = {
   condition: number;
   format: number;
   quantity: number;
-  modifiedPrice: string;
+  modifiedPrice: number;
   imageUrl: string;
   product: ProductResType;
   createdDate: string;
