@@ -2,7 +2,7 @@ import { CategoryAutoType } from '@/types/category.type';
 import { ContributorAutoType } from '@/types/contributor.type';
 import { ProductImageResType } from '@/types/product-image.type';
 import { PublisherAutoType } from '@/types/publisher.type';
-import { BaseSearchParamType } from '@/types/search.type';
+import { BaseSearchType } from '@/types/search.type';
 
 export type ProductResType = {
   id: string;
@@ -25,4 +25,4 @@ export type ProductResType = {
   status: number;
 };
 
-export type ProductSearchParamType = BaseSearchParamType;
+export type ProductSearchType = BaseSearchType;

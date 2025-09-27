@@ -143,6 +143,13 @@ const apiConfig = defineApiConfig({
       headers: baseHeader,
       method: 'POST'
     }
+  },
+  productVariant: {
+    getList: {
+      baseUrl: `${AppConstants.apiUrl}v1/product-variant/list`,
+      headers: baseHeader,
+      method: 'GET'
+    }
   }
 });
 

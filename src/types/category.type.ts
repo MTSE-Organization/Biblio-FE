@@ -1,5 +1,5 @@
 import { categorySearchSchema } from '@/schemaValidations';
-import { BaseSearchParamType } from '@/types/search.type';
+import { BaseSearchType } from '@/types/search.type';
 import z from 'zod';
 
 export type CategoryAutoType = {
@@ -22,4 +22,4 @@ export type CategoryResType = {
 };
 
 export type CategorySearchType = z.infer<typeof categorySearchSchema> &
-  BaseSearchParamType;
+  BaseSearchType;

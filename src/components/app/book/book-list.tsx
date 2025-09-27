@@ -28,7 +28,7 @@ function BookList({
             .fill(0)
             .map((_, i) => <BookCardSkeleton key={i} />)}
       </div>
-      {books.length == 0 && (
+      {books.length == 0 && !loading && (
         <div className='pointer-events-none flex w-full flex-col items-center justify-center gap-5 select-none'>
           <Image
             src={emptyList}

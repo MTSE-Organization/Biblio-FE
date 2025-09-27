@@ -3,14 +3,29 @@
 import { Button } from '@/components/form';
 import List from '@/components/list';
 import ListItem from '@/components/list/ListItem';
-import { ageRatings, CONTRIBUTOR_AUTHOR, languageOptions } from '@/constants';
+import {
+  ageRatings,
+  CONTRIBUTOR_AUTHOR,
+  languageOptions,
+  productVariantConditions,
+  productVariantFormats
+} from '@/constants';
+import { cn } from '@/lib';
 import { logger } from '@/logger';
+import { useProductVariantListQuery } from '@/queries/product-variant.query';
 import { ProductResType } from '@/types';
 import { formatDate, formatPrice } from '@/utils';
 import { useState } from 'react';
 import { RiStarFill } from 'react-icons/ri';
 
 export default function BookDetailInfo({ book }: { book?: ProductResType }) {
+  const [quantity, setQuantity] = useState<number>(1);
+  const [productVariantId, setProductVariantId] = useState<string | null>(null);
+  const bookVariantListQuery = useProductVariantListQuery({
+    params: { productId: book?.id }
+  });
+  const bookVariants = bookVariantListQuery.data?.data.content;
+
   const authors = book?.contributors
     .filter((contr) => contr.kind === CONTRIBUTOR_AUTHOR)
     .map((auth) => auth.name)
@@ -35,8 +50,6 @@ export default function BookDetailInfo({ book }: { book?: ProductResType }) {
   };
 
   const metaData = parseMetadataToObject(book?.metaData!);
-
-  const [quantity, setQuantity] = useState<number>(1);
 
   const handleIncreaseQuantity = () => {
     setQuantity((quantity) => quantity + 1);
@@ -160,9 +173,36 @@ export default function BookDetailInfo({ book }: { book?: ProductResType }) {
         </h5>
         <div className='pl-2.5'>
           <List className='flex w-full flex-wrap'>
-            <ListItem className='bg-green-primary m-0.5 rounded-[5px] border border-solid border-[#e9e9e9] px-2.5 py-[5px] text-sm leading-none text-white'>
-              Mới
-            </ListItem>
+            {bookVariants?.map((bv) => (
+              <ListItem
+                key={bv.id}
+                className='m-0.5 text-sm leading-none text-white'
+              >
+                <Button
+                  variant={'primary'}
+                  className={cn('border text-black hover:text-white', {
+                    'text-white': productVariantId === bv.id,
+                    'bg-transparent': productVariantId !== bv.id
+                  })}
+                  onClick={() =>
+                    setProductVariantId((productVariantId) =>
+                      productVariantId === bv.id ? null : bv.id
+                    )
+                  }
+                >
+                  {
+                    productVariantConditions.find(
+                      (pvc) => pvc.value === bv.condition
+                    )?.label
+                  }
+                  &nbsp; & &nbsp;
+                  {
+                    productVariantFormats.find((pvc) => pvc.value === bv.format)
+                      ?.label
+                  }
+                </Button>
+              </ListItem>
+            ))}
           </List>
         </div>
       </div>
