@@ -40,6 +40,10 @@ const productApiRequest = {
           id
         }
       }
+    ),
+  getTopViewList: async () =>
+    await http.get<ApiResponseList<ProductAutoType>>(
+      apiConfig.product.getTopView
     )
 };
 

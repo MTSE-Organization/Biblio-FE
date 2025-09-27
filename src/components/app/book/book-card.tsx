@@ -2,6 +2,7 @@
 
 import { defaultBook } from '@/assets';
 import { useImageZoom } from '@/hooks';
+import { useViewedProductMutation } from '@/queries';
 import route from '@/routes';
 import { ProductAutoType } from '@/types';
 import { formatPrice, renderImageUrl } from '@/utils';
@@ -10,7 +11,11 @@ import Link from 'next/link';
 import { RiStarFill } from 'react-icons/ri';
 
 export default function BookCard({ book }: { book: ProductAutoType }) {
+  const viewedProductMutation = useViewedProductMutation();
   const { handleMouseMove, handleMouseOut, handleMouseOver } = useImageZoom();
+  const handleClick = async () => {
+    await viewedProductMutation.mutateAsync({ productId: book.id });
+  };
   return (
     <div className='min-h-115 rounded-md bg-white p-3 transition-all duration-100 ease-linear hover:shadow-[0px_0px_8px_2px] hover:shadow-gray-200'>
       <div className='relative flex h-auto items-center justify-center'>
@@ -18,6 +23,7 @@ export default function BookCard({ book }: { book: ProductAutoType }) {
           <Link
             href={`${route.book}/${book.slug}.${book.id}`}
             className='block'
+            onClick={handleClick}
           >
             <div className='relative aspect-[3/4] w-full overflow-hidden'>
               <Image
@@ -59,6 +65,7 @@ export default function BookCard({ book }: { book: ProductAutoType }) {
           href={`${route.book}/${book.slug}.${book.id}`}
           className='hover:text-green-primary mb-3 line-clamp-1 leading-6 font-medium break-all transition-all duration-200 ease-linear'
           title={book.name}
+          onClick={handleClick}
         >
           {book.name}
         </Link>

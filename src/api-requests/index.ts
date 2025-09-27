@@ -6,3 +6,4 @@ export { default as categoryApiRequest } from './category.api-request';
 export { default as cartApiRequest } from './cart.api-request';
 export { default as productVariantApiRequest } from './product-variant.api-request';
 export { default as cartItemApiRequest } from './cart-item.api-request';
+export { default as viewedProductApiRequest } from './viewed-product.api-request';

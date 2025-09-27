@@ -3,7 +3,8 @@ import HeroSlider from './_components/hero-slider/hero-slider';
 import { Container } from '@/components/layout';
 import {
   useLatestProductListQuery,
-  useTopDiscountProductListQuery
+  useTopDiscountProductListQuery,
+  useTopViewProductListQuery
 } from '@/queries';
 import { LazyBookList } from '@/components/app/book';
 import CategoryList from '@/app/(home)/_components/category/category-list';
@@ -29,10 +30,10 @@ export default function HomePage() {
           title='Sách bán chạy nhất'
           useQueryHook={useBestSellerProductListQuery}
         /> */}
-          {/* <BookList
-          title='Sách được xem nhiều nhất'
-          books={Array(8).fill(null)}
-        /> */}
+          <LazyBookList
+            title='Sách có lượt xem nhiều nhất'
+            useQueryHook={useTopViewProductListQuery}
+          />
           <LazyBookList
             title='Sách khuyến mãi cao nhất'
             useQueryHook={useTopDiscountProductListQuery}

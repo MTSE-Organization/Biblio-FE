@@ -25,6 +25,7 @@ export type ProductResType = {
   contributors: ContributorAutoType[];
   createdDate: string;
   modifiedDate: string;
+  totalViews: number;
   status: number;
 };
 
@@ -46,5 +47,6 @@ export type ProductAutoType = {
   slug: string;
   quantity: number;
   discount: number;
+  totalViews: number;
   status: number;
 };

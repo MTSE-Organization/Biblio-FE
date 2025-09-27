@@ -80,3 +80,15 @@ export const useProductListCategoryQuery = ({
     enabled
   });
 };
+
+export const useTopViewProductListQuery = ({
+  enabled = false
+}: {
+  enabled: boolean;
+}) => {
+  return useQuery({
+    queryKey: ['top-view-product-list'],
+    queryFn: () => productApiRequest.getTopViewList(),
+    enabled
+  });
+};

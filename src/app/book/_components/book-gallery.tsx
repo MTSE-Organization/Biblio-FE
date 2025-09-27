@@ -12,6 +12,7 @@ import './book-gallery.css';
 import { ProductImageResType } from '@/types';
 import Image from 'next/image';
 import { renderImageUrl } from '@/utils';
+import { noImage } from '@/assets';
 
 export default function BookGallery({
   images
@@ -54,7 +55,7 @@ export default function BookGallery({
           thumbs={{ swiper: thumbsSwiper }}
           loop={true}
           grabCursor={true}
-          className='mb-8 w-full'
+          className='mb-4 w-full'
           onSlideChange={(swiper) => setActiveIndex(swiper.realIndex)}
           navigation={{
             nextEl: '.swiper-button-next',
@@ -77,6 +78,16 @@ export default function BookGallery({
             </SwiperSlide>
           ))}
         </Swiper>
+        {images?.length === 0 && (
+          <div className='relative h-[500px] w-full overflow-hidden'>
+            <Image
+              src={noImage.src}
+              alt='No image'
+              fill
+              className='rounded-xl object-contain transition-transform duration-200'
+            />
+          </div>
+        )}
         <div
           className='swiper-button-next'
           onClick={() => swiper?.slideNext()}

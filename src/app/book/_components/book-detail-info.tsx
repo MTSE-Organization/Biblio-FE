@@ -3,6 +3,7 @@
 import { Button } from '@/components/form';
 import List from '@/components/list';
 import ListItem from '@/components/list/ListItem';
+import { Separator } from '@/components/ui/separator';
 import {
   ageRatings,
   CONTRIBUTOR_AUTHOR,
@@ -19,6 +20,7 @@ import route from '@/routes';
 import { ProductResType } from '@/types';
 import { formatDate, formatPrice, getData, notify } from '@/utils';
 import { useQueryClient } from '@tanstack/react-query';
+import { Eye } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
 import { RiStarFill } from 'react-icons/ri';
@@ -129,15 +131,18 @@ export default function BookDetailInfo({ book }: { book?: ProductResType }) {
           {book?.name}
         </h2>
       </div>
-      <div className='mt-5 flex items-center'>
-        <div className='mr-2.5 flex items-center gap-1'>
-          <RiStarFill className='text-[#f5885f]' />
-          <RiStarFill className='text-[#f5885f]' />
-          <RiStarFill className='text-[#f5885f]' />
-          <RiStarFill className='text-[#f5885f]' />
-          <RiStarFill className='text-[#f5885f]' />
+      <div className='mt-5 flex items-center gap-4'>
+        <div className='flex items-center gap-1'>
+          {[...Array(5)].map((_, i) => (
+            <RiStarFill key={i} className='text-[#f5885f]' />
+          ))}
         </div>
-        <p>( 2 Reviews)</p>
+        <p>(2 Reviews)</p>
+        <Separator orientation='vertical' />
+        <div className='flex items-center gap-1 text-gray-600'>
+          <Eye />
+          <span>{book?.totalViews} lượt xem</span>
+        </div>
       </div>
       <List className='mt-[15px]'>
         <ListItem className='flex py-[5px] text-[#777]'>
