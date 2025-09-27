@@ -7,6 +7,7 @@ import BookGallerySkeleton from '@/app/book/_components/book-gallery-skeleton';
 import BookGallery from '@/app/book/_components/book-gallery';
 import BookDetailInfoSkeleton from '@/app/book/_components/book-detail-info-skeleton';
 import BookDetailInfo from '@/app/book/_components/book-detail-info';
+import BookSimilarCategoryList from '@/app/book/_components/book-similar-category-list';
 
 export default function BookDetail() {
   const { slug } = useParams<{ slug: string }>();
@@ -39,6 +40,7 @@ export default function BookDetail() {
         </Col>
       </Row>
       <BookTabs book={book} />
+      <BookSimilarCategoryList categoryId={book?.category.id as string} />
     </>
   );
 }

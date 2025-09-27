@@ -92,6 +92,7 @@ const BookTabs = ({ book }: { book?: ProductResType }) => {
     </Row>
   );
 };
+
 function BookDescription({ description }: { description: string }) {
   const collapsedHeight = 150;
   const [showFull, setShowFull] = useState(false);
@@ -218,7 +219,7 @@ function AvatarCard({
   return (
     <div className='mb-2.5 flex gap-8'>
       <div className='flex flex-col items-center text-center'>
-        <div className='h-25 w-25 shrink-0'>
+        <div className='mt-2 h-25 w-25 shrink-0'>
           <Image
             className='h-25 w-25 rounded-full object-cover'
             width={100}
