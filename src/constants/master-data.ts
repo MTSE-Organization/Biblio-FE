@@ -9,6 +9,10 @@ import {
   GENDER_FEMALE,
   GENDER_MALE,
   GENDER_OTHER,
+  PRODUCT_VARIANT_CONDITION_NEW,
+  PRODUCT_VARIANT_CONDITION_OLD,
+  PRODUCT_VARIANT_FORMAT_HARD_COVER,
+  PRODUCT_VARIANT_FORMAT_PAPER_BACK,
   UPLOAD_AVATAR,
   UPLOAD_SYSTEM
 } from '@/constants/constant';
@@ -330,4 +334,26 @@ export const ageRatings = [
   { label: '12 - 15 tuổi', value: AGE_RATING_12_15 },
   { label: '16 - 18 tuổi', value: AGE_RATING_16_18 },
   { label: '18+', value: AGE_RATING_18_OVER }
+];
+
+export const productVariantConditions = [
+  {
+    label: 'Mới',
+    value: PRODUCT_VARIANT_CONDITION_NEW
+  },
+  {
+    label: 'Cũ',
+    value: PRODUCT_VARIANT_CONDITION_OLD
+  }
+];
+
+export const productVariantFormats = [
+  {
+    label: 'Bìa cứng',
+    value: PRODUCT_VARIANT_FORMAT_HARD_COVER
+  },
+  {
+    label: 'Bìa mềm',
+    value: PRODUCT_VARIANT_FORMAT_PAPER_BACK
+  }
 ];

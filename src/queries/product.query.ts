@@ -1,12 +1,12 @@
 import { productApiRequest } from '@/api-requests';
-import { ProductSearchParamType } from '@/types';
+import { ProductSearchType } from '@/types';
 import { useQuery } from '@tanstack/react-query';
 
 export const useProductListQuery = ({
   enabled = false,
   params
 }: {
-  params?: ProductSearchParamType;
+  params?: ProductSearchType;
   enabled: boolean;
 }) => {
   return useQuery({

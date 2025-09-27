@@ -3,12 +3,12 @@ import {
   ApiResponse,
   ApiResponseList,
   ProductResType,
-  ProductSearchParamType
+  ProductSearchType
 } from '@/types';
 import { http } from '@/utils';
 
 const productApiRequest = {
-  getList: async (params?: ProductSearchParamType) =>
+  getList: async (params?: ProductSearchType) =>
     await http.get<ApiResponseList<ProductResType>>(apiConfig.product.getList, {
       params
     }),

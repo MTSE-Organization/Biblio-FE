@@ -1,3 +1,4 @@
+import { BaseSearchType } from '@/types/search.type';
 import { ProductResType } from './product.type';
 
 export type ProductVariantResType = {
@@ -12,3 +13,10 @@ export type ProductVariantResType = {
   modifiedDate: string;
   status: number;
 };
+
+export type ProductVariantSearchType = {
+  condition?: number;
+  format?: number;
+  productId?: string;
+  status?: number;
+} & BaseSearchType;
