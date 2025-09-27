@@ -7,3 +7,11 @@ export const useDeleteItemMutation = () => {
     mutationFn: async (id: string) => await cartItemApiRequest.deleteItem(id)
   });
 };
+
+export const useUpdateCartItemMutation = () => {
+  return useMutation({
+    mutationKey: ['update-cart-item'],
+    mutationFn: async (body: { id: string; quantity: number }) =>
+      await cartItemApiRequest.updateCartItem(body)
+  });
+};

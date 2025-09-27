@@ -7,6 +7,11 @@ const cartItemApiRequest = {
     await http.post<ApiResponse<any>>(apiConfig.cartItem.deleteCartItem, {
       pathParams: { id }
     });
+  },
+  updateCartItem: async (body: { id: string; quantity: number }) => {
+    await http.put<ApiResponse<any>>(apiConfig.cartItem.updateCartItem, {
+      body
+    });
   }
 };
 
