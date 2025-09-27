@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Button } from '@/components/form';
 import { RiShoppingCartLine } from 'react-icons/ri';
 import { FaTimes } from 'react-icons/fa';
@@ -12,21 +12,67 @@ import route from '@/routes';
 import { useCartQuery } from '@/queries/cart.query';
 import { formatPrice, notify, renderImageUrl } from '@/utils';
 import { CartItemResType } from '@/types';
-import { useDeleteItemMutation } from '@/queries';
+import { useDeleteItemMutation, useUpdateCartItemMutation } from '@/queries';
 import { useQueryClient } from '@tanstack/react-query';
 import { logger } from '@/logger';
 import { useAuthStore } from '@/store';
 import { cn } from '@/lib';
+import { debounce } from 'lodash';
 
 function CartItem({
   cartItem,
   onRemoveCartItem,
+  onUpdateCartItem,
   onClose
 }: {
   cartItem: CartItemResType;
   onRemoveCartItem: (id: string) => void;
+  onUpdateCartItem: (id: string, quantity: number) => void;
   onClose: () => void;
 }) {
+  const [quantity, setQuantity] = useState<number>(1);
+
+  useEffect(() => {
+    setQuantity(cartItem?.quantity ?? 1);
+  }, [cartItem]);
+
+  const debouncedUpdate = useMemo(
+    () =>
+      debounce((id: string, quantity: number) => {
+        onUpdateCartItem(id, quantity);
+      }, 500),
+    [onUpdateCartItem]
+  );
+
+  useEffect(() => {
+    return () => {
+      debouncedUpdate.cancel();
+    };
+  }, [debouncedUpdate]);
+
+  const handleIncreaseQuantity = () => {
+    setQuantity((prev) => {
+      const newValue = prev + 1;
+      debouncedUpdate(cartItem.id, newValue);
+      return newValue;
+    });
+  };
+
+  const handleDecreaseQuantity = () => {
+    setQuantity((prev) => {
+      if (prev === 1) return prev;
+      const newValue = prev - 1;
+      debouncedUpdate(cartItem.id, newValue);
+      return newValue;
+    });
+  };
+
+  const handleChangeQuantity = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = +e.target.value;
+    setQuantity(value);
+    debouncedUpdate(cartItem.id, value);
+  };
+
   return (
     <li className='mb-5 flex border-b pb-5'>
       <Link
@@ -88,6 +134,7 @@ function CartItem({
         )}
         <div className='mt-[5px] flex h-[30px] w-[80px] items-center justify-between rounded-sm border'>
           <Button
+            onClick={handleDecreaseQuantity}
             variant={'ghost'}
             className='flex w-[25px] cursor-pointer items-center justify-center p-0 hover:bg-transparent'
           >
@@ -95,12 +142,14 @@ function CartItem({
           </Button>
           <input
             type='text'
-            defaultValue={cartItem.quantity}
+            value={quantity}
+            onChange={handleChangeQuantity}
             minLength={1}
             maxLength={20}
             className='w-[30px] text-center'
           />
           <Button
+            onClick={handleIncreaseQuantity}
             variant={'ghost'}
             className='flex w-[25px] cursor-pointer items-center justify-center p-0 hover:bg-transparent'
           >
@@ -126,6 +175,7 @@ export default function CartSidebar() {
   const cartItemQuantity = cart?.cartItems.length ?? 0;
 
   const removeFromCartMutation = useDeleteItemMutation();
+  const updateCartItem = useUpdateCartItemMutation();
 
   const handleRemoveFromCart = (id: string) => {
     removeFromCartMutation.mutateAsync(id, {
@@ -140,6 +190,22 @@ export default function CartSidebar() {
     });
   };
 
+  const handleUpdateCartItem = (id: string, quantity: number) => {
+    updateCartItem.mutateAsync(
+      { id, quantity },
+      {
+        onSuccess: () => {
+          notify.success('Cập nhât giỏ hàng thàng công');
+          queryClient.invalidateQueries({ queryKey: ['cart'] });
+        },
+        onError: (error) => {
+          notify.error('Đã có lỗi xảy ra');
+          logger.error(error);
+        }
+      }
+    );
+  };
+
   return (
     <div>
       <Button
@@ -151,7 +217,7 @@ export default function CartSidebar() {
           <RiShoppingCartLine className='size-[21px]' />
           <div
             className={cn(
-              'group-hover:bg-green-primary group-hover:bg-green-primary absolute -top-1.5 left-2.5 flex h-4 w-5 items-center justify-center rounded-full bg-black py-0 text-xs text-white transition-all duration-200 ease-linear',
+              'group-hover:bg-green-primary absolute -top-1.5 left-2.5 flex h-4 w-5 items-center justify-center rounded-full bg-black py-0 text-xs text-white transition-all duration-200 ease-linear',
               {
                 'w-6': cartItemQuantity > 9
               }
@@ -229,6 +295,7 @@ export default function CartSidebar() {
                       key={cartItem?.id}
                       cartItem={cartItem}
                       onRemoveCartItem={handleRemoveFromCart}
+                      onUpdateCartItem={handleUpdateCartItem}
                       onClose={() => setOpen(false)}
                     />
                   ))}
