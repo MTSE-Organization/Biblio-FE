@@ -14,13 +14,15 @@ import { cn } from '@/lib';
 import { logger } from '@/logger';
 import { useProductVariantListQuery } from '@/queries/product-variant.query';
 import { ProductResType } from '@/types';
-import { formatDate, formatPrice } from '@/utils';
+import { formatDate, formatPrice, notify } from '@/utils';
 import { useState } from 'react';
 import { RiStarFill } from 'react-icons/ri';
 
 export default function BookDetailInfo({ book }: { book?: ProductResType }) {
   const [quantity, setQuantity] = useState<number>(1);
   const [productVariantId, setProductVariantId] = useState<string | null>(null);
+  const [isSelectedProductVariant, setIsSelectedProductVariant] =
+    useState<boolean>(true);
   const bookVariantListQuery = useProductVariantListQuery({
     params: { productId: book?.id }
   });
@@ -63,6 +65,23 @@ export default function BookDetailInfo({ book }: { book?: ProductResType }) {
   const handleChangeQuantity = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setQuantity(+value);
+  };
+
+  const handleSelectProductVariant = (bookVariantId: string) => {
+    setProductVariantId((productVariantId) =>
+      productVariantId === bookVariantId ? null : bookVariantId
+    );
+    setIsSelectedProductVariant(true);
+  };
+
+  const handleAddToCart = () => {
+    if (!productVariantId) {
+      notify.error('Vui lòng chọn phân loại sách');
+      setIsSelectedProductVariant(false);
+      return;
+    }
+
+    // TODO: ADD TO CART
   };
 
   return (
@@ -168,8 +187,12 @@ export default function BookDetailInfo({ book }: { book?: ProductResType }) {
         )}
       </div>
       <div className='flex items-center pt-5'>
-        <h5 className='mb-0 leading-[1.556] text-[#2b2b2d]'>
-          Tình trạng <span>:</span>
+        <h5
+          className={cn('mb-0 leading-[1.556] text-[#2b2b2d]', {
+            'text-red-500': !productVariantId && !isSelectedProductVariant
+          })}
+        >
+          Phân loại <span>:</span>
         </h5>
         <div className='pl-2.5'>
           <List className='flex w-full flex-wrap'>
@@ -184,11 +207,7 @@ export default function BookDetailInfo({ book }: { book?: ProductResType }) {
                     'text-white': productVariantId === bv.id,
                     'bg-transparent': productVariantId !== bv.id
                   })}
-                  onClick={() =>
-                    setProductVariantId((productVariantId) =>
-                      productVariantId === bv.id ? null : bv.id
-                    )
-                  }
+                  onClick={() => handleSelectProductVariant(bv.id)}
                 >
                   {
                     productVariantConditions.find(
@@ -236,6 +255,7 @@ export default function BookDetailInfo({ book }: { book?: ProductResType }) {
           <Button
             className='text-green-primary border-green-primary hover:bg-green-primary flex items-center justify-center rounded-[5px] border border-solid bg-white px-[22px] py-2 leading-[1.2] font-bold capitalize hover:text-white'
             variant={'outline'}
+            onClick={handleAddToCart}
           >
             Thêm vào giỏ hàng
           </Button>
