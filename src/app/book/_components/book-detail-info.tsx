@@ -1,3 +1,5 @@
+'use client';
+
 import { Button } from '@/components/form';
 import List from '@/components/list';
 import ListItem from '@/components/list/ListItem';
@@ -5,6 +7,7 @@ import { ageRatings, CONTRIBUTOR_AUTHOR, languageOptions } from '@/constants';
 import { logger } from '@/logger';
 import { ProductResType } from '@/types';
 import { formatDate, formatPrice } from '@/utils';
+import { useState } from 'react';
 import { RiStarFill } from 'react-icons/ri';
 
 export default function BookDetailInfo({ book }: { book?: ProductResType }) {
@@ -32,7 +35,22 @@ export default function BookDetailInfo({ book }: { book?: ProductResType }) {
   };
 
   const metaData = parseMetadataToObject(book?.metaData!);
-  console.log('🚀 ~ BookDetailInfo ~ metaData:', metaData);
+
+  const [quantity, setQuantity] = useState<number>(1);
+
+  const handleIncreaseQuantity = () => {
+    setQuantity((quantity) => quantity + 1);
+  };
+
+  const handleDecreaseQuantity = () => {
+    if (quantity === 1) return;
+    setQuantity((quantity) => quantity - 1);
+  };
+
+  const handleChangeQuantity = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setQuantity(+value);
+  };
 
   return (
     <>
@@ -152,18 +170,26 @@ export default function BookDetailInfo({ book }: { book?: ProductResType }) {
         <div className='relative flex h-full'>
           <input
             type='text'
-            defaultValue={1}
+            value={quantity}
+            onChange={handleChangeQuantity}
             minLength={1}
-            maxLength={20}
-            className='mr-[5px] h-10 w-10 rounded-[5px] border border-solid border-[#e9e9e9] text-center'
+            className='mr-2 h-10 w-10 rounded-[5px] border border-solid border-[#e9e9e9] text-center'
           />
           <div className='flex flex-col justify-between'>
-            <button className='flex h-[18px] w-[18px] cursor-pointer items-center justify-center rounded-[5px] border border-solid border-[#e9e9e9] bg-white p-0 pb-[2.5px] leading-0'>
+            <Button
+              onClick={handleIncreaseQuantity}
+              variant={'ghost'}
+              className='flex h-[18px] w-[18px] cursor-pointer items-center justify-center rounded-[5px] border border-solid border-[#e9e9e9] bg-white p-0 pb-[2.5px] leading-0'
+            >
               +
-            </button>
-            <button className='flex h-[18px] w-[18px] cursor-pointer items-center justify-center rounded-[5px] border border-solid border-[#e9e9e9] bg-white p-0 pb-[2.5px] leading-0'>
+            </Button>
+            <Button
+              onClick={handleDecreaseQuantity}
+              variant={'ghost'}
+              className='flex h-[18px] w-[18px] cursor-pointer items-center justify-center rounded-[5px] border border-solid border-[#e9e9e9] bg-white p-0 pb-[2.5px] leading-0'
+            >
               -
-            </button>
+            </Button>
           </div>
         </div>
         <div className='ml-[15px]'>
