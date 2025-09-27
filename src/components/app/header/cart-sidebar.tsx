@@ -10,24 +10,29 @@ import { emptyCart, product } from '@/assets';
 import Link from 'next/link';
 import route from '@/routes';
 import { useCartQuery } from '@/queries/cart.query';
-import { storageKeys } from '@/constants';
-import { formatPrice, getData, notify, renderImageUrl } from '@/utils';
+import { formatPrice, notify, renderImageUrl } from '@/utils';
 import { CartItemResType } from '@/types';
 import { useDeleteItemMutation } from '@/queries';
 import { useQueryClient } from '@tanstack/react-query';
+import { logger } from '@/logger';
+import { useAuthStore } from '@/store';
+import { cn } from '@/lib';
 
-const CartItem = ({
+function CartItem({
   cartItem,
-  onRemoveCartItem
+  onRemoveCartItem,
+  onClose
 }: {
   cartItem: CartItemResType;
   onRemoveCartItem: (id: string) => void;
-}) => {
+  onClose: () => void;
+}) {
   return (
     <li className='mb-5 flex border-b pb-5'>
       <Link
         className='m-auto basis-6/24'
         href={`${route.book}/${cartItem?.productVariant?.product?.slug}.${cartItem?.productVariant?.product?.id}`}
+        onClick={onClose}
       >
         <Image
           className='rounded-sm'
@@ -42,7 +47,7 @@ const CartItem = ({
         />
       </Link>
       <div className='flex basis-18/24 flex-col pl-4'>
-        <div className='mb-1 flex items-center justify-center gap-2.5'>
+        <div className='relative mb-1 flex items-center justify-center gap-2.5'>
           <Link
             href={`${route.book}/${cartItem?.productVariant?.product?.slug}.${cartItem?.productVariant?.product?.id}`}
             className='hover:text-green-primary line-clamp-1 leading-6 font-medium break-all transition-all duration-200 ease-linear'
@@ -50,12 +55,13 @@ const CartItem = ({
           >
             {cartItem?.productVariant?.product?.name}
           </Link>
-          <button
-            className='cursor-pointer hover:text-red-500'
+          <Button
+            variant={'ghost'}
+            className='absolute -top-1.5 -right-4 size-2 cursor-pointer p-0 hover:text-red-500'
             onClick={() => onRemoveCartItem(cartItem?.id)}
           >
             <FaTimes size={12} />
-          </button>
+          </Button>
         </div>
         {cartItem?.productVariant?.product?.discount === 0 && (
           <p className='text-green-primary text-xs font-bold'>
@@ -81,9 +87,12 @@ const CartItem = ({
           </div>
         )}
         <div className='mt-[5px] flex h-[30px] w-[80px] items-center justify-between rounded-sm border'>
-          <button className='flex w-[25px] cursor-pointer items-center justify-center'>
+          <Button
+            variant={'ghost'}
+            className='flex w-[25px] cursor-pointer items-center justify-center p-0 hover:bg-transparent'
+          >
             -
-          </button>
+          </Button>
           <input
             type='text'
             defaultValue={cartItem.quantity}
@@ -91,38 +100,42 @@ const CartItem = ({
             maxLength={20}
             className='w-[30px] text-center'
           />
-          <button className='flex w-[25px] cursor-pointer items-center justify-center'>
+          <Button
+            variant={'ghost'}
+            className='flex w-[25px] cursor-pointer items-center justify-center p-0 hover:bg-transparent'
+          >
             +
-          </button>
+          </Button>
         </div>
       </div>
     </li>
   );
-};
+}
 
 export default function CartSidebar() {
   const [open, setOpen] = useState(false);
-  const accessToken = getData(storageKeys.ACCESS_TOKEN);
+  const { profile } = useAuthStore();
 
   const cartQuery = useCartQuery({
-    enabled: open && !!accessToken
+    enabled: !!profile
   });
 
   const queryClient = useQueryClient();
 
   const cart = cartQuery?.data?.data;
+  const cartItemQuantity = cart?.cartItems.length ?? 0;
 
   const removeFromCartMutation = useDeleteItemMutation();
 
   const handleRemoveFromCart = (id: string) => {
     removeFromCartMutation.mutateAsync(id, {
       onSuccess: () => {
-        notify.success('Xóa sản phẩm khỏi giỏ hàng thàng công');
+        notify.success('Xóa sách khỏi giỏ hàng thàng công');
         queryClient.invalidateQueries({ queryKey: ['cart'] });
       },
       onError: (error) => {
         notify.error('Đã có lỗi xảy ra');
-        console.log(error);
+        logger.error(error);
       }
     });
   };
@@ -132,18 +145,24 @@ export default function CartSidebar() {
       <Button
         variant='ghost'
         onClick={() => setOpen(true)}
-        className='over:text-green-primary group size-full rounded-full p-0! hover:bg-transparent! focus:outline-none focus-visible:ring-0'
+        className='hover:text-green-primary group size-full rounded-full p-0! hover:bg-transparent! focus:outline-none focus-visible:ring-0'
       >
         <div className='relative'>
           <RiShoppingCartLine className='size-[21px]' />
-          <div className='group-hover:bg-green-primary absolute -top-1.5 left-2.5 flex items-center justify-center rounded-full bg-black p-1 py-0 text-xs text-white transition-all duration-200 ease-linear'>
-            0
+          <div
+            className={cn(
+              'group-hover:bg-green-primary group-hover:bg-green-primary absolute -top-1.5 left-2.5 flex h-4 w-5 items-center justify-center rounded-full bg-black py-0 text-xs text-white transition-all duration-200 ease-linear',
+              {
+                'w-6': cartItemQuantity > 9
+              }
+            )}
+          >
+            {cartItemQuantity > 9 ? '9+' : cartItemQuantity}
           </div>
         </div>
         Giỏ hàng
       </Button>
 
-      {/* Overlay + Sidebar */}
       <AnimatePresence>
         {open && (
           <>
@@ -165,15 +184,16 @@ export default function CartSidebar() {
             >
               <div className='flex items-center justify-between border-b p-4'>
                 <h2 className='text-lg font-semibold'>Giỏ hàng</h2>
-                <button
+                <Button
+                  variant={'ghost'}
                   onClick={() => setOpen(false)}
                   className='cursor-pointer p-2 hover:text-red-500'
                 >
                   <FaTimes />
-                </button>
+                </Button>
               </div>
 
-              {!accessToken ? (
+              {!profile ? (
                 <div className='flex flex-1 flex-col items-center justify-center overflow-y-auto p-4'>
                   <p className='text-gray-500'>
                     Vui lòng{' '}
@@ -209,6 +229,7 @@ export default function CartSidebar() {
                       key={cartItem?.id}
                       cartItem={cartItem}
                       onRemoveCartItem={handleRemoveFromCart}
+                      onClose={() => setOpen(false)}
                     />
                   ))}
                 </ul>

@@ -19,7 +19,7 @@ import route from '@/routes';
 import { ProductResType } from '@/types';
 import { formatDate, formatPrice, getData, notify } from '@/utils';
 import { useQueryClient } from '@tanstack/react-query';
-import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { useState } from 'react';
 import { RiStarFill } from 'react-icons/ri';
 
@@ -34,7 +34,6 @@ export default function BookDetailInfo({ book }: { book?: ProductResType }) {
   const bookVariants = bookVariantListQuery.data?.data.content;
 
   const accessToken = getData(storageKeys.ACCESS_TOKEN);
-  const router = useRouter();
 
   const addItemMutation = useAddItemMutation();
   const queryClient = useQueryClient();
@@ -85,30 +84,39 @@ export default function BookDetailInfo({ book }: { book?: ProductResType }) {
     setIsSelectedProductVariant(true);
   };
 
-  const handleAddToCart = () => {
+  const handleAddToCart = async () => {
     if (!productVariantId) {
       notify.error('Vui lòng chọn phân loại sách');
       setIsSelectedProductVariant(false);
       return;
     }
 
-    // TODO: ADD TO CART
     if (!accessToken) {
-      notify.error('Vui lòng đăng nhập');
-      setTimeout(() => router.push(route.login), 1500);
+      notify.error(
+        <p>
+          Vui lòng{' '}
+          <Link
+            href={route.login}
+            className='text-green-primary hover:text-green-primary/70 transition-all duration-200 ease-linear'
+          >
+            đăng nhập
+          </Link>{' '}
+          để thêm sách vào giỏ hàng
+        </p>
+      );
       return;
     }
 
-    addItemMutation.mutateAsync(
+    await addItemMutation.mutateAsync(
       { productVariantId, quantity },
       {
         onSuccess: () => {
-          notify.success('Đã thêm vào giỏ hàng thành công');
+          notify.success('Thêm sách vào giỏ hàng thành công');
           queryClient.invalidateQueries({ queryKey: ['cart'] });
         },
         onError: (error) => {
           notify.error('Đã có lỗi xảy ra');
-          console.log(error);
+          logger.error('Error while adding to cart:', error);
         }
       }
     );
