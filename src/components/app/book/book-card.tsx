@@ -7,7 +7,7 @@ import { ProductResType } from '@/types';
 import { formatPrice, renderImageUrl } from '@/utils';
 import Image from 'next/image';
 import Link from 'next/link';
-import { RiShoppingBagLine, RiStarFill } from 'react-icons/ri';
+import { RiStarFill } from 'react-icons/ri';
 
 export default function BookCard({ book }: { book: ProductResType }) {
   const defaultImage = book?.images?.filter(
@@ -39,9 +39,6 @@ export default function BookCard({ book }: { book: ProductResType }) {
               />
             </div>
           </Link>
-        </div>
-        <div className='text-green-primary hover:bg-green-primary absolute bottom-[-16px] flex h-9 w-9 cursor-pointer items-center justify-center rounded-full bg-gray-100 transition-all duration-200 ease-linear hover:text-white'>
-          <RiShoppingBagLine />
         </div>
       </div>
       <div className='flex flex-col items-center pt-5 text-center'>

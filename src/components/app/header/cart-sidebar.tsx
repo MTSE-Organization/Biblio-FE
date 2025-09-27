@@ -11,28 +11,82 @@ import Link from 'next/link';
 import route from '@/routes';
 import { useCartQuery } from '@/queries/cart.query';
 import { storageKeys } from '@/constants';
-import { getData } from '@/utils';
+import { formatPrice, getData, notify, renderImageUrl } from '@/utils';
+import { CartItemResType } from '@/types';
+import { useDeleteItemMutation } from '@/queries';
+import { useQueryClient } from '@tanstack/react-query';
 
-const CartItem = () => {
+const CartItem = ({
+  cartItem,
+  onRemoveCartItem
+}: {
+  cartItem: CartItemResType;
+  onRemoveCartItem: (id: string) => void;
+}) => {
   return (
     <li className='mb-5 flex border-b pb-5'>
-      <Link className='m-auto basis-6/24' href='#'>
-        <Image className='rounded-sm' src={product} alt='Product' />
+      <Link
+        className='m-auto basis-6/24'
+        href={`${route.book}/${cartItem?.productVariant?.product?.slug}.${cartItem?.productVariant?.product?.id}`}
+      >
+        <Image
+          className='rounded-sm'
+          src={
+            cartItem?.productVariant?.imageUrl
+              ? renderImageUrl(cartItem?.productVariant?.imageUrl)
+              : product
+          }
+          width={100}
+          height={100}
+          alt='Product'
+        />
       </Link>
-      <div className='relative flex basis-18/24 flex-col pl-4'>
-        <Link href='#' className='text-[15px] leading-4.5 font-medium'>
-          Product name
-        </Link>
-        <span className='text-green-primary mt-1 text-sm font-bold'>
-          100.000đ
-        </span>
+      <div className='flex basis-18/24 flex-col pl-4'>
+        <div className='mb-1 flex items-center justify-center gap-2.5'>
+          <Link
+            href={`${route.book}/${cartItem?.productVariant?.product?.slug}.${cartItem?.productVariant?.product?.id}`}
+            className='hover:text-green-primary line-clamp-1 leading-6 font-medium break-all transition-all duration-200 ease-linear'
+            title={cartItem?.productVariant?.product?.name}
+          >
+            {cartItem?.productVariant?.product?.name}
+          </Link>
+          <button
+            className='cursor-pointer hover:text-red-500'
+            onClick={() => onRemoveCartItem(cartItem?.id)}
+          >
+            <FaTimes size={12} />
+          </button>
+        </div>
+        {cartItem?.productVariant?.product?.discount === 0 && (
+          <p className='text-green-primary text-xs font-bold'>
+            {formatPrice(cartItem?.productVariant?.product?.price)} ₫
+          </p>
+        )}
+        {cartItem?.productVariant?.product?.discount !== 0 && (
+          <div className='flex items-center gap-2 text-xs'>
+            <p className='text-green-primary font-bold'>
+              {formatPrice(
+                (cartItem?.productVariant?.product?.price *
+                  (100 - cartItem?.productVariant?.product?.discount)) /
+                  100
+              )}{' '}
+              ₫
+            </p>
+            <p className='font-bold text-gray-400 line-through'>
+              {formatPrice(cartItem?.productVariant?.product?.price)} ₫
+            </p>
+            <p className='bg-green-primary rounded p-1 text-xs text-white'>
+              -{cartItem?.productVariant?.product?.discount} %
+            </p>
+          </div>
+        )}
         <div className='mt-[5px] flex h-[30px] w-[80px] items-center justify-between rounded-sm border'>
           <button className='flex w-[25px] cursor-pointer items-center justify-center'>
             -
           </button>
           <input
             type='text'
-            defaultValue={1}
+            defaultValue={cartItem.quantity}
             minLength={1}
             maxLength={20}
             className='w-[30px] text-center'
@@ -41,9 +95,6 @@ const CartItem = () => {
             +
           </button>
         </div>
-        <button className='absolute right-0 cursor-pointer hover:text-red-500'>
-          <FaTimes size={12} />
-        </button>
       </div>
     </li>
   );
@@ -57,7 +108,24 @@ export default function CartSidebar() {
     enabled: open && !!accessToken
   });
 
+  const queryClient = useQueryClient();
+
   const cart = cartQuery?.data?.data;
+
+  const removeFromCartMutation = useDeleteItemMutation();
+
+  const handleRemoveFromCart = (id: string) => {
+    removeFromCartMutation.mutateAsync(id, {
+      onSuccess: () => {
+        notify.success('Xóa sản phẩm khỏi giỏ hàng thàng công');
+        queryClient.invalidateQueries({ queryKey: ['cart'] });
+      },
+      onError: (error) => {
+        notify.error('Đã có lỗi xảy ra');
+        console.log(error);
+      }
+    });
+  };
 
   return (
     <div>
@@ -99,7 +167,7 @@ export default function CartSidebar() {
                 <h2 className='text-lg font-semibold'>Giỏ hàng</h2>
                 <button
                   onClick={() => setOpen(false)}
-                  className='p-2 hover:text-red-500'
+                  className='cursor-pointer p-2 hover:text-red-500'
                 >
                   <FaTimes />
                 </button>
@@ -135,9 +203,15 @@ export default function CartSidebar() {
                   />
                 </div>
               ) : (
-                cart.cartItems.map((cartItem) => (
-                  <CartItem key={cartItem.id} {...cartItem} />
-                ))
+                <ul className='h-full overflow-auto px-5 pt-5 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden'>
+                  {cart?.cartItems?.map((cartItem) => (
+                    <CartItem
+                      key={cartItem?.id}
+                      cartItem={cartItem}
+                      onRemoveCartItem={handleRemoveFromCart}
+                    />
+                  ))}
+                </ul>
               )}
 
               <div className='border-t p-5'>
