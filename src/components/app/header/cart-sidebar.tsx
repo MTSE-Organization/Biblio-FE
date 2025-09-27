@@ -18,6 +18,8 @@ import { logger } from '@/logger';
 import { useAuthStore } from '@/store';
 import { cn } from '@/lib';
 import { debounce } from 'lodash';
+import { productVariantConditions, productVariantFormats } from '@/constants';
+import { HamsterLoading } from '@/components/loading';
 
 function CartItem({
   cartItem,
@@ -81,19 +83,20 @@ function CartItem({
         onClick={onClose}
       >
         <Image
-          className='rounded-sm'
+          className='h-25 w-20 rounded-sm object-cover'
           src={
             cartItem?.productVariant?.imageUrl
               ? renderImageUrl(cartItem?.productVariant?.imageUrl)
               : product
           }
           width={100}
-          height={100}
+          height={200}
+          unoptimized
           alt='Product'
         />
       </Link>
       <div className='flex basis-18/24 flex-col pl-4'>
-        <div className='relative mb-1 flex items-center justify-center gap-2.5'>
+        <div className='relative mb-1 flex items-center gap-2.5'>
           <Link
             href={`${route.book}/${cartItem?.productVariant?.product?.slug}.${cartItem?.productVariant?.product?.id}`}
             className='hover:text-green-primary line-clamp-1 leading-6 font-medium break-all transition-all duration-200 ease-linear'
@@ -110,33 +113,46 @@ function CartItem({
           </Button>
         </div>
         {cartItem?.productVariant?.product?.discount === 0 && (
-          <p className='text-green-primary font-bold'>
-            {formatPrice(cartItem?.productVariant?.product?.price)} ₫
+          <p className='text-green-primary text-base font-bold'>
+            {formatPrice(cartItem?.productVariant?.modifiedPrice)} ₫
           </p>
         )}
         {cartItem?.productVariant?.product?.discount !== 0 && (
           <div className='flex items-center gap-2'>
-            <p className='text-green-primary font-bold'>
+            <p className='text-green-primary text-base font-bold'>
               {formatPrice(
-                (cartItem?.productVariant?.product?.price *
+                (cartItem?.productVariant?.modifiedPrice *
                   (100 - cartItem?.productVariant?.product?.discount)) /
                   100
               )}{' '}
               ₫
             </p>
             <p className='text-xs font-bold text-gray-400 line-through'>
-              {formatPrice(cartItem?.productVariant?.product?.price)} ₫
+              {formatPrice(cartItem?.productVariant?.modifiedPrice)} ₫
             </p>
             <p className='bg-green-primary rounded p-1 text-xs text-white'>
               -{cartItem?.productVariant?.product?.discount} %
             </p>
           </div>
         )}
-        <div className='mt-[5px] flex h-[30px] w-[80px] items-center justify-between rounded-sm border'>
+        <p className='mt-1 text-gray-500'>
+          {
+            productVariantConditions.find(
+              (pvc) => pvc.value === cartItem.productVariant.condition
+            )?.label
+          }{' '}
+          &{' '}
+          {
+            productVariantFormats.find(
+              (pvf) => pvf.value === cartItem.productVariant.format
+            )?.label
+          }
+        </p>
+        <div className='mt-[5px] flex h-[20px] w-[90px] items-center justify-between rounded-sm border'>
           <Button
             onClick={handleDecreaseQuantity}
             variant={'ghost'}
-            className='flex w-[25px] cursor-pointer items-center justify-center p-0 hover:bg-transparent'
+            className='hover:text-green-primary flex h-4 w-[20px] cursor-pointer items-center justify-center p-0 text-base hover:bg-transparent'
           >
             -
           </Button>
@@ -145,13 +161,13 @@ function CartItem({
             value={quantity}
             onChange={handleChangeQuantity}
             minLength={1}
-            maxLength={20}
-            className='w-[30px] text-center'
+            maxLength={cartItem.productVariant.quantity}
+            className='w-[40px] text-center'
           />
           <Button
             onClick={handleIncreaseQuantity}
             variant={'ghost'}
-            className='flex w-[25px] cursor-pointer items-center justify-center p-0 hover:bg-transparent'
+            className='hover:text-green-primary flex h-4 w-[20px] cursor-pointer items-center justify-center p-0 text-base hover:bg-transparent'
           >
             +
           </Button>
@@ -166,8 +182,10 @@ export default function CartSidebar() {
   const { profile } = useAuthStore();
 
   const cartQuery = useCartQuery({
-    enabled: !!profile
+    enabled: open
   });
+
+  const loading = cartQuery.isLoading || cartQuery.isFetching;
 
   const queryClient = useQueryClient();
 
@@ -195,7 +213,6 @@ export default function CartSidebar() {
       { id, quantity },
       {
         onSuccess: () => {
-          notify.success('Cập nhât giỏ hàng thàng công');
           queryClient.invalidateQueries({ queryKey: ['cart'] });
         },
         onError: (error) => {
@@ -278,7 +295,7 @@ export default function CartSidebar() {
                     height={200}
                   />
                 </div>
-              ) : !cart?.cartItems?.length ? (
+              ) : !cart?.cartItems?.length && !loading ? (
                 <div className='flex flex-1 flex-col items-center justify-center overflow-y-auto p-4'>
                   <p className='text-gray-500'>Giỏ hàng của bạn đang trống</p>
                   <Image
@@ -287,6 +304,10 @@ export default function CartSidebar() {
                     width={200}
                     height={200}
                   />
+                </div>
+              ) : loading ? (
+                <div className='m-auto flex h-full items-center justify-center'>
+                  <HamsterLoading />
                 </div>
               ) : (
                 <ul className='h-full overflow-auto px-5 pt-5 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden'>
@@ -302,11 +323,13 @@ export default function CartSidebar() {
                 </ul>
               )}
 
-              <div className='border-t p-5'>
-                <Button variant={'primary'} className='w-full text-white'>
-                  <Link href={route.cart}>Xem giỏ hàng</Link>
-                </Button>
-              </div>
+              {!loading && (
+                <div className='border-t p-5'>
+                  <Button variant={'primary'} className='w-full text-white'>
+                    <Link href={route.cart}>Xem giỏ hàng</Link>
+                  </Button>
+                </div>
+              )}
             </motion.div>
           </>
         )}
