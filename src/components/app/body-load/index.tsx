@@ -1,4 +1,5 @@
 'use client';
+
 import { useAuthStore } from '@/store';
 import { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
