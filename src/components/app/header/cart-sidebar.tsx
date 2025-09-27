@@ -141,7 +141,7 @@ export default function CartSidebar() {
               )}
 
               <div className='border-t p-5'>
-                <Button className='bg-green-primary w-full text-white'>
+                <Button variant={'primary'} className='w-full text-white'>
                   <Link href={route.cart}>Xem giỏ hàng</Link>
                 </Button>
               </div>
