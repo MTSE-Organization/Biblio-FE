@@ -102,8 +102,13 @@ const apiConfig = defineApiConfig({
       headers: baseHeader,
       method: 'GET'
     },
-    getFeature: {
-      baseUrl: `${AppConstants.apiUrl}v1/product/feature`,
+    getListByCategory: {
+      baseUrl: `${AppConstants.apiUrl}v1/product/related/category/:id`,
+      headers: baseHeader,
+      method: 'GET'
+    },
+    getTopView: {
+      baseUrl: `${AppConstants.apiUrl}v1/product/top-views`,
       headers: baseHeader,
       method: 'GET'
     }
@@ -149,6 +154,23 @@ const apiConfig = defineApiConfig({
       baseUrl: `${AppConstants.apiUrl}v1/product-variant/list`,
       headers: baseHeader,
       method: 'GET'
+    }
+  },
+  viewedProduct: {
+    create: {
+      baseUrl: `${AppConstants.apiUrl}v1/viewed-product/create`,
+      headers: baseHeader,
+      method: 'POST'
+    },
+    getList: {
+      baseUrl: `${AppConstants.apiUrl}v1/viewed-product/list`,
+      headers: baseHeader,
+      method: 'GET'
+    },
+    delete: {
+      baseUrl: `${AppConstants.apiUrl}v1/viewed-product/delete/:id`,
+      headers: baseHeader,
+      method: 'DELETE'
     }
   }
 });

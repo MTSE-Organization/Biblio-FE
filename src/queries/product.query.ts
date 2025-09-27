@@ -62,7 +62,33 @@ export const useProductQuery = (id: string) => {
 export const useFeaturedProductQuery = () => {
   return useQuery({
     queryKey: ['featured-product'],
-    queryFn: () => productApiRequest.getFeature(),
+    queryFn: () => productApiRequest.getList({ isFeatured: true }),
     enabled: true
+  });
+};
+
+export const useProductListCategoryQuery = ({
+  id,
+  enabled = false
+}: {
+  id: string;
+  enabled?: boolean;
+}) => {
+  return useQuery({
+    queryKey: ['product-category'],
+    queryFn: () => productApiRequest.getListByCategory(id),
+    enabled
+  });
+};
+
+export const useTopViewProductListQuery = ({
+  enabled = false
+}: {
+  enabled: boolean;
+}) => {
+  return useQuery({
+    queryKey: ['top-view-product-list'],
+    queryFn: () => productApiRequest.getTopViewList(),
+    enabled
   });
 };

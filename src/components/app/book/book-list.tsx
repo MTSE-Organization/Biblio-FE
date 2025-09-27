@@ -1,18 +1,16 @@
-import { ApiResponseList, ProductResType } from '@/types';
+import { ProductAutoType } from '@/types';
 import BookCard from './book-card';
-import { UseQueryResult } from '@tanstack/react-query';
-import { useInView } from 'react-intersection-observer';
 import Image from 'next/image';
 import { emptyList } from '@/assets';
 import BookCardSkeleton from '@/components/app/book/book-card-skeleton';
 
-function BookList({
+export default function BookList({
   title,
   books,
   loading
 }: {
   title: string;
-  books: ProductResType[];
+  books: ProductAutoType[];
   loading: boolean;
 }) {
   return (
@@ -40,32 +38,6 @@ function BookList({
           <p className='text-lg font-semibold'>Không có sản phẩm nào</p>
         </div>
       )}
-    </div>
-  );
-}
-
-export default function LazyBookList({
-  title,
-  useQueryHook
-}: {
-  title: string;
-  useQueryHook: (args: {
-    enabled: boolean;
-  }) => UseQueryResult<ApiResponseList<ProductResType>, Error>;
-}) {
-  const { ref, inView } = useInView({ triggerOnce: true, rootMargin: '100px' });
-  const query = useQueryHook({ enabled: inView });
-
-  return (
-    <div
-      ref={ref}
-      className='mb-4 rounded-lg bg-white p-4 shadow-[0px_0px_10px_2px] shadow-gray-200'
-    >
-      <BookList
-        loading={query.isLoading || query.isFetching}
-        title={title}
-        books={query.data?.data.content || []}
-      />
     </div>
   );
 }
