@@ -102,8 +102,8 @@ const apiConfig = defineApiConfig({
       headers: baseHeader,
       method: 'GET'
     },
-    getFeature: {
-      baseUrl: `${AppConstants.apiUrl}v1/product/feature`,
+    getListByCategory: {
+      baseUrl: `${AppConstants.apiUrl}v1/product/related/category/:id`,
       headers: baseHeader,
       method: 'GET'
     }

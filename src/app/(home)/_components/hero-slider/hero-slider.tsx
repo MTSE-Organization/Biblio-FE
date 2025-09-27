@@ -12,7 +12,7 @@ import { renderImageUrl } from '@/utils';
 export default function HeroSlider() {
   const featuredProductQuery = useFeaturedProductQuery();
   const images =
-    featuredProductQuery.data?.data.content.map((p) => p.images[0].url) || [];
+    featuredProductQuery.data?.data.content.map((p) => p.image.url) || [];
   return (
     <Swiper
       modules={[Autoplay, Pagination]}

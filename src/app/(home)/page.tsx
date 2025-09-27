@@ -5,7 +5,7 @@ import {
   useLatestProductListQuery,
   useTopDiscountProductListQuery
 } from '@/queries';
-import { BookList } from '@/components/app/book';
+import { LazyBookList } from '@/components/app/book';
 import CategoryList from '@/app/(home)/_components/category/category-list';
 
 export default function HomePage() {
@@ -21,7 +21,7 @@ export default function HomePage() {
       <Container className='bg-gray-100'>
         <div className='mx-auto max-w-[1320px] pt-12 pb-12'>
           <CategoryList />
-          <BookList
+          <LazyBookList
             title='Sách mới nhất'
             useQueryHook={useLatestProductListQuery}
           />
@@ -33,7 +33,7 @@ export default function HomePage() {
           title='Sách được xem nhiều nhất'
           books={Array(8).fill(null)}
         /> */}
-          <BookList
+          <LazyBookList
             title='Sách khuyến mãi cao nhất'
             useQueryHook={useTopDiscountProductListQuery}
           />

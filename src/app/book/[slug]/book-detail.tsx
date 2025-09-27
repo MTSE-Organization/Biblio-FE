@@ -40,7 +40,7 @@ export default function BookDetail() {
         </Col>
       </Row>
       <BookTabs book={book} />
-      <BookSimilarCategoryList categoryId={book?.category.id as string} />
+      <BookSimilarCategoryList id={book?.id as string} />
     </>
   );
 }

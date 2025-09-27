@@ -3,16 +3,13 @@
 import { defaultBook } from '@/assets';
 import { useImageZoom } from '@/hooks';
 import route from '@/routes';
-import { ProductResType } from '@/types';
+import { ProductAutoType } from '@/types';
 import { formatPrice, renderImageUrl } from '@/utils';
 import Image from 'next/image';
 import Link from 'next/link';
 import { RiStarFill } from 'react-icons/ri';
 
-export default function BookCard({ book }: { book: ProductResType }) {
-  const defaultImage = book?.images?.filter(
-    (b) => b.isDefault || b.ordering === 0
-  );
+export default function BookCard({ book }: { book: ProductAutoType }) {
   const { handleMouseMove, handleMouseOut, handleMouseOver } = useImageZoom();
   return (
     <div className='min-h-115 rounded-md bg-white p-3 transition-all duration-100 ease-linear hover:shadow-[0px_0px_8px_2px] hover:shadow-gray-200'>
@@ -27,7 +24,7 @@ export default function BookCard({ book }: { book: ProductResType }) {
                 onMouseOver={handleMouseOver}
                 onMouseOut={handleMouseOut}
                 onMouseMove={handleMouseMove}
-                src={renderImageUrl(defaultImage?.[0].url) || defaultBook.src}
+                src={renderImageUrl(book.image?.url) || defaultBook.src}
                 fill
                 className='object-cover transition-all duration-50 ease-linear'
                 alt='Product'

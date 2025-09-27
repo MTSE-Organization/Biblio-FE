@@ -7,3 +7,11 @@ export type ProductImageResType = {
   createdDate: string;
   modifiedDate: string;
 };
+
+export type ProductImageAutoType = {
+  id: string;
+  url: string;
+  ordering: number;
+  isDefault: boolean;
+  status: number;
+};
