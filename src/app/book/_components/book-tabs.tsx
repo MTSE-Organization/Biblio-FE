@@ -61,6 +61,7 @@ const BookTabs = ({ book }: { book?: ProductResType }) => {
           <div className='px-8 py-4'>
             {activeTab === 'description' && (
               <BookDescription
+                key={activeTab}
                 description={book?.description ?? 'Không có mô tả'}
               />
             )}
@@ -111,16 +112,9 @@ function BookDescription({ description }: { description: string }) {
   return (
     <div className='relative'>
       <motion.div
-        initial={{
-          height:
-            contentHeight < collapsedHeight ? contentHeight : collapsedHeight
-        }}
+        initial={false}
         animate={{
-          height: showFull
-            ? contentHeight
-            : contentHeight < collapsedHeight
-              ? contentHeight
-              : collapsedHeight
+          height: showFull ? contentHeight : collapsedHeight
         }}
         transition={{ duration: 0.3, ease: 'easeInOut' }}
         className='overflow-hidden'
@@ -242,26 +236,76 @@ function AvatarCard({
   );
 }
 
+function ExpandableSection({
+  children,
+  collapsedHeight = 150
+}: {
+  children: React.ReactNode;
+  collapsedHeight?: number;
+}) {
+  const [showFull, setShowFull] = useState(false);
+  const [contentHeight, setContentHeight] = useState(0);
+  const contentRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!contentRef.current) return;
+    const observer = new ResizeObserver(() => {
+      setContentHeight(contentRef.current?.scrollHeight || 0);
+    });
+    observer.observe(contentRef.current);
+    return () => observer.disconnect();
+  }, [children]);
+
+  return (
+    <div className='relative'>
+      <motion.div
+        initial={false}
+        animate={{
+          height: showFull ? contentHeight : collapsedHeight
+        }}
+        transition={{ duration: 0.3, ease: 'easeInOut' }}
+        className='overflow-hidden'
+      >
+        <div ref={contentRef}>{children}</div>
+      </motion.div>
+
+      {!showFull && contentHeight > collapsedHeight && (
+        <div className='pointer-events-none absolute bottom-10 left-0 h-24 w-full bg-gradient-to-t from-white to-transparent' />
+      )}
+
+      {contentHeight > collapsedHeight && (
+        <div className='pt-2 text-center'>
+          <Button
+            onClick={() => setShowFull(!showFull)}
+            variant='primary'
+            className='font-semibold'
+          >
+            {showFull ? 'Thu gọn' : 'Xem thêm'}
+          </Button>
+        </div>
+      )}
+    </div>
+  );
+}
+
 function ContributorInfo({
   contributors
 }: {
   contributors: ContributorAutoType[];
 }) {
+  if (contributors.length === 0) return <NoData />;
+
   return (
-    <>
-      {contributors.length > 0 ? (
-        contributors.map((contr) => (
-          <AvatarCard
-            key={contr.id}
-            image={contr.avatarPath}
-            name={contr.name}
-            description={contr.bio}
-          />
-        ))
-      ) : (
-        <NoData />
-      )}
-    </>
+    <ExpandableSection collapsedHeight={250}>
+      {contributors.map((contr) => (
+        <AvatarCard
+          key={contr.id}
+          image={contr.avatarPath}
+          name={contr.name}
+          description={contr.bio}
+        />
+      ))}
+    </ExpandableSection>
   );
 }
 
@@ -271,12 +315,15 @@ function PublisherInfo({
   publisher: PublisherAutoType | undefined;
 }) {
   if (!publisher) return null;
+
   return (
-    <AvatarCard
-      image={publisher.logoPath}
-      name={publisher.name}
-      description={publisher.description}
-    />
+    <ExpandableSection collapsedHeight={250}>
+      <AvatarCard
+        image={publisher.logoPath}
+        name={publisher.name}
+        description={publisher.description}
+      />
+    </ExpandableSection>
   );
 }
 
