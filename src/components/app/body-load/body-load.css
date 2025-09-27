@@ -95,8 +95,8 @@
   color: var(--c);
   opacity: var(--o);
   transform: rotateY(var(--r));
-  -webkit-animation: var(--duration) ease forwards;
-  animation: var(--duration) ease forwards;
+  -webkit-animation: var(--duration) ease infinite;
+  animation: var(--duration) ease infinite;
 }
 
 .page-loading div ul li:nth-child(2) {

@@ -1,5 +1,6 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
+@plugin "@tailwindcss/typography";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -157,6 +158,9 @@ input::selection {
 }
 
 @layer utilities {
+  li::marker {
+    --tw-prose-bullets: #000;
+  }
   .skeleton {
     position: relative;
     overflow: hidden;
