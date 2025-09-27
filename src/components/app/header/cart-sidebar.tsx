@@ -64,12 +64,12 @@ function CartItem({
           </Button>
         </div>
         {cartItem?.productVariant?.product?.discount === 0 && (
-          <p className='text-green-primary text-xs font-bold'>
+          <p className='text-green-primary font-bold'>
             {formatPrice(cartItem?.productVariant?.product?.price)} ₫
           </p>
         )}
         {cartItem?.productVariant?.product?.discount !== 0 && (
-          <div className='flex items-center gap-2 text-xs'>
+          <div className='flex items-center gap-2'>
             <p className='text-green-primary font-bold'>
               {formatPrice(
                 (cartItem?.productVariant?.product?.price *
@@ -78,7 +78,7 @@ function CartItem({
               )}{' '}
               ₫
             </p>
-            <p className='font-bold text-gray-400 line-through'>
+            <p className='text-xs font-bold text-gray-400 line-through'>
               {formatPrice(cartItem?.productVariant?.product?.price)} ₫
             </p>
             <p className='bg-green-primary rounded p-1 text-xs text-white'>
