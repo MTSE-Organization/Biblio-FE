@@ -1,0 +1,46 @@
+.book-gallery-container {
+  position: relative;
+  overflow: visible;
+}
+
+.book-gallery-container .swiper-button-next,
+.book-gallery-container .swiper-button-prev {
+  color: var(--color-green-primary);
+  background-color: white;
+  border-radius: 50%;
+  height: 40px;
+  width: 40px;
+  top: 50%;
+  transform: translateY(-50%);
+  box-shadow: 0 0 5px 2px rgba(0, 0, 0, 0.2);
+  z-index: 10;
+}
+
+.book-gallery-container .swiper-button-next {
+  right: -20px;
+}
+
+.book-gallery-container .swiper-button-prev {
+  left: -20px;
+}
+
+.book-gallery-container .swiper-button-next::after,
+.book-gallery-container .swiper-button-prev::after {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.book-gallery-container .swiper-button-prev.swiper-button-disabled,
+.book-gallery-container .swiper-button-next.swiper-button-disabled {
+  display: none;
+}
+
+.book-gallery-container .swiper-button-next,
+.book-gallery-container .swiper-button-prev {
+  @apply opacity-0 transition-opacity duration-200 ease-linear;
+}
+
+.book-gallery-container:hover .swiper-button-next,
+.book-gallery-container:hover .swiper-button-prev {
+  @apply opacity-100;
+}

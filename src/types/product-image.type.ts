@@ -3,5 +3,7 @@ export type ProductImageResType = {
   url: string;
   ordering: number;
   isDefault: boolean;
-  status: number;
+  productId: number;
+  createdDate: string;
+  modifiedDate: string;
 };

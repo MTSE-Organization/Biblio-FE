@@ -4,3 +4,4 @@ export { default as useMobile } from './use-mobile';
 export { default as useNavigate } from './use-navigate';
 export { default as useQueryParams } from './use-query-params';
 export { useFileUpload } from './use-file-upload';
+export { default as useImageZoom } from './use-image-zoom';

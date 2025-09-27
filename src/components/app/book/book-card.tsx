@@ -1,4 +1,7 @@
+'use client';
+
 import { defaultBook } from '@/assets';
+import { useImageZoom } from '@/hooks';
 import route from '@/routes';
 import { ProductResType } from '@/types';
 import { formatPrice, renderImageUrl } from '@/utils';
@@ -10,24 +13,29 @@ export default function BookCard({ book }: { book: ProductResType }) {
   const defaultImage = book?.images?.filter(
     (b) => b.isDefault || b.ordering === 0
   );
+  const { handleMouseMove, handleMouseOut, handleMouseOver } = useImageZoom();
   return (
-    <div className='min-h-115 rounded-md bg-white p-3 transition-all duration-100 ease-linear hover:shadow-[0px_0px_8px_2px] hover:shadow-gray-100'>
+    <div className='min-h-115 rounded-md bg-white p-3 transition-all duration-100 ease-linear hover:shadow-[0px_0px_8px_2px] hover:shadow-gray-200'>
       <div className='relative flex h-auto items-center justify-center'>
         <div className='h-70 w-full'>
           <Link
             href={`${route.book}/${book.slug}.${book.id}`}
             className='block'
           >
-            <div className='relative aspect-[3/4] w-full'>
+            <div className='relative aspect-[3/4] w-full overflow-hidden'>
               <Image
+                onMouseOver={handleMouseOver}
+                onMouseOut={handleMouseOut}
+                onMouseMove={handleMouseMove}
                 src={renderImageUrl(defaultImage?.[0].url) || defaultBook.src}
                 fill
-                className='object-cover'
+                className='object-cover transition-all duration-50 ease-linear'
                 alt='Product'
                 sizes='(max-width: 768px) 50vw,
                       (max-width: 1200px) 25vw,
                       16vw'
                 title={book.name}
+                unoptimized
               />
             </div>
           </Link>
