@@ -1,4 +1,5 @@
 'use client';
+
 import { useState } from 'react';
 import { whiteLogo } from '@/assets';
 import {
@@ -17,7 +18,6 @@ import {
   forgotPasswordStep1Schema,
   forgotPasswordStep2Schema
 } from '@/schemaValidations';
-import { ForgotPasswordBodyType } from '@/types/auth.type';
 import {
   useChangePasswordMutation,
   useForgotPasswordMutation
@@ -28,6 +28,7 @@ import { ErrorCode, formatPasswordErrorMaps, storageKeys } from '@/constants';
 import { UseFormReturn } from 'react-hook-form';
 import { CircleLoading } from '@/components/loading';
 import { useNavigate } from '@/hooks';
+import { ForgotPasswordBodyType } from '@/types';
 
 type ForgotPasswordStepType = 1 | 2;
 

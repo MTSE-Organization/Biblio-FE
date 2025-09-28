@@ -1,4 +1,5 @@
 'use client';
+
 import { whiteLogo } from '@/assets';
 import { Breadcrumb, Button, Col, InputField, Row } from '@/components/form';
 import { BaseForm } from '@/components/form/base-form';
@@ -9,13 +10,13 @@ import { useLoginMutation, useProfileQuery } from '@/queries';
 import route from '@/routes';
 import { loginSchema } from '@/schemaValidations';
 import { useAuthStore } from '@/store';
-import { LoginBodyType } from '@/types/auth.type';
 import { notify, setData } from '@/utils';
 import Image from 'next/image';
 import Link from 'next/link';
 import ButtonLoginGoogle from './button-login-google';
 import { CircleLoading } from '@/components/loading';
 import { useNavigate } from '@/hooks';
+import { LoginBodyType } from '@/types';
 
 export default function LoginForm() {
   const profileQuery = useProfileQuery();

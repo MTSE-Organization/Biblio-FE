@@ -1,13 +1,16 @@
 'use client';
+
 import { Col, Row } from '@/components/form';
-import BookTabs from '../_components/book-tabs';
 import { useParams } from 'next/navigation';
 import { useProductQuery } from '@/queries';
-import BookGallerySkeleton from '@/app/book/_components/book-gallery-skeleton';
-import BookGallery from '@/app/book/_components/book-gallery';
-import BookDetailInfoSkeleton from '@/app/book/_components/book-detail-info-skeleton';
-import BookDetailInfo from '@/app/book/_components/book-detail-info';
-import BookSimilarCategoryList from '@/app/book/_components/book-similar-category-list';
+import {
+  BookDetailInfo,
+  BookDetailInfoSkeleton,
+  BookGallery,
+  BookGallerySkeleton,
+  BookSimilarCategoryList,
+  BookTabs
+} from '@/app/book/_components';
 
 export default function BookDetail() {
   const { slug } = useParams<{ slug: string }>();

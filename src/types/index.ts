@@ -13,3 +13,5 @@ export * from './cart.type';
 export * from './cart-item.type';
 export * from './product-image.type';
 export * from './product-variant.type';
+export * from './contributor.type';
+export * from './publisher.type';
