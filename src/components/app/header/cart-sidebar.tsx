@@ -182,7 +182,7 @@ export default function CartSidebar() {
   const { profile } = useAuthStore();
 
   const cartQuery = useCartQuery({
-    enabled: open
+    enabled: open && !!profile
   });
 
   const loading = cartQuery.isLoading || cartQuery.isFetching;
