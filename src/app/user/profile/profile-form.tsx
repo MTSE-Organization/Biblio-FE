@@ -30,7 +30,6 @@ import {
   useUploadImageMutation
 } from '@/queries';
 import { CircleLoading } from '@/components/loading';
-import { Footer } from '@/components/app/footer';
 import { profileSchema } from '@/schemaValidations';
 
 export default function ProfileForm() {
@@ -103,128 +102,117 @@ export default function ProfileForm() {
   };
 
   return (
-    <div>
+    <>
       {/* <Breadcrumb
         items={[{ label: 'Trang chủ', href: route.home }, { label: 'Hồ sơ' }]}
         separator='/'
       /> */}
-      <div className='py-25 max-[1600px]:py-20'>
-        <div className='mx-auto min-[1200px]:w-180 min-[1440px]:w-200'>
-          <div className='rounded-xl border border-solid border-gray-100 bg-white p-5'>
-            <div className='text-center'>
-              <Image
-                src={whiteLogo.src}
-                width={200}
-                alt='Biblio Logo'
-                height={200}
-                className='mx-auto block h-auto w-50'
-              />
-            </div>
-            <BaseForm
-              schema={profileSchema}
-              onSubmit={onSubmit}
-              defaultValues={defaultValues}
-              initialValues={initialValues}
-              onChange={() => setIsFormChanged(true)}
-            >
-              {(form) => (
-                <>
-                  <Row>
-                    <Col>
-                      <UploadImageField
-                        control={form.control}
-                        name='avatarPath'
-                        value={
-                          avatarPath
-                            ? `${AppConstants.contentRootUrl}${avatarPath}`
-                            : ''
-                        }
-                        loading={fileMutation.isPending}
-                        onChange={(url) => {
-                          setAvatarPath(url);
-                          setIsFormChanged(true);
-                        }}
-                        size={100}
-                        uploadImageFn={async (file: Blob) => {
-                          const res = await fileMutation.mutateAsync(file);
-                          return res.data?.filePath ?? '';
-                        }}
-                        label='Ảnh đại diện'
-                      />
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col span={12}>
-                      <InputField
-                        control={form.control}
-                        name='fullName'
-                        label='Họ và tên'
-                        required
-                        placeholder='Nhập họ và tên'
-                      />
-                    </Col>
-                    <Col span={12}>
-                      <InputField
-                        control={form.control}
-                        name='email'
-                        label='Email'
-                        required
-                        placeholder='Nhập email'
-                        disabled
-                      />
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col span={12}>
-                      <InputField
-                        control={form.control}
-                        name='phone'
-                        label='Số điện thoại'
-                        required
-                        placeholder='Nhập số điện thoại'
-                      />
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col>
-                      <Button
-                        type='button'
-                        className={'bg-orange-500 hover:bg-orange-500'}
-                        onClick={handleChangePassword}
-                      >
-                        <Link
-                          href={route.user.changePassword}
-                          className='block w-full'
-                        >
-                          Đổi mật khẩu
-                        </Link>
-                      </Button>
-                    </Col>
-                    <Col>
-                      <Button
-                        type='submit'
-                        className={cn(
-                          'bg-green-primary hover:bg-green-primary',
-                          {
-                            'cursor-not-allowed opacity-50': !isFormChanged
-                          }
-                        )}
-                      >
-                        {profileMutation.isPending ? (
-                          <CircleLoading />
-                        ) : (
-                          'Cập nhật'
-                        )}
-                      </Button>
-                    </Col>
-                  </Row>
-                </>
-              )}
-            </BaseForm>
-          </div>
+
+      <div className='p-5'>
+        <div className='text-center'>
+          <Image
+            src={whiteLogo.src}
+            width={200}
+            alt='Biblio Logo'
+            height={200}
+            className='mx-auto block h-auto w-50'
+          />
         </div>
+        <BaseForm
+          schema={profileSchema}
+          onSubmit={onSubmit}
+          defaultValues={defaultValues}
+          initialValues={initialValues}
+          onChange={() => setIsFormChanged(true)}
+        >
+          {(form) => (
+            <>
+              <Row>
+                <Col>
+                  <UploadImageField
+                    control={form.control}
+                    name='avatarPath'
+                    value={
+                      avatarPath
+                        ? `${AppConstants.contentRootUrl}${avatarPath}`
+                        : ''
+                    }
+                    loading={fileMutation.isPending}
+                    onChange={(url) => {
+                      setAvatarPath(url);
+                      setIsFormChanged(true);
+                    }}
+                    size={100}
+                    uploadImageFn={async (file: Blob) => {
+                      const res = await fileMutation.mutateAsync(file);
+                      return res.data?.filePath ?? '';
+                    }}
+                    label='Ảnh đại diện'
+                  />
+                </Col>
+              </Row>
+              <Row>
+                <Col span={12}>
+                  <InputField
+                    control={form.control}
+                    name='fullName'
+                    label='Họ và tên'
+                    required
+                    placeholder='Nhập họ và tên'
+                  />
+                </Col>
+                <Col span={12}>
+                  <InputField
+                    control={form.control}
+                    name='email'
+                    label='Email'
+                    required
+                    placeholder='Nhập email'
+                    disabled
+                  />
+                </Col>
+              </Row>
+              <Row>
+                <Col span={12}>
+                  <InputField
+                    control={form.control}
+                    name='phone'
+                    label='Số điện thoại'
+                    required
+                    placeholder='Nhập số điện thoại'
+                  />
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                  <Button
+                    type='button'
+                    className={'bg-orange-500 hover:bg-orange-500'}
+                    onClick={handleChangePassword}
+                  >
+                    <Link
+                      href={route.user.changePassword}
+                      className='block w-full'
+                    >
+                      Đổi mật khẩu
+                    </Link>
+                  </Button>
+                </Col>
+                <Col>
+                  <Button
+                    type='submit'
+                    className={cn('bg-green-primary hover:bg-green-primary', {
+                      'cursor-not-allowed opacity-50': !isFormChanged
+                    })}
+                  >
+                    {profileMutation.isPending ? <CircleLoading /> : 'Cập nhật'}
+                  </Button>
+                </Col>
+              </Row>
+            </>
+          )}
+        </BaseForm>
       </div>
-      <Footer />
-    </div>
+    </>
   );
 }

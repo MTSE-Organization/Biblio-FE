@@ -91,7 +91,7 @@ export default function InputField<T extends FieldValues>({
                 )}
               />
               {suffixIcon && (
-                <div className='text-muted-foreground absolute top-0 right-0 h-full'>
+                <div className='text-muted-foreground absolute top-1/2 right-3 -translate-y-1/2'>
                   {suffixIcon}
                 </div>
               )}

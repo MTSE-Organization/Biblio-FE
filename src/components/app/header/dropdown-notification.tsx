@@ -6,10 +6,10 @@ import { RiNotification3Line } from 'react-icons/ri';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useState } from 'react';
 import Link from 'next/link';
-import ListItem from '@/components/list/list-item';
 import Image from 'next/image';
 import { emptyNotification } from '@/assets';
 import route from '@/routes';
+import { List, ListItem } from '@/components/list';
 
 export default function DropdownNotification() {
   const [open, setOpen] = useState<boolean>(false);
@@ -50,7 +50,7 @@ export default function DropdownNotification() {
           >
             <div className='absolute -top-2 right-16 h-0 w-0 -translate-x-1/2 border-x-8 border-b-8 border-x-transparent border-b-white group-hover:border-b-green-100' />
 
-            <ul className='h-[30vh] max-h-[30vh] min-h-75 overflow-hidden rounded border border-white bg-white py-5 shadow-[0px_-3px_24px_rgba(149,157,165,0.5)] transition-all duration-200 ease-linear group-hover:border-green-100 group-hover:bg-green-50'>
+            <List className='h-[30vh] max-h-[30vh] min-h-75 overflow-hidden rounded border border-white bg-white py-5 shadow-[0px_-3px_24px_rgba(149,157,165,0.5)] transition-all duration-200 ease-linear group-hover:border-green-100 group-hover:bg-green-50'>
               <ListItem className='flex h-full w-full flex-col items-center justify-start'>
                 <h2 className='mb-2'>
                   <Link
@@ -76,7 +76,7 @@ export default function DropdownNotification() {
                   Bạn chưa có thông báo nào
                 </Link>
               </ListItem> */}
-            </ul>
+            </List>
           </motion.div>
         )}
       </AnimatePresence>
