@@ -1,12 +1,10 @@
+'use client';
+
 import { product } from '@/assets';
-import { Button, Row } from '@/components/form';
-import List from '@/components/list';
-import ListItem from '@/components/list/ListItem';
-import { LocationEditIcon } from 'lucide-react';
+import { Button } from '@/components/form';
+import { List, ListItem } from '@/components/list';
 import Image from 'next/image';
 import Link from 'next/link';
-import React from 'react';
-import { RiDeleteBin6Line, RiUserLocationFill } from 'react-icons/ri';
 
 export default function CheckoutPage() {
   return (

@@ -3,7 +3,6 @@ import { Button } from '@/components/form';
 import { formatPrice } from '@/utils';
 import Image from 'next/image';
 import Link from 'next/link';
-import React from 'react';
 
 export default function OrderItem() {
   return (

@@ -6,7 +6,7 @@ import { RiNotification3Line } from 'react-icons/ri';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useState } from 'react';
 import Link from 'next/link';
-import ListItem from '@/components/list/ListItem';
+import ListItem from '@/components/list/list-item';
 import Image from 'next/image';
 import { emptyNotification } from '@/assets';
 import route from '@/routes';

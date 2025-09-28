@@ -1,6 +1,7 @@
 'use client';
+
 import { whiteLogo } from '@/assets';
-import { Breadcrumb, Button, Col, OtpField, Row } from '@/components/form';
+import { Button, Col, OtpField, Row } from '@/components/form';
 import { BaseForm } from '@/components/form/base-form';
 import { CircleLoading } from '@/components/loading';
 import { storageKeys } from '@/constants';
@@ -9,7 +10,7 @@ import { logger } from '@/logger';
 import { useVerifyOtpMutation } from '@/queries';
 import route from '@/routes';
 import { otpSchema } from '@/schemaValidations';
-import { OtpBodyType } from '@/types/auth.type';
+import { OtpBodyType } from '@/types';
 import { getData, notify, removeData } from '@/utils';
 import Image from 'next/image';
 

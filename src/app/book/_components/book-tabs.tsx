@@ -1,10 +1,13 @@
 'use client';
+
 import { Button, Col, Row } from '@/components/form';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import Image from 'next/image';
-import List from '@/components/list';
-import ListItem from '@/components/list/ListItem';
-import { ProductResType } from '@/types';
+import {
+  ContributorAutoType,
+  ProductResType,
+  PublisherAutoType
+} from '@/types';
 import { cn } from '@/lib';
 import { motion } from 'framer-motion';
 import {
@@ -15,9 +18,8 @@ import {
 } from '@/constants';
 import { formatDate, renderImageUrl } from '@/utils';
 import { logger } from '@/logger';
-import { ContributorAutoType } from '@/types/contributor.type';
-import { PublisherAutoType } from '@/types/publisher.type';
 import { NoData } from '@/components/no-data';
+import { List, ListItem } from '@/components/list';
 
 const BookTabs = ({ book }: { book?: ProductResType }) => {
   const [activeTab, setActiveTab] = useState('description');

@@ -1,5 +1,4 @@
-import List from '@/components/list';
-import ListItem from '@/components/list/ListItem';
+import { List, ListItem } from '@/components/list';
 
 export default function BookDetailInfoSkeleton() {
   return (

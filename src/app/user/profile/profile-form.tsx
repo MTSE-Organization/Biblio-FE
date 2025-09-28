@@ -2,7 +2,6 @@
 
 import { whiteLogo } from '@/assets';
 import {
-  Breadcrumb,
   Button,
   Col,
   InputField,
@@ -14,9 +13,7 @@ import { accountErrorMaps, AppConstants, storageKeys } from '@/constants';
 import { cn } from '@/lib';
 import { logger } from '@/logger';
 import route from '@/routes';
-import { profileSchema } from '@/schemaValidations/account.schema';
 import { useAuthStore } from '@/store';
-import { useProfileMutation } from '@/queries/account.query';
 import {
   ProfileResType,
   UpdateProfileBodyType,
@@ -27,9 +24,14 @@ import Image from 'next/image';
 import { useEffect, useMemo, useState } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import Link from 'next/link';
-import { useForgotPasswordMutation, useUploadImageMutation } from '@/queries';
+import {
+  useForgotPasswordMutation,
+  useProfileMutation,
+  useUploadImageMutation
+} from '@/queries';
 import { CircleLoading } from '@/components/loading';
-import Footer from '@/components/app/footer';
+import { Footer } from '@/components/app/footer';
+import { profileSchema } from '@/schemaValidations';
 
 export default function ProfileForm() {
   const [avatarPath, setAvatarPath] = useState<string>('');

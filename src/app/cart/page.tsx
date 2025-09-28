@@ -5,8 +5,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { emptyCart, product } from '@/assets';
 import { RiDeleteBin6Line } from 'react-icons/ri';
-import List from '@/components/list';
-import ListItem from '@/components/list/ListItem';
 import route from '@/routes';
 import { useAuthStore } from '@/store';
 import {
@@ -20,6 +18,7 @@ import { logger } from '@/logger';
 import { CartItemResType } from '@/types';
 import { useEffect, useMemo, useState } from 'react';
 import { debounce } from 'lodash';
+import { List, ListItem } from '@/components/list';
 
 function CartItem({
   cartItem,

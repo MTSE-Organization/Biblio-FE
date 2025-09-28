@@ -75,7 +75,7 @@ export const useProductListCategoryQuery = ({
   enabled?: boolean;
 }) => {
   return useQuery({
-    queryKey: ['product-category'],
+    queryKey: ['product-category', id],
     queryFn: () => productApiRequest.getListByCategory(id),
     enabled
   });

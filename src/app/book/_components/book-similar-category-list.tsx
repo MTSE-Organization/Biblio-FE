@@ -14,7 +14,7 @@ export default function BookSimilarCategoryList({ id }: { id: string }) {
   return (
     <div
       ref={ref}
-      className='mb-4 rounded-lg bg-white p-4 shadow-[0px_0px_10px_2px] shadow-gray-200'
+      className='mt-4 rounded-lg bg-white p-4 shadow-[0px_0px_10px_2px] shadow-gray-200'
     >
       <BookList
         loading={query.isLoading || query.isFetching}
