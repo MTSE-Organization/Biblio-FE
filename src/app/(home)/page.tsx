@@ -1,5 +1,5 @@
 'use client';
-import HeroSlider from './_components/hero-slider/hero-slider';
+
 import { Container } from '@/components/layout';
 import {
   useLatestProductListQuery,
@@ -7,7 +7,8 @@ import {
   useTopViewProductListQuery
 } from '@/queries';
 import { LazyBookList } from '@/components/app/book';
-import CategoryList from '@/app/(home)/_components/category/category-list';
+import { HeroSlider } from '@/app/(home)/_components/hero-slider';
+import { CategoryList } from '@/app/(home)/_components/category';
 
 export default function HomePage() {
   return (

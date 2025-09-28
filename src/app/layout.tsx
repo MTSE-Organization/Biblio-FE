@@ -6,7 +6,7 @@ import type { Metadata } from 'next';
 import { Suspense } from 'react';
 import ToastPortal from '@/components/toast-portal';
 import { AppProvider, QueryProvider } from '@/components/providers';
-import BodyLoad from '@/components/app/body-load';
+import { BodyLoad } from '@/components/app/body-load';
 
 const beVietnamPro = Be_Vietnam_Pro({
   subsets: ['latin', 'vietnamese'],

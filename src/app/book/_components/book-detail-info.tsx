@@ -1,8 +1,7 @@
 'use client';
 
 import { Button } from '@/components/form';
-import List from '@/components/list';
-import ListItem from '@/components/list/ListItem';
+import { List, ListItem } from '@/components/list';
 import { Separator } from '@/components/ui/separator';
 import {
   ageRatings,

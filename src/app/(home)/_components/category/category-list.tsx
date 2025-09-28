@@ -8,8 +8,8 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import './category.css';
 import { useCategoryListQuery } from '@/queries';
-import CategorySkeleton from '@/app/(home)/_components/category/category-skeleton';
 import { Row } from '@/components/form';
+import CategorySkeleton from '@/app/(home)/_components/category/category-skeleton';
 
 export default function CategoryList() {
   const categoryListQuery = useCategoryListQuery({});

@@ -1,17 +1,13 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useIsMounted } from '@/hooks';
 import { createPortal } from 'react-dom';
 import { ToastContainer } from 'react-toastify';
 
 export default function ToastPortal() {
-  const [mounted, setMounted] = useState(false);
+  const isMounted = useIsMounted();
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  if (!mounted) return null;
+  if (!isMounted) return null;
 
   return createPortal(
     <ToastContainer

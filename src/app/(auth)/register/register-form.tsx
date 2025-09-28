@@ -1,4 +1,5 @@
 'use client';
+
 import { whiteLogo } from '@/assets';
 import { Breadcrumb, Button, Col, InputField, Row } from '@/components/form';
 import { BaseForm } from '@/components/form/base-form';
@@ -10,7 +11,7 @@ import { logger } from '@/logger';
 import { useRegisterMutation } from '@/queries';
 import route from '@/routes';
 import { registerSchema } from '@/schemaValidations';
-import { RegisterBodyType } from '@/types/auth.type';
+import { RegisterBodyType } from '@/types';
 import { applyFormErrors, notify, setData } from '@/utils';
 import Image from 'next/image';
 import Link from 'next/link';

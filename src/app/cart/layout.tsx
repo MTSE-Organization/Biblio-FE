@@ -1,8 +1,6 @@
-import Footer from '@/components/app/footer';
-import Header from '@/components/app/header';
-import { Breadcrumb } from '@/components/form';
+import { Footer } from '@/components/app/footer';
+import { Header } from '@/components/app/header';
 import { Container } from '@/components/layout';
-import route from '@/routes';
 
 export default function CartLayout({
   children

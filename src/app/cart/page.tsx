@@ -3,9 +3,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { product } from '@/assets';
 import { RiDeleteBin6Line } from 'react-icons/ri';
-import List from '@/components/list';
-import ListItem from '@/components/list/ListItem';
 import route from '@/routes';
+import { List, ListItem } from '@/components/list';
 
 export default function CartPage() {
   return (

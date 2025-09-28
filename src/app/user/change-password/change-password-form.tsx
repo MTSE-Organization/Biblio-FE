@@ -1,4 +1,5 @@
 'use client';
+
 import { whiteLogo } from '@/assets';
 import { Breadcrumb, Button, Col, OtpField, Row } from '@/components/form';
 import { BaseForm } from '@/components/form/base-form';
@@ -6,7 +7,6 @@ import PasswordField from '@/components/form/password-field';
 import route from '@/routes';
 import Image from 'next/image';
 import { forgotPasswordStep2Schema } from '@/schemaValidations';
-import { ForgotPasswordBodyType } from '@/types/auth.type';
 import { useChangePasswordMutation } from '@/queries';
 import { logger } from '@/logger';
 import { applyFormErrors, getData, notify, removeData } from '@/utils';
@@ -14,6 +14,7 @@ import { ErrorCode, formatPasswordErrorMaps, storageKeys } from '@/constants';
 import { UseFormReturn } from 'react-hook-form';
 import { CircleLoading } from '@/components/loading';
 import { useNavigate } from '@/hooks';
+import { ForgotPasswordBodyType } from '@/types';
 
 export default function ChangePasswordForm() {
   const changePasswordMutation = useChangePasswordMutation();

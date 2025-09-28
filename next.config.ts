@@ -15,7 +15,8 @@ const nextConfig: NextConfig = {
         hostname: 'api-book.moviehub.biz',
         pathname: '/**'
       }
-    ]
+    ],
+    qualities: [75, 100]
   },
   outputFileTracingRoot: path.join(__dirname, '../..')
 };

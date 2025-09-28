@@ -1,4 +1,5 @@
-import Header from '@/components/app/header';
+import { UserSidebar } from '@/app/user/_components';
+import { Header } from '@/components/app/header';
 import { Container } from '@/components/layout';
 
 export default function UserLayout({
@@ -9,7 +10,10 @@ export default function UserLayout({
   return (
     <>
       <Header />
-      <Container>{children}</Container>
+      <Container>
+        <UserSidebar />
+        {children}
+      </Container>
     </>
   );
 }

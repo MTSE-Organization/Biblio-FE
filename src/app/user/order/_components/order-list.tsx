@@ -1,11 +1,7 @@
 'use client';
 
 import OrderItem from '@/app/user/order/_components/order-item';
-import { product } from '@/assets';
-import { Button } from '@/components/form';
 import { Container } from '@/components/layout';
-import { formatPrice } from '@/utils';
-import Image from 'next/image';
 import Link from 'next/link';
 
 export default function OrderList() {

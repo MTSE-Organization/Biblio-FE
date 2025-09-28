@@ -1,7 +1,6 @@
-import Footer from '@/components/app/footer';
-import Header from '@/components/app/header';
+import { Header } from '@/components/app/header';
 import { Container } from '@/components/layout';
-import React from 'react';
+import { Footer } from 'react-day-picker';
 
 export default function AuthLayout({
   children
