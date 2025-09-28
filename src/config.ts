@@ -8,7 +8,8 @@ const configSchema = z.object({
   NEXT_PUBLIC_URL: z.string().optional(),
   NEXT_PUBLIC_API_GOOGLE_LOGIN_CALLBACK: z.string().optional(),
   NEXT_PUBLIC_TINYMCE_URL: z.string().optional(),
-  NEXT_PUBLIC_API_MEDIA_URL: z.string().optional()
+  NEXT_PUBLIC_API_MEDIA_URL: z.string().optional(),
+  NEXT_PUBLIC_API_ADDRESS_GHTK: z.string().optional()
 });
 
 const configProject = configSchema.safeParse({
@@ -19,7 +20,8 @@ const configProject = configSchema.safeParse({
   NEXT_PUBLIC_API_GOOGLE_LOGIN_CALLBACK:
     process.env.NEXT_PUBLIC_API_GOOGLE_LOGIN_CALLBACK,
   NEXT_PUBLIC_TINYMCE_URL: process.env.NEXT_PUBLIC_TINYMCE_URL,
-  NEXT_PUBLIC_API_MEDIA_URL: process.env.NEXT_PUBLIC_API_MEDIA_URL
+  NEXT_PUBLIC_API_MEDIA_URL: process.env.NEXT_PUBLIC_API_MEDIA_URL,
+  NEXT_PUBLIC_API_ADDRESS_GHTK: process.env.NEXT_PUBLIC_API_ADDRESS_GHTK
 });
 
 if (!configProject.success) {

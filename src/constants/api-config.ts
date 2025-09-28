@@ -172,6 +172,55 @@ const apiConfig = defineApiConfig({
       headers: baseHeader,
       method: 'DELETE'
     }
+  },
+  address: {
+    create: {
+      baseUrl: `${AppConstants.apiUrl}v1/address/create`,
+      headers: baseHeader,
+      method: 'POST'
+    },
+    delete: {
+      baseUrl: `${AppConstants.apiUrl}v1/address/delete/:id`,
+      headers: baseHeader,
+      method: 'DELETE'
+    },
+    getById: {
+      baseUrl: `${AppConstants.apiUrl}v1/address/get/:id`,
+      headers: baseHeader,
+      method: 'GET'
+    },
+    getList: {
+      baseUrl: `${AppConstants.apiUrl}v1/address/list`,
+      headers: baseHeader,
+      method: 'GET'
+    },
+    setDefault: {
+      baseUrl: `${AppConstants.apiUrl}v1/address/set-default/:id`,
+      headers: baseHeader,
+      method: 'PUT'
+    },
+    update: {
+      baseUrl: `${AppConstants.apiUrl}v1/address/update`,
+      headers: baseHeader,
+      method: 'PUT'
+    }
+  },
+  publicAddress: {
+    province: {
+      baseUrl: `${AppConstants.addressApiUrl}v1/address/province`,
+      headers: baseHeader,
+      method: 'GET'
+    },
+    ward: {
+      baseUrl: `${AppConstants.addressApiUrl}v1/address/ward`,
+      headers: baseHeader,
+      method: 'GET'
+    },
+    hamlet: {
+      baseUrl: `${AppConstants.addressApiUrl}v1/address/hamlet`,
+      headers: baseHeader,
+      method: 'GET'
+    }
   }
 });
 

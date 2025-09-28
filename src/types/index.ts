@@ -15,3 +15,4 @@ export * from './product-image.type';
 export * from './product-variant.type';
 export * from './contributor.type';
 export * from './publisher.type';
+export * from './address.type';
