@@ -38,7 +38,7 @@ export default function UserSidebar() {
     }
   ];
   return (
-    <List className='h-full'>
+    <List className='min-h-150'>
       {userSidebars.map((userSidebar) => (
         <ListItem
           className={cn(
@@ -53,7 +53,7 @@ export default function UserSidebar() {
             href={userSidebar.path}
             className='flex items-center gap-x-2 p-4'
           >
-            <userSidebar.icon />
+            <userSidebar.icon className='size-5' />
             {userSidebar.label}
           </Link>
         </ListItem>

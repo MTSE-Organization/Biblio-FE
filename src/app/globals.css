@@ -170,7 +170,7 @@ input::selection {
       90deg,
       transparent 0%,
       transparent 40%,
-      var(--color-base-100, #f8f8f8) 50%,
+      var(--color-gray-100, #f8f8f8) 50%,
       transparent 60%,
       transparent 100%
     );

@@ -8,13 +8,16 @@ import './hero-slider.css';
 import { Autoplay, Pagination } from 'swiper/modules';
 import { useFeaturedProductQuery } from '@/queries';
 import { renderImageUrl } from '@/utils';
+import HeroSliderSkeleton from '@/app/(home)/_components/hero-slider/hero-slider-skeleton';
 
 export default function HeroSlider() {
   const featuredProductQuery = useFeaturedProductQuery();
   const images =
     featuredProductQuery.data?.data.content.map((p) => p.image.url) || [];
 
-  return (
+  return featuredProductQuery.isLoading || featuredProductQuery.isFetching ? (
+    <HeroSliderSkeleton />
+  ) : (
     <Swiper
       modules={[Autoplay, Pagination]}
       slidesPerView={1}

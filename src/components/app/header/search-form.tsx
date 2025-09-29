@@ -28,13 +28,13 @@ export default function SearchForm() {
         <>
           <InputField
             formItemClassName='h-full'
-            className='border-green-primary h-full border border-solid py-2 pr-0! pl-4'
+            className='border-green-primary m-0! h-full py-0 pl-4 outline-none'
             suffixIcon={
               <Button
                 aria-label='Search icon'
                 variant='primary'
                 className={cn(
-                  '-mr-[1.2px] h-full px-4! transition-all duration-300 ease-linear hover:opacity-80'
+                  '-mr-[0.75px] h-full rounded-tl-none rounded-bl-none transition-all duration-300 ease-linear hover:opacity-80'
                 )}
               >
                 <Search size={16} className='stroke-white' />

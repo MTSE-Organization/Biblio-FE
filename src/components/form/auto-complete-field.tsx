@@ -78,7 +78,7 @@ export default function AutoCompleteField<
     <FormField
       control={control}
       name={name}
-      render={({ field }) => {
+      render={({ field, fieldState }) => {
         const selectedValues: (string | number)[] =
           field.value === undefined
             ? []
@@ -86,7 +86,7 @@ export default function AutoCompleteField<
               ? Array.isArray(field.value)
                 ? field.value
                 : []
-              : [field.value];
+              : [field.value].filter(Boolean);
 
         const toggleValue = (val: string | number) => {
           if (multiple) {
@@ -104,7 +104,7 @@ export default function AutoCompleteField<
 
         return (
           <FormItem
-            className={cn(className, {
+            className={cn('relative', className, {
               'cursor-not-allowed opacity-50': disabled
             })}
           >
@@ -234,7 +234,11 @@ export default function AutoCompleteField<
                 </Command>
               </PopoverContent>
             </Popover>
-            <FormMessage className={'mb-0 ml-1'} />
+            {fieldState.error && (
+              <div className='animate-in fade-in absolute -bottom-6 left-2 z-0 mt-1 text-sm text-red-500'>
+                <FormMessage />
+              </div>
+            )}
           </FormItem>
         );
       }}
