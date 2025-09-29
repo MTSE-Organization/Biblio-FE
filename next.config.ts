@@ -18,7 +18,7 @@ const nextConfig: NextConfig = {
     ],
     qualities: [75, 100]
   },
-  outputFileTracingRoot: path.join(__dirname, '../..')
+  outputFileTracingRoot: path.join(__dirname)
 };
 
 const withBundleAnalyzer = createBundleAnalyzer({

@@ -51,6 +51,10 @@ const addressApiRequest = {
   delete: async (id: string) =>
     await http.delete<ApiResponse<any>>(apiConfig.address.delete, {
       pathParams: { id }
+    }),
+  setDefault: async (id: string) =>
+    await http.put<ApiResponse<any>>(apiConfig.address.setDefault, {
+      pathParams: { id }
     })
 };
 

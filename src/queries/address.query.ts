@@ -49,7 +49,8 @@ export const useDeleteAddressMutation = () => {
 export const useAddressQuery = (id: string) => {
   return useQuery({
     queryKey: ['address', id],
-    queryFn: () => addressApiRequest.getById(id)
+    queryFn: () => addressApiRequest.getById(id),
+    enabled: !!id
   });
 };
 
@@ -57,5 +58,12 @@ export const useAddressListQuery = () => {
   return useQuery({
     queryKey: ['address-list'],
     queryFn: () => addressApiRequest.getList()
+  });
+};
+
+export const useSetDefaultAddressMutation = () => {
+  return useMutation({
+    mutationKey: ['address-set-default'],
+    mutationFn: (id: string) => addressApiRequest.setDefault(id)
   });
 };

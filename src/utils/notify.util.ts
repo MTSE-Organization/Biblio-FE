@@ -14,7 +14,7 @@ const defaultOptions: ToastOptions = {
     bg-secondary! text-foreground!
     [&>button]:opacity-100!
     [&>button>svg]:fill-black!
-    w-fit!
+    whitespace-nowrap
     pr-10!
   `
 };

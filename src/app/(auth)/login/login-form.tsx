@@ -62,7 +62,7 @@ export default function LoginForm() {
         ]}
         separator='/'
       /> */}
-      <div className='py-25 max-[1600px]:py-20'>
+      <div className='py-4'>
         <div className='container mx-auto'>
           <div className='mx-auto max-w-120 rounded-md border border-solid border-gray-100 bg-white p-7.5 shadow-[0px_0px_10px_2px] shadow-gray-100'>
             <div className='mb-7.5 flex h-full w-full items-center justify-center'>

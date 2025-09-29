@@ -26,6 +26,7 @@ import { Button } from '@/components/form';
 import Image from 'next/image';
 import { emptyData } from '@/assets';
 import { useEffect, useState } from 'react';
+import { CircleLoading } from '@/components/loading';
 
 type SelectFieldProps<
   TFieldValues extends FieldValues,
@@ -48,6 +49,7 @@ type SelectFieldProps<
   notFoundContent?: React.ReactNode;
   labelClassName?: string;
   disabled?: boolean;
+  loading?: boolean;
   onValueChange?: (value: string | number | (string | number)[]) => void;
 };
 
@@ -80,6 +82,7 @@ export default function SelectField<
   notFoundContent = 'Không có kết quả nào',
   labelClassName,
   disabled = false,
+  loading,
   onValueChange
 }: SelectFieldProps<TFieldValues, TOption>) {
   const [open, setOpen] = useState(false);
@@ -140,7 +143,7 @@ export default function SelectField<
 
         return (
           <FormItem
-            className={cn(className, {
+            className={cn('relative', className, {
               'cursor-not-allowed opacity-50': disabled
             })}
           >
@@ -274,23 +277,31 @@ export default function SelectField<
                       }
                     }}
                   />
-                  <CommandEmpty className='mx-auto pt-2 pb-2 text-center text-sm'>
-                    <Image
-                      src={emptyData.src}
-                      width={120}
-                      height={50}
-                      className='mx-auto mb-2'
-                      alt={notFoundContent as string}
-                    />
-                    {notFoundContent}
+
+                  <CommandEmpty className='mx-auto pt-2 pb-4 text-center text-sm'>
+                    {loading ? (
+                      <CircleLoading className='stroke-green-primary my-2 size-7' />
+                    ) : (
+                      <>
+                        <Image
+                          src={emptyData.src}
+                          width={120}
+                          height={50}
+                          className='mx-auto'
+                          alt={notFoundContent as string}
+                        />
+                        {notFoundContent}
+                      </>
+                    )}
                   </CommandEmpty>
+
                   <CommandGroup className='max-h-100 overflow-y-auto max-[1560px]:max-h-50'>
                     {filteredOptions.map((opt, idx) => {
                       const val = getValue(opt);
                       return (
                         <CommandItem
-                          onMouseEnter={() => setHighlightedIndex(idx)}
                           key={val}
+                          onMouseEnter={() => setHighlightedIndex(idx)}
                           onSelect={() => toggleValue(val)}
                           className={cn(
                             'block cursor-pointer truncate rounded transition-all',
@@ -314,7 +325,11 @@ export default function SelectField<
                 </Command>
               </PopoverContent>
             </Popover>
-            <FormMessage className={'mb-0 ml-1'} />
+            {fieldState.error && (
+              <div className='animate-in fade-in absolute -bottom-6 left-2 z-0 mt-1 text-sm text-red-500'>
+                <FormMessage />
+              </div>
+            )}
           </FormItem>
         );
       }}

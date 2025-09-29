@@ -39,9 +39,14 @@ export default function CheckboxField({
     <FormField
       control={control}
       name={name}
-      render={({ field }) => (
+      render={({ field, fieldState }) => (
         <FormItem className={cn('flex flex-col space-y-1', className)}>
-          <div className={cn('flex items-center space-x-2', itemClassName)}>
+          <div
+            className={cn(
+              'relative flex items-center space-x-2',
+              itemClassName
+            )}
+          >
             <FormControl>
               <Checkbox
                 id={field.name}
@@ -67,9 +72,13 @@ export default function CheckboxField({
               {label}
               {required && <span className='text-destructive'>*</span>}
             </FormLabel>
+            {fieldState.error && (
+              <div className='animate-in fade-in absolute -bottom-6 left-2 z-0 mt-1 text-sm text-red-500'>
+                <FormMessage />
+              </div>
+            )}
           </div>
           {description && <FormDescription>{description}</FormDescription>}
-          <FormMessage />
         </FormItem>
       )}
     />
