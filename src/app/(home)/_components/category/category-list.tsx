@@ -38,7 +38,7 @@ export default function CategoryList() {
             categories.map((cate) => (
               <SwiperSlide
                 key={cate.id}
-                className='hover:text-green-primary transition-all! duration-200 ease-linear'
+                className='hover:text-green-primary transition-colors! duration-200 ease-linear'
               >
                 <div className='rounded-lg'>
                   <Image
