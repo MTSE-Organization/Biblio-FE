@@ -1,5 +1,6 @@
 import type { NextConfig } from 'next';
 import createBundleAnalyzer from '@next/bundle-analyzer';
+import path from 'path';
 
 const nextConfig: NextConfig = {
   images: {
@@ -8,9 +9,16 @@ const nextConfig: NextConfig = {
         protocol: 'http',
         hostname: 'localhost',
         pathname: '/**'
+      },
+      {
+        protocol: 'https',
+        hostname: 'api-book.moviehub.biz',
+        pathname: '/**'
       }
-    ]
-  }
+    ],
+    qualities: [75, 100]
+  },
+  outputFileTracingRoot: path.join(__dirname)
 };
 
 const withBundleAnalyzer = createBundleAnalyzer({

@@ -1,12 +1,12 @@
 import { productApiRequest } from '@/api-requests';
-import { ProductSearchParamType } from '@/types';
+import { ProductSearchType } from '@/types';
 import { useQuery } from '@tanstack/react-query';
 
 export const useProductListQuery = ({
   enabled = false,
   params
 }: {
-  params?: ProductSearchParamType;
+  params?: ProductSearchType;
   enabled: boolean;
 }) => {
   return useQuery({
@@ -56,5 +56,39 @@ export const useProductQuery = (id: string) => {
   return useQuery({
     queryKey: ['product', id],
     queryFn: () => productApiRequest.getById(id)
+  });
+};
+
+export const useFeaturedProductQuery = () => {
+  return useQuery({
+    queryKey: ['featured-product'],
+    queryFn: () => productApiRequest.getList({ isFeatured: true }),
+    enabled: true
+  });
+};
+
+export const useProductListCategoryQuery = ({
+  id,
+  enabled = false
+}: {
+  id: string;
+  enabled?: boolean;
+}) => {
+  return useQuery({
+    queryKey: ['product-category', id],
+    queryFn: () => productApiRequest.getListByCategory(id),
+    enabled
+  });
+};
+
+export const useTopViewProductListQuery = ({
+  enabled = false
+}: {
+  enabled: boolean;
+}) => {
+  return useQuery({
+    queryKey: ['top-view-product-list'],
+    queryFn: () => productApiRequest.getTopViewList(),
+    enabled
   });
 };

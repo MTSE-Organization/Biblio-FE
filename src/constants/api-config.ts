@@ -101,6 +101,125 @@ const apiConfig = defineApiConfig({
       baseUrl: `${AppConstants.apiUrl}v1/product/top-discount`,
       headers: baseHeader,
       method: 'GET'
+    },
+    getListByCategory: {
+      baseUrl: `${AppConstants.apiUrl}v1/product/related/category/:id`,
+      headers: baseHeader,
+      method: 'GET'
+    },
+    getTopView: {
+      baseUrl: `${AppConstants.apiUrl}v1/product/top-views`,
+      headers: baseHeader,
+      method: 'GET'
+    }
+  },
+  category: {
+    getList: {
+      baseUrl: `${AppConstants.apiUrl}v1/category/list`,
+      headers: baseHeader,
+      method: 'GET'
+    }
+  },
+  cartItem: {
+    updateCartItem: {
+      baseUrl: `${AppConstants.apiUrl}v1/cart-item/update`,
+      headers: baseHeader,
+      method: 'PUT'
+    },
+    deleteCartItem: {
+      baseUrl: `${AppConstants.apiUrl}v1/cart-item/delete/:id`,
+      headers: baseHeader,
+      method: 'DELETE'
+    }
+  },
+  cart: {
+    getCart: {
+      baseUrl: `${AppConstants.apiUrl}v1/cart/get`,
+      headers: baseHeader,
+      method: 'GET'
+    },
+    addItem: {
+      baseUrl: `${AppConstants.apiUrl}v1/cart/add-item`,
+      headers: baseHeader,
+      method: 'POST'
+    },
+    checkout: {
+      baseUrl: `${AppConstants.apiUrl}v1/cart/checkout`,
+      headers: baseHeader,
+      method: 'POST'
+    }
+  },
+  productVariant: {
+    getList: {
+      baseUrl: `${AppConstants.apiUrl}v1/product-variant/list`,
+      headers: baseHeader,
+      method: 'GET'
+    }
+  },
+  viewedProduct: {
+    create: {
+      baseUrl: `${AppConstants.apiUrl}v1/viewed-product/create`,
+      headers: baseHeader,
+      method: 'POST'
+    },
+    getList: {
+      baseUrl: `${AppConstants.apiUrl}v1/viewed-product/list`,
+      headers: baseHeader,
+      method: 'GET'
+    },
+    delete: {
+      baseUrl: `${AppConstants.apiUrl}v1/viewed-product/delete/:id`,
+      headers: baseHeader,
+      method: 'DELETE'
+    }
+  },
+  address: {
+    create: {
+      baseUrl: `${AppConstants.apiUrl}v1/address/create`,
+      headers: baseHeader,
+      method: 'POST'
+    },
+    delete: {
+      baseUrl: `${AppConstants.apiUrl}v1/address/delete/:id`,
+      headers: baseHeader,
+      method: 'DELETE'
+    },
+    getById: {
+      baseUrl: `${AppConstants.apiUrl}v1/address/get/:id`,
+      headers: baseHeader,
+      method: 'GET'
+    },
+    getList: {
+      baseUrl: `${AppConstants.apiUrl}v1/address/list`,
+      headers: baseHeader,
+      method: 'GET'
+    },
+    setDefault: {
+      baseUrl: `${AppConstants.apiUrl}v1/address/set-default/:id`,
+      headers: baseHeader,
+      method: 'PUT'
+    },
+    update: {
+      baseUrl: `${AppConstants.apiUrl}v1/address/update`,
+      headers: baseHeader,
+      method: 'PUT'
+    }
+  },
+  publicAddress: {
+    province: {
+      baseUrl: `${AppConstants.addressApiUrl}v1/address/province`,
+      headers: baseHeader,
+      method: 'GET'
+    },
+    ward: {
+      baseUrl: `${AppConstants.addressApiUrl}v1/address/ward`,
+      headers: baseHeader,
+      method: 'GET'
+    },
+    hamlet: {
+      baseUrl: `${AppConstants.addressApiUrl}v1/address/hamlet`,
+      headers: baseHeader,
+      method: 'GET'
     }
   }
 });

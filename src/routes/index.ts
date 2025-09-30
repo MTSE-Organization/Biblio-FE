@@ -9,7 +9,9 @@ const route = defineRoute({
   user: {
     profile: '/user/profile',
     changePassword: '/user/change-password',
-    order: '/user/order'
+    order: '/user/order',
+    notification: '/user/notification',
+    address: '/user/address'
   },
   book: '/book',
   cart: '/cart'

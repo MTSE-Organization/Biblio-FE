@@ -1,25 +1,55 @@
-import { product } from '@/assets';
+'use client';
+
+import { defaultBook } from '@/assets';
+import { useImageZoom } from '@/hooks';
+import { useViewedProductMutation } from '@/queries';
 import route from '@/routes';
-import { ProductResType } from '@/types';
-import { formatPrice } from '@/utils';
+import { ProductAutoType } from '@/types';
+import { formatPrice, renderImageUrl } from '@/utils';
 import Image from 'next/image';
 import Link from 'next/link';
-import { RiShoppingBagLine, RiStarFill } from 'react-icons/ri';
+import { RiStarFill } from 'react-icons/ri';
 
-export default function BookCard({ book }: { book: ProductResType }) {
+export default function BookCard({ book }: { book: ProductAutoType }) {
+  const viewedProductMutation = useViewedProductMutation();
+  const { handleMouseMove, handleMouseOut, handleMouseOver } = useImageZoom();
+  const handleClick = async () => {
+    await viewedProductMutation.mutateAsync({ productId: book.id });
+  };
   return (
-    <div className='h-full rounded-md border bg-white p-3'>
-      <div className='relative flex h-auto items-center justify-center rounded-md'>
-        <Link href={`${route.book}/${book.slug}.${book.id}`}>
-          <Image src={product} alt='Product' />
-        </Link>
-        <div className='text-green-primary hover:bg-green-primary absolute bottom-[-16px] flex h-9 w-9 cursor-pointer items-center justify-center rounded-full border bg-gray-100 hover:text-white'>
-          <RiShoppingBagLine />
+    <div className='min-h-115 rounded-md bg-white p-3 transition-all duration-100 ease-linear hover:shadow-[0px_0px_8px_2px] hover:shadow-gray-200'>
+      <div className='relative flex h-auto items-center justify-center'>
+        <div className='h-70 w-full'>
+          <Link
+            href={`${route.book}/${book.slug}.${book.id}`}
+            className='block'
+            onClick={handleClick}
+          >
+            <div className='relative aspect-[3/4] w-full overflow-hidden'>
+              <Image
+                onMouseOver={handleMouseOver}
+                onMouseOut={handleMouseOut}
+                onMouseMove={handleMouseMove}
+                src={renderImageUrl(book.image?.url) || defaultBook.src}
+                fill
+                className='object-cover transition-all duration-50 ease-linear'
+                alt='Product'
+                sizes='(max-width: 768px) 50vw,
+                      (max-width: 1200px) 25vw,
+                      16vw'
+                title={book.name}
+                unoptimized
+              />
+            </div>
+          </Link>
         </div>
       </div>
       <div className='flex flex-col items-center pt-5 text-center'>
         <div className='mb-3 flex flex-col items-center'>
-          <p className='mb-2 line-clamp-1 text-sm text-gray-500'>
+          <p
+            title={book.category.name}
+            className='mb-2 line-clamp-1 text-sm text-gray-500'
+          >
             {book.category.name}
           </p>
           <div className='flex items-center justify-center'>
@@ -33,13 +63,32 @@ export default function BookCard({ book }: { book: ProductResType }) {
         </div>
         <Link
           href={`${route.book}/${book.slug}.${book.id}`}
-          className='hover:text-green-primary mb-3 line-clamp-1 leading-6 font-medium break-all'
+          className='hover:text-green-primary mb-3 line-clamp-1 leading-6 font-medium break-all transition-all duration-200 ease-linear'
+          title={book.name}
+          onClick={handleClick}
         >
           {book.name}
         </Link>
-        <p className='text-green-primary font-bold'>
-          {formatPrice(book.price)}đ
-        </p>
+        {book.discount === 0 && (
+          <p className='text-green-primary font-bold'>
+            {formatPrice(book.price)} ₫
+          </p>
+        )}
+        {book.discount !== 0 && (
+          <div className='flex items-center gap-2'>
+            <div>
+              <p className='text-green-primary font-bold'>
+                {formatPrice((book.price * (100 - book.discount)) / 100)} ₫
+              </p>
+              <p className='font-bold text-gray-400 line-through'>
+                {formatPrice(book.price)} ₫
+              </p>
+            </div>
+            <p className='bg-green-primary rounded p-1 text-xs text-white'>
+              -{book.discount} %
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );

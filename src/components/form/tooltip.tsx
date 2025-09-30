@@ -7,8 +7,8 @@ import {
   TooltipTrigger
 } from '@/components/ui/tooltip';
 
-type ToolTipProps = {
-  content: React.ReactNode;
+type TooltipProps = {
+  title: React.ReactNode;
   children: React.ReactNode;
   side?: 'top' | 'bottom' | 'left' | 'right';
   align?: 'start' | 'center' | 'end';
@@ -16,18 +16,24 @@ type ToolTipProps = {
 };
 
 export default function ToolTip({
-  content,
+  title,
   children,
-  side = 'top',
+  side = 'bottom',
   align = 'center',
-  sideOffset = 0
-}: ToolTipProps) {
+  sideOffset = 8
+}: TooltipProps) {
   return (
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>{children}</TooltipTrigger>
-        <TooltipContent side={side} align={align} sideOffset={sideOffset}>
-          {content}
+        <TooltipContent
+          showArrow
+          side={side}
+          align={align}
+          sideOffset={sideOffset}
+          className='border-none bg-gray-800 text-white [&>span>svg]:h-2 [&>span>svg]:w-4 [&>span>svg]:fill-gray-800'
+        >
+          <span className='text-sm'>{title}</span>
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>

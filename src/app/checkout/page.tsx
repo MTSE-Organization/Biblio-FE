@@ -1,12 +1,10 @@
+'use client';
+
 import { product } from '@/assets';
-import { Button, Row } from '@/components/form';
-import List from '@/components/list';
-import ListItem from '@/components/list/ListItem';
-import { LocationEditIcon } from 'lucide-react';
+import { Button } from '@/components/form';
+import { List, ListItem } from '@/components/list';
 import Image from 'next/image';
 import Link from 'next/link';
-import React from 'react';
-import { RiDeleteBin6Line, RiUserLocationFill } from 'react-icons/ri';
 
 export default function CheckoutPage() {
   return (
@@ -209,7 +207,7 @@ export default function CheckoutPage() {
               <hr className='my-2 border-t border-gray-300' />
             </ListItem>
             <ListItem className='text-green-primary flex items-center justify-between py-[5px] text-2xl font-semibold'>
-              <label className='text-md mr-2.5 flex min-w-44 justify-between font-medium text-[#2b2b2d]'>
+              <label className='mr-2.5 flex min-w-44 justify-between font-medium text-[#2b2b2d]'>
                 Tổng thanh toán
                 <span>:</span>
               </label>

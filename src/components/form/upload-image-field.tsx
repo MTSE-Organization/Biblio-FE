@@ -28,7 +28,13 @@ import { FormLabel } from '@/components/ui/form';
 import { cn } from '@/lib';
 import { useFileUpload } from '@/hooks';
 import { logger } from '@/logger';
-import ButtonLoading from '@/components/loading/button-loading';
+import { CircleLoading } from '@/components/loading';
+import {
+  Control,
+  FieldPath,
+  FieldValues,
+  useController
+} from 'react-hook-form';
 
 type Area = { x: number; y: number; width: number; height: number };
 
@@ -76,7 +82,9 @@ async function getCroppedImg(
   }
 }
 
-interface UploadImageFieldProps {
+type UploadImageFieldProps<T extends FieldValues> = {
+  control: Control<T>;
+  name: FieldPath<T>;
   label?: React.ReactNode;
   value?: string;
   onChange?: (url: string) => void;
@@ -86,9 +94,11 @@ interface UploadImageFieldProps {
   size?: number;
   uploadImageFn: (file: Blob) => Promise<string>;
   loading?: boolean;
-}
+};
 
-export default function UploadImageField({
+export default function UploadImageField<T extends FieldValues>({
+  control,
+  name,
   label,
   value,
   onChange,
@@ -98,10 +108,14 @@ export default function UploadImageField({
   size = 70,
   uploadImageFn,
   loading
-}: UploadImageFieldProps) {
+}: UploadImageFieldProps<T>) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
   const [zoom, setZoom] = useState(1);
+  const {
+    field: { value: fieldValue, onChange: fieldOnChange },
+    fieldState: { error }
+  } = useController({ name, control });
 
   const [
     { files, isDragging },
@@ -134,6 +148,7 @@ export default function UploadImageField({
     try {
       const uploadedUrl = await uploadImageFn(croppedBlob);
       onChange?.(uploadedUrl);
+      fieldOnChange(uploadedUrl);
       setDialogOpen(false);
     } catch (error) {
       logger.error('Lỗi khi upload ảnh:', error);
@@ -142,6 +157,7 @@ export default function UploadImageField({
 
   const handleRemove = () => {
     onChange?.('');
+    fieldOnChange('');
     clearFiles();
   };
 
@@ -158,7 +174,15 @@ export default function UploadImageField({
     <div className='space-y-2'>
       <div className='flex flex-col items-center justify-center gap-y-5'>
         {label && (
-          <FormLabel className={cn('ml-1 gap-1.5', labelClassName)}>
+          <FormLabel
+            className={cn(
+              'ml-1 gap-1.5',
+              {
+                'text-destructive': error?.message
+              },
+              labelClassName
+            )}
+          >
             {label}
             {required && <span className='text-destructive'>*</span>}
           </FormLabel>
@@ -169,7 +193,7 @@ export default function UploadImageField({
             type='button'
             style={{ width: size, height: size }}
             className={cn(
-              'border-input hover:bg-accent/50 focus-visible:border-ring relative flex cursor-pointer items-center justify-center overflow-hidden rounded-full border border-dashed p-0 transition-colors outline-none focus-visible:ring-[3px]',
+              'border-input hover:bg-accent/50 focus-visible:border-ring relative flex cursor-pointer items-center justify-center overflow-hidden rounded-lg border border-dashed p-0 transition-colors outline-none focus-visible:ring-[3px]',
               className
             )}
             onClick={openFileDialog}
@@ -184,14 +208,17 @@ export default function UploadImageField({
             {!!value ? (
               <AvatarField
                 disablePreview
-                src={`${value}`}
-                className='size-full object-cover'
+                src={value}
+                className='size-full rounded-lg object-cover'
                 size={size}
               />
             ) : (
               <UploadIcon
                 strokeWidth={1}
-                style={{ width: size / 2.2, height: size / 2.2 }}
+                style={{
+                  width: size / 2.2,
+                  height: size / 2.2
+                }}
                 className='opacity-60'
               />
             )}
@@ -202,7 +229,7 @@ export default function UploadImageField({
               onClick={handleRemove}
               size='icon'
               type='button'
-              className='border-background absolute -top-1 -right-1 size-6 rounded-full border-2'
+              className='border-background absolute -top-2 -right-2 size-6 rounded-full border-2'
               aria-label='Remove image'
             >
               <XIcon className='size-3.5' />
@@ -218,6 +245,9 @@ export default function UploadImageField({
             />
           </label>
         </div>
+        {error?.message && (
+          <p className='text-destructive text-sm'>{error.message}</p>
+        )}
       </div>
 
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
@@ -241,11 +271,12 @@ export default function UploadImageField({
               </div>
               <Button
                 type='button'
-                className='bg-green-primary hover:bg-green-primary/80 -my-1 w-25'
+                variant={'primary'}
+                className='-my-1 w-25'
                 onClick={handleApply}
                 disabled={!previewUrl || loading}
               >
-                {loading ? <ButtonLoading /> : 'Áp dụng'}
+                {loading ? <CircleLoading /> : 'Áp dụng'}
               </Button>
             </DialogTitle>
           </DialogHeader>

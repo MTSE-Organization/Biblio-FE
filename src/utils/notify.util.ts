@@ -13,25 +13,37 @@ const defaultOptions: ToastOptions = {
   className: `
     bg-secondary! text-foreground!
     [&>button]:opacity-100!
-    [&>button>svg]:fill-neutral-50!
-    w-fit!
-    pr-6!
+    [&>button>svg]:fill-black!
+    whitespace-nowrap
+    pr-10!
   `
 };
 
-const showSuccess = (message: string, options?: ToastOptions) => {
+const showSuccess = (
+  message: string | React.ReactNode,
+  options?: ToastOptions
+) => {
   toast.success(message, { ...defaultOptions, ...options });
 };
 
-const showError = (message: string, options?: ToastOptions) => {
+const showError = (
+  message: string | React.ReactNode,
+  options?: ToastOptions
+) => {
   toast.error(message, { ...defaultOptions, ...options });
 };
 
-const showInfo = (message: string, options?: ToastOptions) => {
+const showInfo = (
+  message: string | React.ReactNode,
+  options?: ToastOptions
+) => {
   toast.info(message, { ...defaultOptions, ...options });
 };
 
-const showWarning = (message: string, options?: ToastOptions) => {
+const showWarning = (
+  message: string | React.ReactNode,
+  options?: ToastOptions
+) => {
   toast.warn(message, { ...defaultOptions, ...options });
 };
 

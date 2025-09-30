@@ -1,12 +1,11 @@
-// GoogleCallback.tsx
 'use client';
 
 import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 import envConfig from '@/config';
+import { useNavigate } from '@/hooks';
 
 export default function GoogleCallback() {
-  const router = useRouter();
+  const navigate = useNavigate();
   const callbackUrl = envConfig.NEXT_PUBLIC_API_GOOGLE_LOGIN_CALLBACK;
 
   useEffect(() => {
@@ -18,9 +17,9 @@ export default function GoogleCallback() {
 
       window.close();
     } else {
-      router.push('/');
+      navigate('/');
     }
-  }, [router]);
+  }, [callbackUrl, navigate]);
 
   return <div className='bg-accent'></div>;
 }

@@ -2,7 +2,7 @@ import { logger } from '@/logger';
 import { format as formatFn, isValid } from 'date-fns';
 
 export const formatDate = (
-  date: string | null,
+  date: string | null | undefined,
   outputFormat: string = 'dd/MM/yyyy'
 ) => {
   if (!date) return '';

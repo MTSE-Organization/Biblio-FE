@@ -47,9 +47,12 @@ export default function OtpField<T extends FieldValues>({
     <FormField
       control={control}
       name={name}
-      render={({ field }) => (
+      render={({ field, fieldState }) => (
         <FormItem
-          className={cn('flex flex-col items-center', formItemClassName)}
+          className={cn(
+            'relative flex flex-col items-center',
+            formItemClassName
+          )}
         >
           {label && (
             <FormLabel className={cn('mb-2', labelClassName)}>
@@ -69,7 +72,7 @@ export default function OtpField<T extends FieldValues>({
               >
                 {Array.from({ length: length }).map((_, i) => (
                   <InputOTPSlot
-                    className='text-md data-[active=true]:ring-green-primary h-12 w-12 rounded-md border-l data-[active=true]:border-none'
+                    className='data-[active=true]:ring-green-primary h-12 w-12 rounded-md border-l data-[active=true]:border-none'
                     key={i}
                     index={i}
                   />
@@ -78,7 +81,11 @@ export default function OtpField<T extends FieldValues>({
             </InputOTP>
           </FormControl>
           {description && <FormDescription>{description}</FormDescription>}
-          <FormMessage className='mt-1' />
+          {fieldState.error && (
+            <div className='animate-in fade-in absolute -bottom-6 left-2 z-0 mt-1 text-sm text-red-500'>
+              <FormMessage />
+            </div>
+          )}
         </FormItem>
       )}
     />

@@ -7,6 +7,10 @@ import banner1 from './banner1.jpg';
 import banner2 from './banner2.jpg';
 import product from './product.jpg';
 import googleIcon from './google.png';
+import emptyData from './empty-data.webp';
+import emptyList from './empty-list.webp';
+import defaultBook from './green-book.svg';
+import noImage from './no-image.jpg';
 
 export {
   defaultAvatar,
@@ -17,5 +21,9 @@ export {
   banner1,
   banner2,
   product,
-  googleIcon
+  googleIcon,
+  emptyData,
+  emptyList,
+  defaultBook,
+  noImage
 };

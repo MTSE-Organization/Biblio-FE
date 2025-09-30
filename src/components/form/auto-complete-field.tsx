@@ -78,7 +78,7 @@ export default function AutoCompleteField<
     <FormField
       control={control}
       name={name}
-      render={({ field }) => {
+      render={({ field, fieldState }) => {
         const selectedValues: (string | number)[] =
           field.value === undefined
             ? []
@@ -86,7 +86,7 @@ export default function AutoCompleteField<
               ? Array.isArray(field.value)
                 ? field.value
                 : []
-              : [field.value];
+              : [field.value].filter(Boolean);
 
         const toggleValue = (val: string | number) => {
           if (multiple) {
@@ -104,7 +104,7 @@ export default function AutoCompleteField<
 
         return (
           <FormItem
-            className={cn(className, {
+            className={cn('relative', className, {
               'cursor-not-allowed opacity-50': disabled
             })}
           >
@@ -122,10 +122,13 @@ export default function AutoCompleteField<
                   role='combobox'
                   aria-label='Select'
                   disabled={disabled}
-                  className={cn('w-full flex-wrap justify-between py-0', {
-                    'pl-1!': selectedValues.length > 1,
-                    'cursor-not-allowed opacity-50': disabled
-                  })}
+                  className={cn(
+                    'focus-visible:border-green-primary focus-visible:ring-ring/0 w-full flex-wrap justify-between border-1 py-0 opacity-80 focus-visible:shadow-none focus-visible:ring-[1px]',
+                    {
+                      'pl-1!': selectedValues.length > 1,
+                      'cursor-not-allowed opacity-50': disabled
+                    }
+                  )}
                 >
                   {multiple ? (
                     selectedValues.length > 0 ? (
@@ -160,7 +163,7 @@ export default function AutoCompleteField<
                         })}
                       </div>
                     ) : (
-                      <span className='opacity-60'>{placeholder}</span>
+                      <span className='opacity-30'>{placeholder}</span>
                     )
                   ) : selectedValues.length === 1 ? (
                     (() => {
@@ -172,11 +175,11 @@ export default function AutoCompleteField<
                           <span>{getLabel(opt)}</span>
                         </div>
                       ) : (
-                        <span className='opacity-60'>{placeholder}</span>
+                        <span className='opacity-30'>{placeholder}</span>
                       );
                     })()
                   ) : (
-                    <span className='opacity-60'>{placeholder}</span>
+                    <span className='opacity-30'>{placeholder}</span>
                   )}
 
                   {selectedValues.length > 0 && allowClear ? (
@@ -231,7 +234,11 @@ export default function AutoCompleteField<
                 </Command>
               </PopoverContent>
             </Popover>
-            <FormMessage className={'mb-0 ml-1'} />
+            {fieldState.error && (
+              <div className='animate-in fade-in absolute -bottom-6 left-2 z-0 mt-1 text-sm text-red-500'>
+                <FormMessage />
+              </div>
+            )}
           </FormItem>
         );
       }}

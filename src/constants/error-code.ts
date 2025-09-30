@@ -1,9 +1,9 @@
 import {
+  ErrorMaps,
   ForgotPasswordBodyType,
   RegisterBodyType,
   UpdateProfileBodyType
 } from '@/types';
-import { ErrorMaps } from '@/types/form-error.type';
 
 export const ErrorCode = {
   // Auth
