@@ -207,19 +207,34 @@ const apiConfig = defineApiConfig({
   },
   publicAddress: {
     province: {
-      baseUrl: `${AppConstants.addressApiUrl}v1/address/province`,
+      baseUrl: `${AppConstants.addressApiUrl}v1/public/address/list`,
       headers: baseHeader,
-      method: 'GET'
+      method: 'GET',
+      ignoreAuth: true
+    },
+    district: {
+      baseUrl: `${AppConstants.addressApiUrl}v1/public/address/list`,
+      headers: baseHeader,
+      method: 'GET',
+      ignoreAuth: true
     },
     ward: {
-      baseUrl: `${AppConstants.addressApiUrl}v1/address/ward`,
+      baseUrl: `${AppConstants.addressApiUrl}v1/public/address/list`,
       headers: baseHeader,
-      method: 'GET'
+      method: 'GET',
+      ignoreAuth: true
     },
     hamlet: {
-      baseUrl: `${AppConstants.addressApiUrl}v1/address/hamlet`,
+      baseUrl: `${AppConstants.addressApiUrl}v1/public/address/hamlet`,
       headers: baseHeader,
-      method: 'GET'
+      method: 'GET',
+      ignoreAuth: true
+    },
+    getGeoCoords: {
+      baseUrl: `/api/geo`,
+      headers: baseHeader,
+      method: 'GET',
+      ignoreAuth: true
     }
   }
 });

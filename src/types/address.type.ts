@@ -16,59 +16,65 @@ export type AddressResType = {
 
 export type AddressBodyType = z.infer<typeof addressSchema>;
 
-type OldProvinceType = {
-  id: number;
-  name: string;
-};
-
 export type PublicAddressProvinceResType = {
   id: number;
   name: string;
+  pid: any;
   type: number;
   region: number;
+  alias: string;
   is_picked: number;
   is_delivered: number;
-  district_id: any;
-  parent_id: any;
   lat: string;
   lng: string;
-  is_disable: boolean;
-  old_provinces: OldProvinceType[];
 };
 
-type DistrictType = {
-  id: string;
+export type PublicAddressDistrictResType = {
+  id: number;
   name: string;
-};
-
-type OldWardType = {
-  id: string;
-  name: string;
+  pid: number;
+  type: number;
+  region: any;
+  alias: string;
+  is_picked: number;
+  is_delivered: number;
+  lat: string;
+  lng: string;
 };
 
 export type PublicAddressWardResType = {
   id: number;
   name: string;
+  pid: number;
   type: number;
   region: any;
+  alias: string;
   is_picked: number;
   is_delivered: number;
-  district_id: any;
-  parent_id: number;
-  district: DistrictType;
-  old_wards: OldWardType[];
+  lat: string;
+  lng: string;
 };
 
 export type PublicAddressHamletResType = {
   id: number;
   name: string;
-  type: number;
-  region: any;
-  is_picked: number;
+  pid: number;
   is_delivered: number;
-  district_id: any;
-  parent_id: number;
+  alias: string;
   lat: string;
   lng: string;
-  is_disable: boolean;
+};
+
+export type AddressGeoCoordsResType = {
+  place_id: number;
+  licence: string;
+  osm_type: string;
+  osm_id: number;
+  boundingbox: string[];
+  lat: string;
+  lon: string;
+  display_name: string;
+  class: string;
+  type: string;
+  importance: number;
 };

@@ -1,6 +1,8 @@
+import envConfig from '@/config';
 import { apiConfig } from '@/constants';
 import {
   AddressBodyType,
+  AddressGeoCoordsResType,
   AddressResType,
   ApiResponse,
   ApiResponseList,
@@ -15,21 +17,32 @@ const addressApiRequest = {
     await http.get<ApiResponse<PublicAddressProvinceResType[]>>(
       apiConfig.publicAddress.province
     ),
-  getPublicWardList: async (province_id: string) =>
+  getPublicDistrictList: async (parentId: string) =>
+    await http.get<ApiResponse<PublicAddressProvinceResType[]>>(
+      apiConfig.publicAddress.district,
+      {
+        params: {
+          parentId,
+          type: 3
+        }
+      }
+    ),
+  getPublicWardList: async (parentId: string) =>
     await http.get<ApiResponse<PublicAddressWardResType[]>>(
       apiConfig.publicAddress.ward,
       {
         params: {
-          province_id
+          parentId,
+          type: 1
         }
       }
     ),
-  getPublicHamlet: async (parent_id: string) =>
+  getPublicHamletList: async (parentId: string) =>
     await http.get<
       ApiResponse<{ hamlet_address: PublicAddressHamletResType[] }>
     >(apiConfig.publicAddress.hamlet, {
       params: {
-        parent_id
+        parentId
       }
     }),
   getList: async () =>
@@ -55,7 +68,17 @@ const addressApiRequest = {
   setDefault: async (id: string) =>
     await http.put<ApiResponse<any>>(apiConfig.address.setDefault, {
       pathParams: { id }
-    })
+    }),
+  getGeoCoords: async (address: string) =>
+    await http.get<ApiResponse<AddressGeoCoordsResType[]>>(
+      apiConfig.publicAddress.getGeoCoords,
+      {
+        params: {
+          q: address,
+          api_key: envConfig.NEXT_PUBLIC_API_ADDRESS_GEO_API_KEY
+        }
+      }
+    )
 };
 
 export default addressApiRequest;
