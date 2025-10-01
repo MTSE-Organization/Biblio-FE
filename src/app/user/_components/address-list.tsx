@@ -42,9 +42,10 @@ import {
   useUpdateAddressMutation
 } from '@/queries';
 import { addressSchema } from '@/schemaValidations';
-import { AddressBodyType, AddressGeoCoordsResType } from '@/types';
+import { AddressBodyType } from '@/types';
 import { notify } from '@/utils';
 import { useQueryClient } from '@tanstack/react-query';
+import { debounce } from 'lodash';
 import {
   ArrowLeftFromLine,
   Check,
@@ -67,15 +68,13 @@ export default function AddressList() {
   const [wardId, setWardId] = useState<
     string | number | (string | number)[] | null
   >(null);
+  const [detailSearch, setDetailSearch] = useState('');
   const publicAddressProvinceListQuery = usePublicAddressProvinceListQuery();
   const publicAddressDistrictListQuery = usePublicAddressDistrictListQuery(
     provinceId as string
   );
   const publicAddressWardListQuery = usePublicAddressWardListQuery(
     districtId as string
-  );
-  const publicAddressHamletListQuery = usePublicAddressHamletListQuery(
-    wardId as string
   );
 
   const addressListQuery = useAddressListQuery();
@@ -89,7 +88,14 @@ export default function AddressList() {
   const provinceList = publicAddressProvinceListQuery.data?.data;
   const districtList = publicAddressDistrictListQuery.data?.data;
   const wardList = publicAddressWardListQuery.data?.data;
-  const hamletList = publicAddressHamletListQuery.data?.data?.hamlet_address;
+
+  const province = provinceList?.find(
+    (province) => province.id.toString() === provinceId
+  );
+  const district = districtList?.find(
+    (district) => district.id.toString() === districtId
+  );
+  const ward = wardList?.find((ward) => ward.id.toString() === wardId);
 
   const addressList = addressListQuery.data?.data.content || [];
   const address = addressQuery.data?.data;
@@ -99,8 +105,24 @@ export default function AddressList() {
     addressQuery.isFetching ||
     publicAddressProvinceListQuery.isLoading ||
     publicAddressDistrictListQuery.isLoading ||
-    publicAddressWardListQuery.isLoading ||
-    publicAddressHamletListQuery.isLoading;
+    publicAddressWardListQuery.isLoading;
+
+  const publicAddressHamletListQuery = usePublicAddressHamletListQuery({
+    city: district?.name ?? '',
+    district: ward?.name ?? '',
+    input: detailSearch,
+    state: province?.name ?? '',
+    enabled:
+      (!!detailSearch || !!selectedAddress) &&
+      !!province?.name &&
+      !!district?.name &&
+      !!ward?.name
+  });
+
+  const hamletList = useMemo(
+    () => publicAddressHamletListQuery.data?.data.content || [],
+    [publicAddressHamletListQuery.data?.data.content]
+  );
 
   const handleOpen = () => {
     open();
@@ -119,6 +141,31 @@ export default function AddressList() {
     longitude: 0,
     isDefault: false
   };
+
+  const initialValues: AddressBodyType = useMemo(
+    () => ({
+      city: (provinceId as string) ?? '',
+      district: (districtId as string) ?? '',
+      ward: (wardId as string) ?? '',
+      hamlet:
+        hamletList.find((hamlet) => hamlet.name === address?.hamlet)?.id ?? '',
+      detail: address?.detail ?? '',
+      isDefault: address?.isDefault ?? false,
+      latitude: address?.latitude ?? 0,
+      longitude: address?.longitude ?? 0
+    }),
+    [
+      address?.detail,
+      address?.hamlet,
+      address?.isDefault,
+      address?.latitude,
+      address?.longitude,
+      districtId,
+      hamletList,
+      provinceId,
+      wardId
+    ]
+  );
 
   useEffect(() => {
     if (selectedAddress) {
@@ -149,79 +196,28 @@ export default function AddressList() {
     }
   }, [selectedAddress, address?.ward, wardList]);
 
-  const city =
-    provinceList
-      ?.find((province) => province.name === address?.city)
-      ?.id?.toString() ?? '';
-
-  const district =
-    districtList
-      ?.find((district) => district.name === address?.district)
-      ?.id?.toString() ?? '';
-
-  const ward =
-    wardList?.find((ward) => ward.name === address?.ward)?.id?.toString() ?? '';
-
-  const hamlet =
-    hamletList
-      ?.find((hamlet) => hamlet.name === address?.hamlet)
-      ?.id?.toString() ?? '';
-
-  const initialValues: AddressBodyType = useMemo(
-    () => ({
-      city: city,
-      district: district,
-      ward: ward,
-      hamlet: hamlet,
-      detail: address?.detail ?? '',
-      isDefault: address?.isDefault ?? false,
-      latitude: address?.latitude ?? 0,
-      longitude: address?.longitude ?? 0
-    }),
-    [
-      address?.detail,
-      address?.isDefault,
-      address?.latitude,
-      address?.longitude,
-      city,
-      district,
-      hamlet,
-      ward
-    ]
+  const debouncedSetDetailSearch = useMemo(
+    () => debounce((val: string) => setDetailSearch(val), 400),
+    []
   );
 
-  const getMinCoords = (arr: AddressGeoCoordsResType[]) => {
-    if (arr.length === 0) return null;
-
-    let minLat = Infinity;
-    let minLon = Infinity;
-
-    arr.forEach((item) => {
-      const [latMin, latMax, lonMin, lonMax] = item.boundingbox.map(Number);
-
-      if (latMin < minLat) minLat = latMin;
-      if (lonMin < minLon) minLon = lonMin;
-    });
-
-    return { lat: minLat, lng: minLon };
-  };
+  useEffect(() => {
+    if (address?.hamlet) {
+      setDetailSearch(address?.hamlet ?? '');
+    } else {
+      setDetailSearch('');
+    }
+  }, [address?.hamlet]);
 
   const mutation = selectedAddress
     ? updateAddressMutation
     : createAddressMutation;
   const onSubmit = async (values: AddressBodyType) => {
-    const province = provinceList?.find(
-      (province) => province.id === +values.city
-    );
-    const district = districtList?.find(
-      (district) => district.id === +values.district
-    );
-    const ward = wardList?.find((ward) => ward.id === +values.ward);
-    const hamlet = hamletList?.find((hamlet) => hamlet.id === +values.hamlet);
-    const coords = await addressApiRequest.getGeoCoords(
-      `${ward?.name}, ${district?.name}, ${province?.name}`
-    );
-    const minCoords = getMinCoords(coords.data || []);
+    const hamlet = hamletList?.find((h) => h.id === values.hamlet);
+
+    const coords = await addressApiRequest.getGeoCoords({
+      placeid: hamlet?.place_id ?? ''
+    });
 
     const payload: AddressBodyType = {
       ...values,
@@ -230,14 +226,16 @@ export default function AddressList() {
       hamlet: hamlet?.name ?? '',
       district: district?.name ?? '',
       isDefault: false,
-      latitude: +(minCoords?.lat ?? 0),
-      longitude: +(minCoords?.lng ?? 0)
+      latitude: coords.data?.lat ?? 0,
+      longitude: coords.data?.lng ?? 0
     };
-
     await mutation.mutateAsync(
       selectedAddress ? { ...payload, id: address?.id } : payload
     );
-    queryClient.invalidateQueries({ queryKey: ['address'] });
+    await Promise.all([
+      queryClient.invalidateQueries({ queryKey: ['address-list'] }),
+      queryClient.invalidateQueries({ queryKey: ['address', selectedAddress] })
+    ]);
     addressListQuery.refetch();
     notify.success(
       `${selectedAddress ? 'Cập nhật' : 'Thêm mới'} địa chỉ thành công`
@@ -282,7 +280,7 @@ export default function AddressList() {
 
   return (
     <>
-      <div className='h-full bg-white py-4'>
+      <div className='h-full rounded-lg bg-white py-4'>
         <div className='flex justify-end border-b-1 border-solid border-gray-100 pr-4 pb-4'>
           <Button variant={'primary'} onClick={handleOpen}>
             Thêm địa chỉ
@@ -381,6 +379,9 @@ export default function AddressList() {
         </List>
       </div>
       <Modal open={opened} onClose={close}>
+        <h2 className='border-b p-4 text-lg font-semibold'>
+          Thêm địa chỉ mới (Dùng địa chỉ trước sáp nhập)
+        </h2>
         <BaseForm
           defaultValues={defaultValues}
           schema={addressSchema}
@@ -422,6 +423,7 @@ export default function AddressList() {
                     control={form.control}
                     name='district'
                     label='Quận/Huyện'
+                    disabled={!provinceId}
                     loading={
                       publicAddressDistrictListQuery.isLoading ||
                       publicAddressDistrictListQuery.isFetching
@@ -449,6 +451,7 @@ export default function AddressList() {
                     control={form.control}
                     name='ward'
                     label='Phường, xã'
+                    disabled={!districtId}
                     loading={
                       publicAddressWardListQuery.isLoading ||
                       publicAddressWardListQuery.isFetching
@@ -470,20 +473,22 @@ export default function AddressList() {
                   <SelectField
                     control={form.control}
                     name='hamlet'
+                    disabled={!wardId}
+                    label='Tòa nhà, hẻm, đường'
                     loading={
                       publicAddressHamletListQuery.isLoading ||
                       publicAddressHamletListQuery.isFetching
                     }
-                    label='Tòa nhà, hẻm, đường'
                     placeholder='Chọn tòa nhà, hẻm, đường'
                     required
+                    options={hamletList?.map((hamlet) => ({
+                      label: hamlet.name,
+                      value: hamlet.id.toString()
+                    }))}
                     getLabel={(opt) => opt.label}
                     getValue={(opt) => opt.value}
-                    options={
-                      hamletList?.map((hamlet) => ({
-                        label: hamlet.name,
-                        value: hamlet.id.toString()
-                      })) || []
+                    onChange={(value) =>
+                      debouncedSetDetailSearch(value as string)
                     }
                   />
                 </Col>
