@@ -17,9 +17,7 @@ export default function CartLayout({
         ]}
         separator='/'
       /> */}
-      <Container className='mx-auto py-8 min-[1200px]:max-w-[1140px] min-[1400px]:max-w-[1320px]'>
-        {children}
-      </Container>
+      <Container>{children}</Container>
       <Footer />
     </>
   );

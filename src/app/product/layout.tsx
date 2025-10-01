@@ -17,7 +17,7 @@ export default function ProductLayout({
         ]}
         separator='/'
       /> */}
-      <Container className='bg-gray-200'>
+      <Container>
         <div className='mx-auto pt-10 pb-10 min-[1200px]:max-w-[1140px] min-[1400px]:max-w-[1320px]'>
           {children}
         </div>

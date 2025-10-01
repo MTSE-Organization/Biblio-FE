@@ -1,6 +1,6 @@
+import { Footer } from '@/components/app/footer';
 import { Header } from '@/components/app/header';
 import { Container } from '@/components/layout';
-import { Footer } from 'react-day-picker';
 
 export default function BookLayout({
   children
@@ -17,11 +17,7 @@ export default function BookLayout({
         ]}
         separator='/'
       /> */}
-      <Container className='bg-gray-200'>
-        <div className='mx-auto pt-10 pb-10 min-[1200px]:max-w-[1140px] min-[1400px]:max-w-[1320px]'>
-          {children}
-        </div>
-      </Container>
+      <Container>{children}</Container>
       <Footer />
     </>
   );

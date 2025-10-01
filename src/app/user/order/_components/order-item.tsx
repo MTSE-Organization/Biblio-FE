@@ -6,7 +6,7 @@ import Link from 'next/link';
 
 export default function OrderItem() {
   return (
-    <div className='relative mb-5 rounded rounded-lg border border-gray-200 bg-white p-4 shadow-[0px_0px_8px_2px] shadow-slate-200'>
+    <div className='relative mb-5 rounded rounded-lg border border-gray-200 bg-white p-4 shadow-[0px_0px_10px_2px] shadow-gray-200'>
       <div className='mb-3 flex justify-between border-b border-solid border-gray-200 pb-5 font-medium text-emerald-600'>
         <div className='text-sm text-gray-600'>11:11, 11/11/2025</div>
         <Link href='/#'>Hoàn thành</Link>
