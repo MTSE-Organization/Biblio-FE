@@ -28,7 +28,7 @@ export default function HeroSlider() {
         clickable: true
       }}
       speed={1500}
-      className='w-full flex-1 shadow-[0px_0px_5px_10px] shadow-gray-50'
+      className='w-full flex-1 shadow-[0px_0px_10px_2px] shadow-gray-200'
       loop={true}
     >
       {images.map((image, idx) => (

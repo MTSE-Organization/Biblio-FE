@@ -182,10 +182,10 @@ export default function CartSidebar() {
   const { profile } = useAuthStore();
 
   const cartQuery = useCartQuery({
-    enabled: open && !!profile
+    enabled: !!profile
   });
 
-  const loading = cartQuery.isLoading || cartQuery.isFetching;
+  const loading = cartQuery.isLoading;
 
   const queryClient = useQueryClient();
 
@@ -195,8 +195,8 @@ export default function CartSidebar() {
   const removeFromCartMutation = useDeleteItemMutation();
   const updateCartItem = useUpdateCartItemMutation();
 
-  const handleRemoveFromCart = (id: string) => {
-    removeFromCartMutation.mutateAsync(id, {
+  const handleRemoveFromCart = async (id: string) => {
+    await removeFromCartMutation.mutateAsync(id, {
       onSuccess: () => {
         notify.success('Xóa sách khỏi giỏ hàng thàng công');
         queryClient.invalidateQueries({ queryKey: ['cart'] });
@@ -208,8 +208,8 @@ export default function CartSidebar() {
     });
   };
 
-  const handleUpdateCartItem = (id: string, quantity: number) => {
-    updateCartItem.mutateAsync(
+  const handleUpdateCartItem = async (id: string, quantity: number) => {
+    await updateCartItem.mutateAsync(
       { id, quantity },
       {
         onSuccess: () => {
@@ -222,6 +222,10 @@ export default function CartSidebar() {
       }
     );
   };
+
+  // useEffect(() => {
+  //   cartQuery.refetch();
+  // }, [profile]);
 
   return (
     <div>
@@ -326,7 +330,9 @@ export default function CartSidebar() {
               {!loading && (
                 <div className='border-t p-5'>
                   <Button variant={'primary'} className='w-full text-white'>
-                    <Link href={route.cart}>Xem giỏ hàng</Link>
+                    <Link className='h-full w-full' href={route.cart}>
+                      Xem giỏ hàng
+                    </Link>
                   </Button>
                 </div>
               )}

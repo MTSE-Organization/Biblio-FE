@@ -18,7 +18,6 @@ import { logger } from '@/logger';
 import { CartItemResType } from '@/types';
 import { useEffect, useMemo, useState } from 'react';
 import { debounce } from 'lodash';
-import { List, ListItem } from '@/components/list';
 
 function CartItem({
   cartItem,
@@ -303,52 +302,46 @@ export default function CartList() {
   }
 
   return (
-    <>
-      <div className='rounded-md border'>
-        <table className='w-full'>
-          <thead className='bg-[#e4f2ed]'>
-            <tr>
-              <th className='p-4'></th>
-              <th className='p-4'></th>
-              <th className='p-4 text-left'>Sách</th>
-              <th className='p-4 text-left'>Giá</th>
-              <th className='p-4 text-left'>Số lượng</th>
-              <th className='p-4 text-right'>Tổng</th>
-              <th className='p-4'></th>
-            </tr>
-          </thead>
-          <tbody>
-            {cart?.cartItems?.map((cartItem) => (
-              <CartItem
-                key={cartItem?.id}
-                cartItem={cartItem}
-                onRemoveCartItem={handleRemoveFromCart}
-                onUpdateCartItem={handleUpdateCartItem}
-                selectedCartItemIds={selectedCartItemIds}
-                setSelectedCartItemIds={setSelectedCartItemIds}
-              />
-            ))}
-          </tbody>
-        </table>
+    <div className='mt-4 rounded-lg bg-white shadow-[0px_0px_10px_2px] shadow-gray-200'>
+      <table className='w-full overflow-hidden rounded-t-lg'>
+        <thead className='bg-[#e4f2ed]'>
+          <tr>
+            <th className='p-4'></th>
+            <th className='p-4'></th>
+            <th className='p-4 text-left'>Sách</th>
+            <th className='p-4 text-left'>Giá</th>
+            <th className='p-4 text-left'>Số lượng</th>
+            <th className='p-4 text-right'>Tổng</th>
+            <th className='p-4'></th>
+          </tr>
+        </thead>
+        <tbody>
+          {cart?.cartItems?.map((cartItem) => (
+            <CartItem
+              key={cartItem?.id}
+              cartItem={cartItem}
+              onRemoveCartItem={handleRemoveFromCart}
+              onUpdateCartItem={handleUpdateCartItem}
+              selectedCartItemIds={selectedCartItemIds}
+              setSelectedCartItemIds={setSelectedCartItemIds}
+            />
+          ))}
+        </tbody>
+      </table>
+
+      <div className='mr-5 flex items-center justify-end py-[5px] font-medium'>
+        <p className='font-bold text-[#2b2b2d]'>Tổng tiền:&nbsp;</p>
+        <p className='text-green-primary text-base font-bold'>
+          {formatPrice(totalPrice)} đ
+        </p>
       </div>
 
-      <List className='mt-[15px] flex justify-end'>
-        <ListItem className='flex py-[5px] font-medium'>
-          <label className='mr-2.5 min-w-25 font-bold text-[#2b2b2d]'>
-            Tổng tiền:
-          </label>
-          <p className='text-green-primary text-base font-bold'>
-            {formatPrice(totalPrice)} đ
-          </p>
-        </ListItem>
-      </List>
-
-      <div className='flex justify-between'>
+      <div className='flex justify-between p-4'>
         <Button className='text-green-primary border-green-primary hover:bg-green-primary border bg-transparent hover:text-white'>
           <Link href={route.home}>Tiếp tục mua sách</Link>
         </Button>
         <Button className='bg-green-primary'>Thanh toán</Button>
       </div>
-    </>
+    </div>
   );
 }

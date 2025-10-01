@@ -219,7 +219,7 @@ export default function AddressList() {
 
   return (
     <>
-      <div className='h-full py-4'>
+      <div className='h-full bg-white py-4'>
         <div className='flex justify-end border-b-1 border-solid border-gray-100 pr-4 pb-4'>
           <Button variant={'primary'} onClick={handleOpen}>
             Thêm địa chỉ

@@ -20,26 +20,26 @@ export default function HomePage() {
         /> */}
         <HeroSlider />
       </div>
-      <Container className='bg-gray-100'>
-        <div className='mx-auto max-w-[1320px] pt-12 pb-12'>
-          <CategoryList />
-          <LazyBookList
-            title='Sách mới nhất'
-            useQueryHook={useLatestProductListQuery}
-          />
-          {/* <BookList
+      <Container>
+        <CategoryList />
+        <LazyBookList
+          title='Sách mới nhất'
+          className='mb-5'
+          useQueryHook={useLatestProductListQuery}
+        />
+        {/* <BookList
           title='Sách bán chạy nhất'
           useQueryHook={useBestSellerProductListQuery}
         /> */}
-          <LazyBookList
-            title='Sách có lượt xem nhiều nhất'
-            useQueryHook={useTopViewProductListQuery}
-          />
-          <LazyBookList
-            title='Sách khuyến mãi cao nhất'
-            useQueryHook={useTopDiscountProductListQuery}
-          />
-        </div>
+        <LazyBookList
+          title='Sách có lượt xem nhiều nhất'
+          className='mb-5'
+          useQueryHook={useTopViewProductListQuery}
+        />
+        <LazyBookList
+          title='Sách khuyến mãi cao nhất'
+          useQueryHook={useTopDiscountProductListQuery}
+        />
       </Container>
     </>
   );
