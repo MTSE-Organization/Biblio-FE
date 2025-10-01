@@ -1,6 +1,5 @@
 'use client';
 
-import * as React from 'react';
 import {
   FormDescription,
   FormField,
@@ -8,7 +7,7 @@ import {
   FormLabel,
   FormMessage
 } from '@/components/ui/form';
-import { Control, FieldPath, FieldValues } from 'react-hook-form';
+import { Control, FieldPath, FieldValues, useWatch } from 'react-hook-form';
 import {
   Command,
   CommandEmpty,
@@ -24,6 +23,20 @@ import {
 import { cn } from '@/lib/utils';
 import { ChevronDown, X } from 'lucide-react';
 import { Button } from '@/components/form';
+import { ApiConfig, ApiResponseList } from '@/types';
+import { useQuery } from '@tanstack/react-query';
+import { http } from '@/utils';
+import debounce from 'lodash/debounce';
+import Image from 'next/image';
+import { emptyData } from '@/assets';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { CircleLoading } from '@/components/loading';
+
+type AutoCompleteOption = {
+  label: string;
+  value: string | number;
+  prefix?: React.ReactNode;
+};
 
 type AutoCompleteFieldProps<
   TFieldValues extends FieldValues,
@@ -32,21 +45,21 @@ type AutoCompleteFieldProps<
   control: Control<TFieldValues>;
   name: FieldPath<TFieldValues>;
   label?: string;
+  searchParams: (keyof TOption)[];
+  initialParams?: Record<string, any>;
   placeholder?: string;
-  options: TOption[];
   description?: string;
   className?: string;
   required?: boolean;
   multiple?: boolean;
-  getLabel: (option: TOption) => string | number;
-  getValue: (option: TOption) => string | number;
-  getPrefix?: (option: TOption) => React.ReactNode;
   allowClear?: boolean;
   searchText?: string;
   notFoundContent?: React.ReactNode;
   labelClassName?: string;
   disabled?: boolean;
   onValueChange?: (value: string | number | (string | number)[]) => void;
+  apiConfig: ApiConfig;
+  mappingData: (option: TOption) => AutoCompleteOption;
 };
 
 export default function AutoCompleteField<
@@ -56,23 +69,136 @@ export default function AutoCompleteField<
   control,
   name,
   label,
+  searchParams,
+  initialParams = {},
   placeholder,
-  options,
   description,
   className,
   required,
   multiple = false,
-  getLabel,
-  getValue,
-  getPrefix,
   allowClear,
   searchText,
-  notFoundContent,
+  notFoundContent = 'Không có dữ liệu',
   labelClassName,
   disabled = false,
-  onValueChange
+  onValueChange,
+  apiConfig,
+  mappingData
 }: AutoCompleteFieldProps<TFieldValues, TOption>) {
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
+  const [search, setSearch] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState('');
+  const [selectedOptions, setSelectedOptions] = useState<AutoCompleteOption[]>(
+    []
+  );
+  const [initialOption, setInitialOption] = useState<AutoCompleteOption | null>(
+    null
+  );
+  const [highlightedIndex, setHighlightedIndex] = useState<number>(-1);
+  const commandInputRef = useRef<HTMLInputElement>(null);
+  const initialFetched = useRef(false);
+
+  const fieldValue = useWatch({ control, name });
+
+  const updateSearch = useMemo(
+    () => debounce((val: string) => setDebouncedSearch(val), 400),
+    []
+  );
+
+  useEffect(() => {
+    updateSearch(search);
+  }, [search, updateSearch]);
+
+  const query = useQuery({
+    queryKey: [name, debouncedSearch, initialParams],
+    queryFn: () => {
+      const params: Record<string, any> = {
+        ...initialParams
+      };
+      if (debouncedSearch) {
+        searchParams.forEach((field) => {
+          params[field as string] = debouncedSearch;
+        });
+      }
+      return http.get<ApiResponseList<TOption>>(apiConfig, { params });
+    },
+    enabled: false
+  });
+
+  const loading = query.isLoading || query.isFetching;
+
+  const isFirstFetch = useRef(false);
+  useEffect(() => {
+    if (open && !isFirstFetch.current) {
+      query.refetch();
+      isFirstFetch.current = true;
+    }
+  }, [open]);
+
+  useEffect(() => {
+    if (debouncedSearch !== '' && open) {
+      query.refetch();
+    }
+  }, [debouncedSearch, open]);
+
+  const options: AutoCompleteOption[] = (query.data?.data.content || []).map(
+    mappingData
+  );
+
+  useEffect(() => {
+    if (!fieldValue || initialFetched.current) return;
+
+    const getInitialOptions = async () => {
+      let fetchedOptions: AutoCompleteOption[] = [];
+
+      if (Array.isArray(fieldValue)) {
+        const results = await Promise.all(
+          fieldValue.map((id: string) =>
+            http.get<ApiResponseList<TOption>>(apiConfig, { params: { id } })
+          )
+        );
+        results.forEach((res) => {
+          if (res.result && res.data.content.length > 0) {
+            fetchedOptions.push(mappingData(res.data.content[0]));
+          }
+        });
+      } else {
+        const res = await http.get<ApiResponseList<TOption>>(apiConfig, {
+          params: { id: fieldValue }
+        });
+        if (res.result && res.data.content.length > 0) {
+          fetchedOptions.push(mappingData(res.data.content[0]));
+        }
+      }
+
+      if (fetchedOptions.length > 0) {
+        setSelectedOptions(fetchedOptions);
+        setInitialOption(fetchedOptions[0]);
+      }
+    };
+
+    getInitialOptions();
+    initialFetched.current = true;
+  }, [apiConfig, fieldValue, mappingData]);
+
+  const combinedOptions: AutoCompleteOption[] = useMemo(() => {
+    const opts = options.filter((opt) => initialOption?.value !== opt.value);
+    return initialOption ? [initialOption, ...opts] : opts;
+  }, [options, initialOption]);
+
+  useEffect(() => {
+    if (!fieldValue || (Array.isArray(fieldValue) && fieldValue.length === 0)) {
+      setSelectedOptions([]);
+      setInitialOption(null);
+      setSearch('');
+    }
+  }, [fieldValue]);
+
+  useEffect(() => {
+    if (!search) {
+      setHighlightedIndex(-1);
+    }
+  }, [search]);
 
   return (
     <FormField
@@ -93,13 +219,29 @@ export default function AutoCompleteField<
             const next = selectedValues.includes(val)
               ? selectedValues.filter((v) => v !== val)
               : [...selectedValues, val];
+
             field.onChange(next);
+
+            const picked = combinedOptions.find((o) => o.value === val);
+            if (picked) {
+              setSelectedOptions((prev) => {
+                const exist = prev.find((p) => p.value === val);
+                return exist
+                  ? prev.filter((p) => p.value !== val)
+                  : [...prev, picked];
+              });
+            }
+
             onValueChange?.(next);
           } else {
-            field.onChange(val);
+            field.onChange(val.toString());
+            const picked = combinedOptions.find((o) => o.value === val);
+            if (picked) setSelectedOptions([picked]);
             onValueChange?.(val);
             setOpen(false);
           }
+
+          setSearch('');
         };
 
         return (
@@ -114,6 +256,7 @@ export default function AutoCompleteField<
                 {required && <span className='text-destructive'>*</span>}
               </FormLabel>
             )}
+
             <Popover open={open} onOpenChange={setOpen}>
               <PopoverTrigger asChild>
                 <Button
@@ -122,36 +265,43 @@ export default function AutoCompleteField<
                   role='combobox'
                   aria-label='Select'
                   disabled={disabled}
+                  title={selectedOptions[0]?.label ?? ''}
                   className={cn(
-                    'focus-visible:border-green-primary focus-visible:ring-ring/0 w-full flex-wrap justify-between border-1 py-0 opacity-80 focus-visible:shadow-none focus-visible:ring-[1px]',
+                    'w-full flex-nowrap justify-between truncate border-1 px-3 py-0 text-black opacity-80 opacity-100 focus:ring-0 focus-visible:border-gray-200 focus-visible:shadow-none focus-visible:ring-0',
                     {
-                      'pl-1!': selectedValues.length > 1,
-                      'cursor-not-allowed opacity-50': disabled
+                      'disabled:cursor-not-allowed disabled:opacity-100 disabled:hover:bg-transparent disabled:[&>div>span]:opacity-80':
+                        disabled,
+                      'border-green-primary ring-green-primary ring-1': open,
+                      '[&>div>span]:text-gray-300': fieldState.invalid,
+                      'border-red-500 ring-red-500': fieldState.invalid,
+                      'pl-1!': multiple && selectedValues.length
                     }
                   )}
                 >
                   {multiple ? (
-                    selectedValues.length > 0 ? (
+                    selectedOptions.length > 0 ? (
                       <div className='flex flex-wrap gap-2'>
-                        {selectedValues.map((val) => {
-                          const opt = options.find((o) => getValue(o) === val);
-                          if (!opt) return null;
+                        {selectedOptions.map((opt) => {
                           return (
                             <div
-                              key={val}
-                              className='bg-accent text-accent-foreground flex items-center rounded-lg px-3 py-1 text-sm'
+                              key={opt.value}
+                              className='bg-accent text-accent-foreground flex items-center rounded px-2 py-1 text-sm'
                             >
-                              {getPrefix?.(opt) && (
+                              {opt.prefix && (
                                 <span className='mr-1 font-mono text-xs opacity-70'>
-                                  {getPrefix(opt)}
+                                  {opt.prefix}
                                 </span>
                               )}
-                              {getLabel(opt)}
+                              {opt.label}
                               <span
                                 onClick={(e) => {
                                   e.stopPropagation();
-                                  field.onChange(
-                                    selectedValues.filter((v) => v !== val)
+                                  const next = selectedValues.filter(
+                                    (v) => v !== opt.value
+                                  );
+                                  field.onChange(next);
+                                  setSelectedOptions((prev) =>
+                                    prev.filter((p) => p.value !== opt.value)
                                   );
                                 }}
                                 className='hover:text-destructive ml-2 cursor-pointer text-lg leading-none'
@@ -165,19 +315,13 @@ export default function AutoCompleteField<
                     ) : (
                       <span className='opacity-30'>{placeholder}</span>
                     )
-                  ) : selectedValues.length === 1 ? (
-                    (() => {
-                      const val = selectedValues[0];
-                      const opt = options.find((o) => getValue(o) === val);
-                      return opt ? (
-                        <div className='flex items-center gap-2 truncate'>
-                          {getPrefix?.(opt)}
-                          <span>{getLabel(opt)}</span>
-                        </div>
-                      ) : (
-                        <span className='opacity-30'>{placeholder}</span>
-                      );
-                    })()
+                  ) : selectedOptions.length === 1 ? (
+                    <div className='flex min-w-0 flex-1 items-center gap-2'>
+                      {selectedOptions[0].prefix}
+                      <span className='truncate text-black'>
+                        {selectedOptions[0].label}
+                      </span>
+                    </div>
                   ) : (
                     <span className='opacity-30'>{placeholder}</span>
                   )}
@@ -186,15 +330,16 @@ export default function AutoCompleteField<
                     <span
                       onClick={(e) => {
                         e.stopPropagation();
-                        field.onChange(multiple ? [] : '');
+                        field.onChange(multiple ? [] : null);
+                        setSelectedOptions([]);
                         setOpen(false);
                       }}
-                      className='bg-accent ml-2 flex h-4 w-4 shrink-0 items-center justify-center rounded-full p-2 hover:opacity-80'
+                      className='bg-accent ml-2 flex h-4 w-4 shrink-0 items-center justify-center rounded-full px-0 hover:opacity-80'
                     >
                       <X className='size-3' />
                     </span>
                   ) : (
-                    <ChevronDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
+                    <ChevronDown className='ml-0 h-4 w-4 shrink-0 opacity-50' />
                   )}
                 </Button>
               </PopoverTrigger>
@@ -206,31 +351,80 @@ export default function AutoCompleteField<
               )}
 
               <PopoverContent className='w-[var(--radix-popover-trigger-width)] p-0'>
-                <Command className='bg-background'>
-                  <CommandInput placeholder={searchText} />
-                  <CommandEmpty>{notFoundContent}</CommandEmpty>
-                  <CommandGroup>
-                    {options.map((opt) => {
-                      const val = getValue(opt);
-                      return (
-                        <CommandItem
-                          key={val}
-                          onSelect={() => toggleValue(val)}
-                          className={cn('cursor-pointer rounded select-none', {
-                            'bg-accent text-accent-foreground':
-                              selectedValues.includes(val)
-                          })}
-                        >
-                          {getPrefix?.(opt) && (
-                            <span className='mr-1 font-mono text-xs opacity-70'>
-                              {getPrefix(opt)}
-                            </span>
-                          )}
-                          {getLabel(opt)}
-                        </CommandItem>
-                      );
-                    })}
-                  </CommandGroup>
+                <Command shouldFilter={false} className='bg-background'>
+                  <CommandInput
+                    placeholder={searchText}
+                    value={search}
+                    onValueChange={setSearch}
+                    ref={commandInputRef}
+                    onKeyDown={(e) => {
+                      if (combinedOptions.length === 0) return;
+                      switch (e.key) {
+                        case 'ArrowDown':
+                          e.preventDefault();
+                          setHighlightedIndex((prev) =>
+                            prev < combinedOptions.length - 1 ? prev + 1 : 0
+                          );
+                          break;
+                        case 'ArrowUp':
+                          e.preventDefault();
+                          setHighlightedIndex((prev) =>
+                            prev > 0 ? prev - 1 : combinedOptions.length - 1
+                          );
+                          break;
+                        case 'Enter':
+                          e.preventDefault();
+                          const selected = combinedOptions[highlightedIndex];
+                          if (selected) toggleValue(selected.value);
+                          break;
+                        case 'Escape':
+                          setOpen(false);
+                          break;
+                      }
+                    }}
+                  />
+                  {options.length === 0 && !loading ? (
+                    <CommandEmpty className='mx-auto pt-2 pb-4 text-center text-sm'>
+                      <Image
+                        src={emptyData.src}
+                        width={120}
+                        height={50}
+                        className='mx-auto'
+                        alt={notFoundContent as string}
+                      />
+                      {notFoundContent}
+                    </CommandEmpty>
+                  ) : (
+                    <CommandGroup>
+                      {loading ? (
+                        <CircleLoading className='stroke-green-primary my-2 size-7' />
+                      ) : (
+                        combinedOptions.map((opt, idx) => (
+                          <CommandItem
+                            key={opt.value}
+                            onSelect={() => toggleValue(opt.value)}
+                            onMouseEnter={() => setHighlightedIndex(idx)}
+                            title={opt.label}
+                            className={cn(
+                              'block cursor-pointer truncate rounded',
+                              {
+                                'bg-accent text-accent-foreground':
+                                  selectedValues.includes(opt.value) ||
+                                  highlightedIndex === idx
+                              }
+                            )}
+                          >
+                            {opt.prefix && (
+                              <span className='mr-1 font-mono text-xs opacity-70'>
+                                {opt.prefix}
+                              </span>
+                            )}
+                            {opt.label}
+                          </CommandItem>
+                        ))
+                      )}
+                    </CommandGroup>
+                  )}
                 </Command>
               </PopoverContent>
             </Popover>
