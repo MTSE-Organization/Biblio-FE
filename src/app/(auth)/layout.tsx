@@ -10,7 +10,7 @@ export default function AuthLayout({
   return (
     <>
       <Header />
-      <Container>{children}</Container>
+      <Container contentClassName='h-fit'>{children}</Container>
       <Footer />
     </>
   );

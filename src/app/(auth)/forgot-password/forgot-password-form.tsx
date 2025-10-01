@@ -108,133 +108,127 @@ export default function ForgotPasswordForm() {
         ]}
         separator='/'
       /> */}
-      <div className='py-25 max-[1600px]:py-20'>
-        <div className='container mx-auto'>
-          <div className='mx-auto max-w-120 rounded border border-solid border-gray-100 bg-white p-7.5'>
-            <div className='mb-7.5 flex h-full w-full items-center justify-center'>
-              <Image
-                src={whiteLogo.src}
-                alt='Biblio Logo'
-                width={338}
-                height={101.11}
-                className='h-auto w-full object-cover'
-              />
-            </div>
+      <div className='mx-auto max-w-120 rounded-lg bg-white p-7.5 shadow-[0px_0px_10px_2px] shadow-gray-200'>
+        <div className='mb-7.5 flex h-full w-full items-center justify-center'>
+          <Image
+            src={whiteLogo.src}
+            alt='Biblio Logo'
+            width={300}
+            height={100}
+            className='object-cover'
+          />
+        </div>
 
-            <BaseForm
-              onSubmit={onSubmit}
-              defaultValues={defaultValues}
-              schema={
-                step === 1
-                  ? forgotPasswordStep1Schema
-                  : forgotPasswordStep2Schema
-              }
-            >
-              {(form) => (
+        <BaseForm
+          onSubmit={onSubmit}
+          defaultValues={defaultValues}
+          schema={
+            step === 1 ? forgotPasswordStep1Schema : forgotPasswordStep2Schema
+          }
+        >
+          {(form) => (
+            <>
+              {step === 1 && (
                 <>
-                  {step === 1 && (
-                    <>
-                      <Row>
-                        <Col>
-                          <InputField
-                            name='email'
-                            control={form.control}
-                            label='Email'
-                            placeholder='Nhập email...'
-                            type='text'
-                            required
-                          />
-                        </Col>
-                      </Row>
+                  <Row>
+                    <Col>
+                      <InputField
+                        name='email'
+                        control={form.control}
+                        label='Email'
+                        placeholder='Nhập email...'
+                        type='text'
+                        required
+                      />
+                    </Col>
+                  </Row>
+                  <Button
+                    disabled={forgotPasswordMutation.isPending}
+                    variant={'primary'}
+                    className={'w-full'}
+                  >
+                    {forgotPasswordMutation.isPending ? (
+                      <CircleLoading />
+                    ) : (
+                      'Gửi OTP'
+                    )}
+                  </Button>
+                </>
+              )}
+
+              {step === 2 && (
+                <>
+                  <Row>
+                    <Col>
+                      <OtpField
+                        className='w-full!'
+                        name='otp'
+                        control={form.control}
+                        label='Nhập OTP'
+                        required
+                        description={
+                          <p className='text-center text-sm'>
+                            Mã OTP đã được gửi đến email của bạn. <br /> Mã có
+                            thời gian sử dụng trong vòng 5 phút
+                          </p>
+                        }
+                      />
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col>
+                      <PasswordField
+                        name='password'
+                        control={form.control}
+                        label='Mật khẩu'
+                        placeholder='Nhập mật khẩu...'
+                        required
+                      />
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col>
+                      <PasswordField
+                        name='confirmPassword'
+                        control={form.control}
+                        label='Nhập lại mật khẩu'
+                        placeholder='Nhập lại mật khẩu...'
+                        required
+                      />
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col>
                       <Button
-                        disabled={forgotPasswordMutation.isPending}
+                        disabled={changePasswordMutation.isPending}
                         variant={'primary'}
                         className={'w-full'}
                       >
-                        {forgotPasswordMutation.isPending ? (
+                        {changePasswordMutation.isPending ? (
                           <CircleLoading />
                         ) : (
-                          'Gửi OTP'
+                          'Đặt lại mật khẩu'
                         )}
                       </Button>
-                    </>
-                  )}
-
-                  {step === 2 && (
-                    <>
-                      <Row>
-                        <Col>
-                          <OtpField
-                            className='w-full!'
-                            name='otp'
-                            control={form.control}
-                            label='Nhập OTP'
-                            required
-                            description={
-                              <p className='text-center text-sm'>
-                                Mã OTP đã được gửi đến email của bạn. <br /> Mã
-                                có thời gian sử dụng trong vòng 5 phút
-                              </p>
-                            }
-                          />
-                        </Col>
-                      </Row>
-                      <Row>
-                        <Col>
-                          <PasswordField
-                            name='password'
-                            control={form.control}
-                            label='Mật khẩu'
-                            placeholder='Nhập mật khẩu...'
-                            required
-                          />
-                        </Col>
-                      </Row>
-                      <Row>
-                        <Col>
-                          <PasswordField
-                            name='confirmPassword'
-                            control={form.control}
-                            label='Nhập lại mật khẩu'
-                            placeholder='Nhập lại mật khẩu...'
-                            required
-                          />
-                        </Col>
-                      </Row>
-                      <Row>
-                        <Col>
-                          <Button
-                            disabled={changePasswordMutation.isPending}
-                            variant={'primary'}
-                            className={'w-full'}
-                          >
-                            {changePasswordMutation.isPending ? (
-                              <CircleLoading />
-                            ) : (
-                              'Đặt lại mật khẩu'
-                            )}
-                          </Button>
-                        </Col>
-                      </Row>
-                      <Row>
-                        <Col>
-                          <Button
-                            type='button'
-                            variant='outline'
-                            className='w-full'
-                            onClick={() => setStep(1)}
-                          >
-                            Quay lại
-                          </Button>
-                        </Col>
-                      </Row>
-                    </>
-                  )}
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col>
+                      <Button
+                        type='button'
+                        variant='outline'
+                        className='w-full'
+                        onClick={() => setStep(1)}
+                      >
+                        Quay lại
+                      </Button>
+                    </Col>
+                  </Row>
                 </>
               )}
-            </BaseForm>
-          </div>
-        </div>
+            </>
+          )}
+        </BaseForm>
       </div>
     </div>
   );

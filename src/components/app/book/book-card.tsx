@@ -17,7 +17,7 @@ export default function BookCard({ book }: { book: ProductAutoType }) {
     await viewedProductMutation.mutateAsync({ productId: book.id });
   };
   return (
-    <div className='min-h-115 rounded-md bg-white p-3 transition-all duration-100 ease-linear hover:shadow-[0px_0px_8px_2px] hover:shadow-gray-200'>
+    <div className='min-h-115 rounded-md bg-white p-3 transition-all duration-100 ease-linear hover:shadow-[0px_0px_10px_2px] hover:shadow-gray-200'>
       <div className='relative flex h-auto items-center justify-center'>
         <div className='h-70 w-full'>
           <Link

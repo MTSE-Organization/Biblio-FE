@@ -1,15 +1,14 @@
 import { logo } from '@/assets';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Container } from '@/components/layout';
 import { InstagramLogoIcon, TwitterLogoIcon } from '@radix-ui/react-icons';
 import { RiFacebookLine, RiMailLine, RiUserLocationLine } from 'react-icons/ri';
 import { PhoneIcon, SendIcon } from 'lucide-react';
 
 const Footer = () => {
   return (
-    <footer className='relative bg-white pt-24 shadow-[0px_0px_10px_5px_] shadow-gray-200'>
-      <Container className='mx-auto max-w-[1320px]'>
+    <footer className='relative bg-white pt-24 shadow-[0px_0px_10px_2px] shadow-gray-200'>
+      <div className='mx-auto max-w-[1320px]'>
         <div className='flex gap-6 pb-24'>
           {/* Logo + About */}
           <div className='w-1/2'>
@@ -126,7 +125,7 @@ const Footer = () => {
             , All rights reserved.
           </p>
         </div>
-      </Container>
+      </div>
     </footer>
   );
 };

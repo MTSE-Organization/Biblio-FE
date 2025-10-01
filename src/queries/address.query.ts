@@ -9,6 +9,14 @@ export const usePublicAddressProvinceListQuery = () => {
   });
 };
 
+export const usePublicAddressDistrictListQuery = (id: string) => {
+  return useQuery({
+    queryKey: ['public-address-district-list', id],
+    queryFn: () => addressApiRequest.getPublicDistrictList(id),
+    enabled: !!id
+  });
+};
+
 export const usePublicAddressWardListQuery = (id: string) => {
   return useQuery({
     queryKey: ['public-address-ward-list', id],
@@ -20,7 +28,7 @@ export const usePublicAddressWardListQuery = (id: string) => {
 export const usePublicAddressHamletListQuery = (id: string) => {
   return useQuery({
     queryKey: ['public-address-hamlet-query', id],
-    queryFn: () => addressApiRequest.getPublicHamlet(id),
+    queryFn: () => addressApiRequest.getPublicHamletList(id),
     enabled: !!id
   });
 };

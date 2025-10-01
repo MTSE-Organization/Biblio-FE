@@ -108,8 +108,8 @@ export default function ProfileForm() {
         separator='/'
       /> */}
 
-      <div className='p-5'>
-        <div className='text-center'>
+      <div className='rounded-lg bg-white p-5 shadow-[0px_0x_10px_2px] shadow-gray-200'>
+        <div className='mb-5 text-center'>
           <Image
             src={whiteLogo.src}
             width={200}
@@ -200,6 +200,7 @@ export default function ProfileForm() {
                 </Col>
                 <Col>
                   <Button
+                    disabled={profileMutation.isPending}
                     type='submit'
                     className={cn('bg-green-primary hover:bg-green-primary', {
                       'cursor-not-allowed opacity-50': !isFormChanged
