@@ -66,17 +66,17 @@ export default function BookCard({ book }: { book: ProductAutoType }) {
         </Link>
         {book.discount === 0 && (
           <p className='text-green-primary text-base font-bold'>
-            {formatPrice(book.price)} ₫
+            {formatPrice(book.price)}
           </p>
         )}
         {book.discount !== 0 && (
           <div className='flex items-center gap-2'>
             <div>
               <p className='text-green-primary text-base font-bold'>
-                {formatPrice((book.price * (100 - book.discount)) / 100)} ₫
+                {formatPrice((book.price * (100 - book.discount)) / 100)}
               </p>
               <p className='font-bold text-gray-400 line-through'>
-                {formatPrice(book.price)} ₫
+                {formatPrice(book.price)}
               </p>
             </div>
             <p className='bg-green-primary rounded p-1 text-xs text-white'>

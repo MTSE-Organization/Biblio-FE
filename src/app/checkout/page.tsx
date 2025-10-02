@@ -3,6 +3,7 @@
 import { product } from '@/assets';
 import { Button } from '@/components/form';
 import { List, ListItem } from '@/components/list';
+import { formatPrice } from '@/utils';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -45,7 +46,9 @@ export default function CheckoutPage() {
                 </Link>
               </td>
               <td className='px-3.5 py-5 text-center'>
-                <span className='text-green-primary font-bold'>100.000₫</span>
+                <span className='text-green-primary font-bold'>
+                  {formatPrice(100000)}
+                </span>
               </td>
               <td className='px-3.5 py-5 text-center'>
                 <span>1</span>

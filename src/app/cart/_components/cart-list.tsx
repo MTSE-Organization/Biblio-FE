@@ -1,6 +1,6 @@
 'use client';
 
-import { Button } from '@/components/form';
+import { Button, Col, Row, ToolTip } from '@/components/form';
 import Image from 'next/image';
 import Link from 'next/link';
 import { emptyCart, product } from '@/assets';
@@ -18,6 +18,8 @@ import { logger } from '@/logger';
 import { CartItemResType } from '@/types';
 import { useEffect, useMemo, useState } from 'react';
 import { debounce } from 'lodash';
+import { Check, ChevronRight, Info, Minus, Plus, Ticket } from 'lucide-react';
+import { Separator } from '@/components/ui/separator';
 
 function CartItem({
   cartItem,
@@ -85,8 +87,8 @@ function CartItem({
   };
 
   return (
-    <tr>
-      <td className='w-[60px] py-5 text-center'>
+    <div className='flex items-center pl-6'>
+      <div className='text-center'>
         <div className='inline-flex items-center'>
           <label className='relative flex cursor-pointer items-center'>
             <input
@@ -114,10 +116,10 @@ function CartItem({
             </span>
           </label>
         </div>
-      </td>
-      <td className='px-3.5 py-5 font-semibold'>
+      </div>
+      <div className='flex flex-1 p-4 font-semibold'>
         <Link
-          className=''
+          className='shrink-0'
           href={`${route.book}/${cartItem?.productVariant?.product?.slug}.${cartItem?.productVariant?.product?.id}`}
         >
           <Image
@@ -133,50 +135,49 @@ function CartItem({
             alt='Product'
           />
         </Link>
-      </td>
-      <td>
-        <Link
-          href={`${route.book}/${cartItem?.productVariant?.product?.slug}.${cartItem?.productVariant?.product?.id}`}
-          className='hover:text-green-primary leading-6 font-medium break-all transition-all duration-200 ease-linear'
-          title={cartItem?.productVariant?.product?.name}
-        >
-          {cartItem?.productVariant?.product?.name}
-        </Link>
-      </td>
-      <td className='px-3.5 py-5'>
-        {cartItem?.productVariant?.product?.discount === 0 && (
-          <p className='text-green-primary text-base font-bold'>
-            {formatPrice(cartItem?.productVariant?.modifiedPrice)} ₫
-          </p>
-        )}
-        {cartItem?.productVariant?.product?.discount !== 0 && (
-          <div className='flex items-center gap-2'>
-            <p className='text-green-primary text-base font-bold'>
-              {formatPrice(
-                (cartItem?.productVariant?.modifiedPrice *
-                  (100 - cartItem?.productVariant?.product?.discount)) /
-                  100
-              )}{' '}
-              ₫
-            </p>
-            <p className='text-xs font-bold text-gray-400 line-through'>
-              {formatPrice(cartItem?.productVariant?.modifiedPrice)} ₫
-            </p>
-            <p className='bg-green-primary rounded p-1 text-xs text-white'>
-              -{cartItem?.productVariant?.product?.discount} %
-            </p>
+        <div className='flex flex-col justify-between pl-4'>
+          <Link
+            href={`${route.book}/${cartItem?.productVariant?.product?.slug}.${cartItem?.productVariant?.product?.id}`}
+            className='hover:text-green-primary leading-6 font-medium transition-all duration-200 ease-linear'
+            title={cartItem?.productVariant?.product?.name}
+          >
+            {cartItem?.productVariant?.product?.name}
+          </Link>
+          <div>
+            {cartItem?.productVariant?.product?.discount === 0 && (
+              <p className='text-green-primary text-base font-bold'>
+                {formatPrice(cartItem?.productVariant?.modifiedPrice)}
+              </p>
+            )}
+            {cartItem?.productVariant?.product?.discount !== 0 && (
+              <div className='flex items-center gap-2'>
+                <p className='text-green-primary text-base font-bold'>
+                  {formatPrice(
+                    (cartItem?.productVariant?.modifiedPrice *
+                      (100 - cartItem?.productVariant?.product?.discount)) /
+                      100
+                  )}
+                </p>
+                <p className='text-xs font-bold text-gray-400 line-through'>
+                  {formatPrice(cartItem?.productVariant?.modifiedPrice)}
+                </p>
+                <p className='bg-green-primary rounded p-1 text-xs text-white'>
+                  -{cartItem?.productVariant?.product?.discount} %
+                </p>
+              </div>
+            )}
           </div>
-        )}
-      </td>
-      <td className='px-3.5 py-5 text-center'>
-        <div className='mt-[5px] flex h-[30px] w-[90px] items-center justify-between rounded-sm border'>
+        </div>
+      </div>
+      <div className='py-4 text-center'>
+        <div className='focus-within:ring-green-primary mx-auto mt-[5px] flex h-7.5 w-22.5 items-center justify-between rounded-sm border border-1 transition-all duration-200 ease-linear focus-within:border-transparent focus-within:ring-2'>
           <Button
             type='button'
             onClick={handleDecreaseQuantity}
             variant={'ghost'}
-            className='hover:text-green-primary flex h-4 w-[20px] cursor-pointer items-center justify-center p-0 text-base hover:bg-transparent'
+            className='hover:text-green-primary ml-1 flex h-full w-5 cursor-pointer items-center justify-center p-0! transition-all duration-200 ease-linear hover:bg-transparent'
           >
-            -
+            <Minus />
           </Button>
           <input
             type='text'
@@ -184,38 +185,37 @@ function CartItem({
             onChange={handleChangeQuantity}
             minLength={1}
             maxLength={cartItem.productVariant.quantity}
-            className='w-[40px] text-center'
+            className='w-[40px] text-center focus:border-none focus:outline-none'
           />
           <Button
             type='button'
             onClick={handleIncreaseQuantity}
             variant={'ghost'}
-            className='hover:text-green-primary flex h-4 w-[20px] cursor-pointer items-center justify-center p-0 text-base hover:bg-transparent'
+            className='hover:text-green-primary mr-1 flex h-full w-5 cursor-pointer items-center justify-center p-0! transition-all duration-200 ease-linear hover:bg-transparent'
           >
-            +
+            <Plus />
           </Button>
         </div>
-      </td>
-      <td className='px-3.5 py-5 text-right'>
-        <p className='text-green-primary text-base font-bold'>
+      </div>
+      <div className='basis-[18%] p-4 text-center'>
+        <p className='text-green-primary text-base font-semibold'>
           {formatPrice(
             (cartItem?.quantity *
               cartItem?.productVariant?.modifiedPrice *
               (100 - cartItem?.productVariant?.product?.discount)) /
               100
-          )}{' '}
-          ₫
+          )}
         </p>
-      </td>
-      <td className='px-3.5 py-5 text-center'>
+      </div>
+      <div className='basis-[5%] p-4 text-center'>
         <button
           onClick={() => onRemoveCartItem(cartItem?.id)}
-          className='cursor-pointer hover:text-red-500'
+          className='cursor-pointer transition-all duration-200 ease-linear hover:text-red-500'
         >
           <RiDeleteBin6Line size={20} />
         </button>
-      </td>
-    </tr>
+      </div>
+    </div>
   );
 }
 
@@ -276,7 +276,7 @@ export default function CartList() {
 
   if (!profile) {
     return (
-      <div className='flex flex-1 flex-col items-center justify-center overflow-y-auto p-4'>
+      <div className='flex h-[80vh] flex-1 flex-col items-center justify-center overflow-y-auto rounded-lg bg-white p-4'>
         <p className='text-gray-500'>
           Vui lòng{' '}
           <Link
@@ -302,46 +302,91 @@ export default function CartList() {
   }
 
   return (
-    <div className='mt-4 rounded-lg bg-white shadow-[0px_0px_10px_2px] shadow-gray-200'>
-      <table className='w-full overflow-hidden rounded-t-lg'>
-        <thead className='bg-[#e4f2ed]'>
-          <tr>
-            <th className='p-4'></th>
-            <th className='p-4'></th>
-            <th className='p-4 text-left'>Sách</th>
-            <th className='p-4 text-left'>Giá</th>
-            <th className='p-4 text-left'>Số lượng</th>
-            <th className='p-4 text-right'>Tổng</th>
-            <th className='p-4'></th>
-          </tr>
-        </thead>
-        <tbody>
-          {cart?.cartItems?.map((cartItem) => (
-            <CartItem
-              key={cartItem?.id}
-              cartItem={cartItem}
-              onRemoveCartItem={handleRemoveFromCart}
-              onUpdateCartItem={handleUpdateCartItem}
-              selectedCartItemIds={selectedCartItemIds}
-              setSelectedCartItemIds={setSelectedCartItemIds}
-            />
-          ))}
-        </tbody>
-      </table>
+    <Row className='mt-4'>
+      <Col span={16}>
+        <div className='w-full overflow-hidden rounded-lg'>
+          <div className='mb-4 flex items-center rounded-lg bg-white pl-6'>
+            <div className='inline-flex items-center'>
+              <label className='relative flex cursor-pointer items-center'>
+                <input
+                  type='checkbox'
+                  id='check'
+                  className='peer checked:bg-green-primary h-5 w-5 cursor-pointer appearance-none rounded border border-slate-300 shadow transition-all hover:shadow-md'
+                />
+                <span className='pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 transform text-white opacity-0 peer-checked:opacity-100'>
+                  <Check className='h-5 w-5' />
+                </span>
+              </label>
+            </div>
+            <div className='flex-1 p-4'>
+              Chọn tất cả ({cart.cartItems.length} sản phẩm)
+            </div>
+            <div className='w-22.5 py-4 text-center'>Số lượng</div>
+            <div className='basis-[18%] p-4 text-center'>Tổng</div>
+            <div className='basis-[6%]'></div>
+          </div>
+          <div className='rounded-lg bg-white shadow-[0px_0px_10px_2px] shadow-gray-200'>
+            {cart?.cartItems?.map((cartItem) => (
+              <CartItem
+                key={cartItem?.id}
+                cartItem={cartItem}
+                onRemoveCartItem={handleRemoveFromCart}
+                onUpdateCartItem={handleUpdateCartItem}
+                selectedCartItemIds={selectedCartItemIds}
+                setSelectedCartItemIds={setSelectedCartItemIds}
+              />
+            ))}
+          </div>
+        </div>
+      </Col>
 
-      <div className='mr-5 flex items-center justify-end py-[5px] font-medium'>
-        <p className='font-bold text-[#2b2b2d]'>Tổng tiền:&nbsp;</p>
-        <p className='text-green-primary text-base font-bold'>
-          {formatPrice(totalPrice)} đ
-        </p>
-      </div>
+      <Col span={8}>
+        <div className='rounded-lg bg-white p-4'>
+          <div className='flex items-center justify-between border-b border-gray-200 pb-4'>
+            <div className='flex items-center gap-x-2 text-[#2F80ED]'>
+              <Ticket />
+              <h3>Khuyến mãi</h3>
+            </div>
+            <div className='text flex text-[#2F80ED]'>
+              <p>Xem thêm</p>
+              <ChevronRight />
+            </div>
+          </div>
+          <div className='mt-2 flex items-center justify-between rounded bg-[#2F80ED33] p-2 text-[#2F80ED]'>
+            <span>Có 10 khuyến mãi đủ điều kiện</span>
+            <ChevronRight />
+          </div>
+          <div className='mt-2 flex items-center justify-between p-2'>
+            Có thể áp dụng nhiều mã
+            <ToolTip
+              title={
+                <p className='text-center'>
+                  Áp dụng tối đa một mã giảm giá và một mã freeship
+                </p>
+              }
+            >
+              <Info />
+            </ToolTip>
+          </div>
+        </div>
 
-      <div className='flex justify-between p-4'>
-        <Button className='text-green-primary border-green-primary hover:bg-green-primary border bg-transparent hover:text-white'>
-          <Link href={route.home}>Tiếp tục mua sách</Link>
-        </Button>
-        <Button className='bg-green-primary'>Thanh toán</Button>
-      </div>
-    </div>
+        <div className='mt-4 rounded-lg bg-white p-4'>
+          <div className='flex justify-between'>
+            <span>Thành tiền</span>
+            <span>{formatPrice(360000)}</span>
+          </div>
+          <Separator className='my-4' />
+          <div className='flex justify-between'>
+            <span>Tổng số tiền (bao gồm VAT)</span>
+            <span>{formatPrice(360000)}</span>
+          </div>
+          <div className='mt-4 flex justify-end'>
+            <Button variant={'primary'} className='block w-full'>
+              Thanh toán
+            </Button>
+          </div>
+        </div>
+      </Col>
+    </Row>
   );
 }

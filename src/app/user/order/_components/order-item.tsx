@@ -28,14 +28,14 @@ export default function OrderItem() {
               <p className='text-zinc-800'>Tên NXB</p>
             </div>
             <div className='text-right'>
-              <p className='text-zinc-800'>{formatPrice(120000)} ₫</p>
+              <p className='text-zinc-800'>{formatPrice(120000)}</p>
               <p className='text-zinc-800'>x1</p>
             </div>
           </div>
         </div>
       </div>
       <div className='text-right'>
-        <div className='font-semibold'>Thành tiền: {formatPrice(120000)} ₫</div>
+        <div className='font-semibold'>Thành tiền: {formatPrice(120000)}</div>
       </div>
       <div className='mt-5 flex justify-end gap-2 text-right'>
         <Button variant={'primary'} className='rounded px-4 py-2 text-white'>

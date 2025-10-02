@@ -2,9 +2,13 @@ import './star-rating.css';
 
 type StarRatingProps = {
   value: number;
+  showValue?: boolean;
 };
 
-export default function StarRating({ value }: StarRatingProps) {
+export default function StarRating({
+  value,
+  showValue = true
+}: StarRatingProps) {
   return (
     <div className='flex items-center gap-1'>
       <div className='stars [&>svg]:not-last:mr-0.5'>
@@ -29,9 +33,11 @@ export default function StarRating({ value }: StarRatingProps) {
         />
       </div>
 
-      <span className='block h-full text-[13px]'>
-        ({value >= 5 ? '5.0' : value.toFixed(1)})
-      </span>
+      {showValue && (
+        <span className='block h-full text-[13px]'>
+          ({value >= 5 ? '5.0' : value.toFixed(1)})
+        </span>
+      )}
     </div>
   );
 }

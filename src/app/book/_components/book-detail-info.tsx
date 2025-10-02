@@ -2,6 +2,7 @@
 
 import { Button } from '@/components/form';
 import { List, ListItem } from '@/components/list';
+import { StarRating } from '@/components/star-rating';
 import { Separator } from '@/components/ui/separator';
 import {
   ageRatings,
@@ -19,10 +20,9 @@ import route from '@/routes';
 import { ProductResType } from '@/types';
 import { formatDate, formatPrice, getData, notify } from '@/utils';
 import { useQueryClient } from '@tanstack/react-query';
-import { Eye } from 'lucide-react';
+import { Eye, Minus, Plus } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
-import { RiStarFill } from 'react-icons/ri';
 
 export default function BookDetailInfo({ book }: { book?: ProductResType }) {
   const [quantity, setQuantity] = useState<number>(1);
@@ -132,9 +132,7 @@ export default function BookDetailInfo({ book }: { book?: ProductResType }) {
       </div>
       <div className='mt-5 flex items-center gap-4'>
         <div className='flex items-center gap-1'>
-          {[...Array(5)].map((_, i) => (
-            <RiStarFill key={i} className='text-[#f5885f]' />
-          ))}
+          <StarRating value={3.5} />
         </div>
         <p>(2 Reviews)</p>
         <Separator orientation='vertical' />
@@ -211,16 +209,16 @@ export default function BookDetailInfo({ book }: { book?: ProductResType }) {
       <div className='pt-5'>
         {book?.discount === 0 && (
           <p className='text-green-primary text-2xl leading-[1.167] font-bold'>
-            {formatPrice(book?.price ?? 0)} ₫
+            {formatPrice(book?.price ?? 0)}
           </p>
         )}
         {book?.discount !== 0 && book?.price && (
           <div className='flex items-center gap-2'>
             <p className='text-green-primary text-2xl leading-[1.167] font-bold'>
-              {formatPrice((book.price * (100 - book.discount)) / 100)} ₫
+              {formatPrice((book.price * (100 - book.discount)) / 100)}
             </p>
-            <p className='text-xl leading-[1.167] font-semibold text-gray-400 line-through'>
-              {formatPrice(book.price)} ₫
+            <p className='text-lg leading-[1.167] font-semibold text-gray-300 line-through'>
+              {formatPrice(book.price)}
             </p>
             <p className='bg-green-primary rounded p-1 text-xs text-white'>
               -{book?.discount} %
@@ -268,30 +266,28 @@ export default function BookDetailInfo({ book }: { book?: ProductResType }) {
         </div>
       </div>
       <div className='flex pt-5'>
-        <div className='relative flex h-full'>
+        <div className='mt-[5px] flex h-[25px] w-[90px] items-center justify-between rounded-sm border'>
+          <Button
+            onClick={handleDecreaseQuantity}
+            variant={'ghost'}
+            className='hover:text-green-primary ml-1 flex h-full w-5 cursor-pointer items-center justify-center p-0! transition-all duration-200 ease-linear hover:bg-transparent'
+          >
+            <Minus />
+          </Button>
           <input
             type='text'
             value={quantity}
             onChange={handleChangeQuantity}
             minLength={1}
-            className='mr-2 h-10 w-10 rounded-[5px] border border-solid border-[#e9e9e9] text-center'
+            className='w-[40px] text-center'
           />
-          <div className='flex flex-col justify-between'>
-            <Button
-              onClick={handleIncreaseQuantity}
-              variant={'ghost'}
-              className='flex h-[18px] w-[18px] cursor-pointer items-center justify-center rounded-[5px] border border-solid border-[#e9e9e9] bg-white p-0 pb-[2.5px] leading-0'
-            >
-              +
-            </Button>
-            <Button
-              onClick={handleDecreaseQuantity}
-              variant={'ghost'}
-              className='flex h-[18px] w-[18px] cursor-pointer items-center justify-center rounded-[5px] border border-solid border-[#e9e9e9] bg-white p-0 pb-[2.5px] leading-0'
-            >
-              -
-            </Button>
-          </div>
+          <Button
+            onClick={handleIncreaseQuantity}
+            variant={'ghost'}
+            className='hover:text-green-primary mr-1 flex h-full w-5 cursor-pointer items-center justify-center p-0! transition-all duration-200 ease-linear hover:bg-transparent'
+          >
+            <Plus />
+          </Button>
         </div>
         <div className='ml-[15px]'>
           <Button
