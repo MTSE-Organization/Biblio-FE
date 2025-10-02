@@ -10,8 +10,22 @@ export const useCategoryListQuery = ({
   enabled?: boolean;
 } = {}) => {
   return useQuery({
-    queryKey: ['category-list'],
+    queryKey: ['category-list', params],
     queryFn: () => categoryApiRequest.getList(params),
+    enabled
+  });
+};
+
+export const useCategoryQuery = ({
+  id,
+  enabled
+}: {
+  id: string;
+  enabled: boolean;
+}) => {
+  return useQuery({
+    queryKey: ['category', id],
+    queryFn: () => categoryApiRequest.getById(id),
     enabled
   });
 };

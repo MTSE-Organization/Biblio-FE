@@ -1,12 +1,12 @@
 'use client';
 
 import { BookList } from '@/components/app/book';
-import { useProductListCategoryQuery } from '@/queries';
+import { useProductRelatedByCategoryQuery } from '@/queries';
 import { useInView } from 'react-intersection-observer';
 
 export default function BookSimilarCategoryList({ id }: { id: string }) {
   const { ref, inView } = useInView({ triggerOnce: true, rootMargin: '100px' });
-  const query = useProductListCategoryQuery({
+  const query = useProductRelatedByCategoryQuery({
     id,
     enabled: inView
   });

@@ -118,6 +118,11 @@ const apiConfig = defineApiConfig({
       baseUrl: `${AppConstants.apiUrl}v1/category/list`,
       headers: baseHeader,
       method: 'GET'
+    },
+    getById: {
+      baseUrl: `${AppConstants.apiUrl}v1/category/get/:id`,
+      headers: baseHeader,
+      method: 'GET'
     }
   },
   cartItem: {
