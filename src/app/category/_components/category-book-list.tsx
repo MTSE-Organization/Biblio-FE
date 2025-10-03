@@ -7,7 +7,7 @@ import { getIdFromSlug } from '@/utils';
 import { useParams } from 'next/navigation';
 import { useEffect, useRef } from 'react';
 
-export default function Category() {
+export default function CategoryBookList() {
   const params = useParams<{ slug: string }>();
   const id = getIdFromSlug(params.slug);
 

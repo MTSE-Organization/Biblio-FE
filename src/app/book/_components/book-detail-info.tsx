@@ -256,7 +256,7 @@ export default function BookDetailInfo({ book }: { book?: ProductResType }) {
                   }
                   &nbsp; & &nbsp;
                   {
-                    productVariantFormats.find((pvc) => pvc.value === bv.format)
+                    productVariantFormats.find((pvf) => pvf.value === bv.format)
                       ?.label
                   }
                 </Button>

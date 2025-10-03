@@ -7,8 +7,8 @@ import {
 import { http } from '@/utils';
 
 const productVariantApiRequest = {
-  getList: async (params?: ProductVariantSearchType) =>
-    await http.get<ApiResponseList<ProductVariantResType>>(
+  getList: (params?: ProductVariantSearchType) =>
+    http.get<ApiResponseList<ProductVariantResType>>(
       apiConfig.productVariant.getList,
       {
         params

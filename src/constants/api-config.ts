@@ -241,6 +241,45 @@ const apiConfig = defineApiConfig({
       method: 'GET',
       ignoreAuth: true
     }
+  },
+  order: {
+    cancel: {
+      baseUrl: `${AppConstants.apiUrl}v1/order/cancel`,
+      headers: baseHeader,
+      method: 'POST'
+    },
+    create: {
+      baseUrl: `${AppConstants.apiUrl}v1/order/create`,
+      headers: baseHeader,
+      method: 'PUT'
+    },
+    getById: {
+      baseUrl: `${AppConstants.apiUrl}v1/order/get/:id`,
+      headers: baseHeader,
+      method: 'GET'
+    },
+    getList: {
+      baseUrl: `${AppConstants.apiUrl}v1/order/list`,
+      headers: baseHeader,
+      method: 'GET'
+    },
+    place: {
+      baseUrl: `${AppConstants.apiUrl}v1/order/place`,
+      headers: baseHeader,
+      method: 'POST'
+    }
+  },
+  coupon: {
+    getList: {
+      baseUrl: `${AppConstants.apiUrl}v1/coupon/list`,
+      headers: baseHeader,
+      method: 'GET'
+    },
+    getById: {
+      baseUrl: `${AppConstants.apiUrl}v1/coupon/get/:id`,
+      headers: baseHeader,
+      method: 'GET'
+    }
   }
 });
 

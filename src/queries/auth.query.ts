@@ -10,46 +10,44 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 export const useRegisterMutation = () => {
   return useMutation({
     mutationKey: ['register'],
-    mutationFn: async (body: RegisterBodyType) =>
-      await authApiRequest.register(body)
+    mutationFn: (body: RegisterBodyType) => authApiRequest.register(body)
   });
 };
 
 export const useVerifyOtpMutation = () => {
   return useMutation({
     mutationKey: ['otp-verify'],
-    mutationFn: async (body: OtpBodyType) =>
-      await authApiRequest.verifyOtp(body)
+    mutationFn: (body: OtpBodyType) => authApiRequest.verifyOtp(body)
   });
 };
 
 export const useForgotPasswordMutation = () => {
   return useMutation({
     mutationKey: ['forgot-password'],
-    mutationFn: async (body: Pick<ForgotPasswordBodyType, 'email'>) =>
-      await authApiRequest.forgotPassword(body)
+    mutationFn: (body: Pick<ForgotPasswordBodyType, 'email'>) =>
+      authApiRequest.forgotPassword(body)
   });
 };
 
 export const useChangePasswordMutation = () => {
   return useMutation({
     mutationKey: ['forgot-password'],
-    mutationFn: async (body: ForgotPasswordBodyType) =>
-      await authApiRequest.changePassword(body)
+    mutationFn: (body: ForgotPasswordBodyType) =>
+      authApiRequest.changePassword(body)
   });
 };
 
 export const useLoginMutation = () => {
   return useMutation({
     mutationKey: ['login'],
-    mutationFn: async (body: LoginBodyType) => await authApiRequest.login(body)
+    mutationFn: (body: LoginBodyType) => authApiRequest.login(body)
   });
 };
 
 export const useLogoutMutation = () => {
   return useMutation({
     mutationKey: ['logout'],
-    mutationFn: async () => await authApiRequest.logout()
+    mutationFn: () => authApiRequest.logout()
   });
 };
 
