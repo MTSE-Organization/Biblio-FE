@@ -313,7 +313,7 @@ export default function AddressList() {
                     <Button
                       onClick={() => handleEdit(address.id)}
                       variant={'ghost'}
-                      className='size-5 p-0 hover:bg-transparent'
+                      className='size-5 p-0'
                     >
                       <Pencil className='size-5 stroke-blue-700/80' />
                     </Button>
@@ -324,7 +324,7 @@ export default function AddressList() {
                       onClick={() => handleSetDefault(address.id)}
                       disabled={address.isDefault}
                       variant={'ghost'}
-                      className='size-5 p-0 hover:bg-transparent'
+                      className='size-5 p-0'
                     >
                       <Check className='size-5 stroke-blue-700/80' />
                     </Button>
@@ -334,7 +334,10 @@ export default function AddressList() {
                     <AlertDialogTrigger asChild>
                       <span>
                         <ToolTip title={`Xóa`}>
-                          <Button className='h-5 border-none bg-transparent p-1! shadow-none hover:bg-transparent'>
+                          <Button
+                            variant={'ghost'}
+                            className='h-5 border-none p-1! shadow-none'
+                          >
                             <Trash className='size-5 stroke-red-600' />
                           </Button>
                         </ToolTip>

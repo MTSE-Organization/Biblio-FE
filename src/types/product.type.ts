@@ -12,7 +12,7 @@ export type ProductResType = {
   name: string;
   slug: string;
   description: string;
-  price: number;
+  price: string;
   releaseDate: string;
   ageRating: number;
   language: string;

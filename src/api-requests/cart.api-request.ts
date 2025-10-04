@@ -9,7 +9,7 @@ const cartApiRequest = {
       body
     }),
   checkout: (body: CartCheckoutBodyType) =>
-    http.post<ApiResponse<any>>(apiConfig.cart.checkout, {
+    http.post<ApiResponse<{ orderId: string }>>(apiConfig.cart.checkout, {
       body
     })
 };

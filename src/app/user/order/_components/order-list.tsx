@@ -1,34 +1,29 @@
 'use client';
 
 import OrderItem from '@/app/user/order/_components/order-item';
-import Link from 'next/link';
+import { Button } from '@/components/form';
+import { ORDER_STATUS_ALL, orderStatuses } from '@/constants';
+import { cn } from '@/lib';
+import { useState } from 'react';
 
 export default function OrderList() {
+  const [currentStatus, setCurrentStatus] = useState<number>(ORDER_STATUS_ALL);
   return (
     <>
       {/* Order filter tabs */}
       <div className='mb-4 flex items-center justify-evenly rounded-lg bg-white py-4 shadow-[0px_0px_10px_2px] shadow-gray-200'>
-        <Link href={'/#'} className='text-dark-cyan font-medium'>
-          Tất cả
-        </Link>
-        <Link
-          href={'/#'}
-          className='hover:text-dark-cyan text-gray-500 transition-colors duration-200 ease-linear'
-        >
-          Đang xử lý
-        </Link>
-        <Link
-          href={'/#'}
-          className='hover:text-dark-cyan text-gray-500 transition-colors duration-200 ease-linear'
-        >
-          Hoàn tất giao hàng
-        </Link>
-        <Link
-          href={'/#'}
-          className='hover:text-dark-cyan text-gray-500 transition-colors duration-200 ease-linear'
-        >
-          Đã hủy
-        </Link>
+        {orderStatuses.map((status) => (
+          <Button
+            variant={'ghost'}
+            key={status.value}
+            onClick={() => setCurrentStatus(status.value)}
+            className={cn('hover:text-dark-cyan/80 p-0! text-sm font-medium', {
+              'text-dark-cyan': currentStatus === status.value
+            })}
+          >
+            {status.label}
+          </Button>
+        ))}
       </div>
       <div className='mt-5'>
         {Array.from({ length: 4 }).map((_, index) => (

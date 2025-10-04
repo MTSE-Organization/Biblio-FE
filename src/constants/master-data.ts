@@ -1,3 +1,4 @@
+import { cod, vnPAY } from '@/assets';
 import {
   AGE_RATING_0_2,
   AGE_RATING_12_15,
@@ -9,6 +10,18 @@ import {
   GENDER_FEMALE,
   GENDER_MALE,
   GENDER_OTHER,
+  ORDER_STATUS_ALL,
+  ORDER_STATUS_CANCELED,
+  ORDER_STATUS_COMPLETE,
+  ORDER_STATUS_CONFIRMED,
+  ORDER_STATUS_PACKING,
+  ORDER_STATUS_REFUNDED,
+  ORDER_STATUS_REQUEST_REFUND,
+  ORDER_STATUS_SHIPPING,
+  ORDER_STATUS_WAITING,
+  ORDER_STATUS_WAITING_CONFIRMATION,
+  PAYMENT_COD,
+  PAYMENT_VNPAY,
   PRODUCT_VARIANT_CONDITION_NEW,
   PRODUCT_VARIANT_CONDITION_OLD,
   PRODUCT_VARIANT_FORMAT_HARD_COVER,
@@ -356,4 +369,30 @@ export const productVariantFormats = [
     label: 'Bìa mềm',
     value: PRODUCT_VARIANT_FORMAT_PAPER_BACK
   }
+];
+
+export const paymentMethods = [
+  {
+    label: 'COD',
+    icon: cod,
+    value: PAYMENT_COD
+  },
+  {
+    label: 'VNPAY',
+    icon: vnPAY,
+    value: PAYMENT_VNPAY
+  }
+];
+
+export const orderStatuses = [
+  { label: 'Tất cả', value: ORDER_STATUS_ALL },
+  { label: 'Chờ xử lý', value: ORDER_STATUS_WAITING },
+  { label: 'Chờ xác nhận', value: ORDER_STATUS_WAITING_CONFIRMATION },
+  { label: 'Đã xác nhận', value: ORDER_STATUS_CONFIRMED },
+  { label: 'Đang đóng gói', value: ORDER_STATUS_PACKING },
+  { label: 'Đang giao hàng', value: ORDER_STATUS_SHIPPING },
+  { label: 'Hoàn tất', value: ORDER_STATUS_COMPLETE },
+  { label: 'Đã hủy', value: ORDER_STATUS_CANCELED },
+  { label: 'Yêu cầu hoàn tiền', value: ORDER_STATUS_REQUEST_REFUND },
+  { label: 'Đã hoàn tiền', value: ORDER_STATUS_REFUNDED }
 ];
