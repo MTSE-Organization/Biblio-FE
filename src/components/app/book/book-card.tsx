@@ -1,6 +1,6 @@
 'use client';
-
 import { defaultBook } from '@/assets';
+import { StarRating } from '@/components/star-rating';
 import { useImageZoom } from '@/hooks';
 import { useViewedProductMutation } from '@/queries';
 import route from '@/routes';
@@ -8,7 +8,6 @@ import { ProductAutoType } from '@/types';
 import { formatPrice, renderImageUrl } from '@/utils';
 import Image from 'next/image';
 import Link from 'next/link';
-import { RiStarFill } from 'react-icons/ri';
 
 export default function BookCard({ book }: { book: ProductAutoType }) {
   const viewedProductMutation = useViewedProductMutation();
@@ -32,7 +31,7 @@ export default function BookCard({ book }: { book: ProductAutoType }) {
                 onMouseMove={handleMouseMove}
                 src={renderImageUrl(book.image?.url) || defaultBook.src}
                 fill
-                className='object-cover transition-all duration-50 ease-linear'
+                className='object-cover transition-all duration-200 ease-linear'
                 alt='Product'
                 sizes='(max-width: 768px) 50vw,
                       (max-width: 1200px) 25vw,
@@ -46,19 +45,15 @@ export default function BookCard({ book }: { book: ProductAutoType }) {
       </div>
       <div className='flex flex-col items-center pt-5 text-center'>
         <div className='mb-3 flex flex-col items-center'>
-          <p
+          <Link
+            href={`${route.category}/${book.category.slug}.${book.category.id}`}
             title={book.category.name}
-            className='mb-2 line-clamp-1 text-sm text-gray-500'
+            className='hover:text-green-primary mb-2 line-clamp-1 text-sm text-gray-500 transition-all duration-200 ease-linear'
           >
             {book.category.name}
-          </p>
+          </Link>
           <div className='flex items-center justify-center'>
-            <RiStarFill className='text-yellow-500' />
-            <RiStarFill className='text-yellow-500' />
-            <RiStarFill className='text-yellow-500' />
-            <RiStarFill className='text-yellow-500' />
-            <RiStarFill className='text-yellow-500' />
-            <p className='mt-0.5 ml-1 text-xs text-gray-500'>(5)</p>
+            <StarRating value={20} />
           </div>
         </div>
         <Link
@@ -70,18 +65,18 @@ export default function BookCard({ book }: { book: ProductAutoType }) {
           {book.name}
         </Link>
         {book.discount === 0 && (
-          <p className='text-green-primary font-bold'>
-            {formatPrice(book.price)} ₫
+          <p className='text-green-primary text-base font-bold'>
+            {formatPrice(book.price)}
           </p>
         )}
         {book.discount !== 0 && (
           <div className='flex items-center gap-2'>
             <div>
-              <p className='text-green-primary font-bold'>
-                {formatPrice((book.price * (100 - book.discount)) / 100)} ₫
+              <p className='text-green-primary text-base font-bold'>
+                {formatPrice((book.price * (100 - book.discount)) / 100)}
               </p>
               <p className='font-bold text-gray-400 line-through'>
-                {formatPrice(book.price)} ₫
+                {formatPrice(book.price)}
               </p>
             </div>
             <p className='bg-green-primary rounded p-1 text-xs text-white'>

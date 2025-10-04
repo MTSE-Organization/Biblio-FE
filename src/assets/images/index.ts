@@ -11,6 +11,7 @@ import emptyData from './empty-data.webp';
 import emptyList from './empty-list.webp';
 import defaultBook from './green-book.svg';
 import noImage from './no-image.jpg';
+import bgCoupon from './coupon-bg.svg';
 
 export {
   defaultAvatar,
@@ -25,5 +26,6 @@ export {
   emptyData,
   emptyList,
   defaultBook,
-  noImage
+  noImage,
+  bgCoupon
 };

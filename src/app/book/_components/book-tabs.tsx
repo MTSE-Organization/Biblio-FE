@@ -20,9 +20,14 @@ import { formatDate, renderImageUrl } from '@/utils';
 import { logger } from '@/logger';
 import { NoData } from '@/components/no-data';
 import { List, ListItem } from '@/components/list';
+import Link from 'next/link';
+import route from '@/routes';
+import { useAuthStore } from '@/store';
+import { StarRating } from '@/components/star-rating';
+import { Pen } from 'lucide-react';
 
 const BookTabs = ({ book }: { book?: ProductResType }) => {
-  const [activeTab, setActiveTab] = useState('description');
+  const [activeTab, setActiveTab] = useState('review');
 
   const tabs = useMemo(
     () => [
@@ -68,6 +73,7 @@ const BookTabs = ({ book }: { book?: ProductResType }) => {
               />
             )}
             {activeTab === 'detail' && <BookInfo book={book} />}
+            {activeTab == 'review' && <BookReview />}
             {activeTab === 'author' && (
               <ContributorInfo
                 contributors={
@@ -326,6 +332,63 @@ function PublisherInfo({
         description={publisher.description}
       />
     </ExpandableSection>
+  );
+}
+
+function BookReview() {
+  const { profile } = useAuthStore();
+  return (
+    <Row className='mt-4 justify-between'>
+      <Col span={10} className='flex-row items-center gap-x-5'>
+        <div className='flex flex-col items-center justify-center gap-y-2'>
+          <p className='text-xl'>
+            <span className='text-4xl'>5</span>/5
+          </p>
+          <StarRating showValue={false} value={5} />
+          <div>2 đánh giá</div>
+        </div>
+        <div className='flex-1'>
+          {[...Array(5)].map((item, index) => (
+            <div
+              key={index}
+              className='flex items-center justify-between gap-x-2 not-last:mb-1'
+            >
+              <span className='w-10 text-right whitespace-nowrap'>
+                {5 - index} sao
+              </span>
+              <div className='relative h-1.5 w-4/5 overflow-hidden rounded-lg bg-gray-200'>
+                <div
+                  className='h-full rounded-lg bg-yellow-400'
+                  style={{ width: `${36}%` }}
+                />
+              </div>
+              <span>36%</span>
+            </div>
+          ))}
+        </div>
+      </Col>
+      <Col span={14} className='items-center justify-center'>
+        {!profile && (
+          <>
+            Vui lòng&nbsp;
+            <Link
+              className='text-green-primary hover:text-green-primary/80 transition-all duration-20 ease-linear'
+              href={route.login}
+            >
+              đăng nhập
+            </Link>
+            &nbsp;để đánh giá sản phẩm
+          </>
+        )}
+        <Button
+          variant={'outline'}
+          className='border-green-primary text-green-primary hover:text-green-primary/80 font-medium transition-all duration-200 ease-linear hover:border-transparent hover:bg-transparent hover:ring-2'
+        >
+          <Pen />
+          Viết đánh giá
+        </Button>
+      </Col>
+    </Row>
   );
 }
 
