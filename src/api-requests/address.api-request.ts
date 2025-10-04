@@ -12,12 +12,12 @@ import {
 import { http } from '@/utils';
 
 const addressApiRequest = {
-  getPublicProvinceList: async () =>
-    await http.get<ApiResponse<PublicAddressProvinceResType[]>>(
+  getPublicProvinceList: () =>
+    http.get<ApiResponse<PublicAddressProvinceResType[]>>(
       apiConfig.publicAddress.province
     ),
-  getPublicDistrictList: async (division_id: string) =>
-    await http.get<ApiResponse<PublicAddressProvinceResType[]>>(
+  getPublicDistrictList: (division_id: string) =>
+    http.get<ApiResponse<PublicAddressProvinceResType[]>>(
       apiConfig.publicAddress.district,
       {
         params: {
@@ -25,8 +25,8 @@ const addressApiRequest = {
         }
       }
     ),
-  getPublicWardList: async (division_id: string) =>
-    await http.get<ApiResponse<PublicAddressWardResType[]>>(
+  getPublicWardList: (division_id: string) =>
+    http.get<ApiResponse<PublicAddressWardResType[]>>(
       apiConfig.publicAddress.ward,
       {
         params: {
@@ -34,7 +34,7 @@ const addressApiRequest = {
         }
       }
     ),
-  getPublicDetail: async ({
+  getPublicDetail: ({
     city,
     district,
     input,
@@ -47,7 +47,7 @@ const addressApiRequest = {
     state: string;
     sessiontoken?: string;
   }) =>
-    await http.get<ApiResponseList<PublicAddressDetailResType>>(
+    http.get<ApiResponseList<PublicAddressDetailResType>>(
       apiConfig.publicAddress.detail,
       {
         params: {
@@ -59,38 +59,38 @@ const addressApiRequest = {
         }
       }
     ),
-  getList: async () =>
-    await http.get<ApiResponseList<AddressResType>>(apiConfig.address.getList),
-  getById: async (id: string) =>
-    await http.get<ApiResponse<AddressResType>>(apiConfig.address.getById, {
+  getList: () =>
+    http.get<ApiResponseList<AddressResType>>(apiConfig.address.getList),
+  getById: (id: string) =>
+    http.get<ApiResponse<AddressResType>>(apiConfig.address.getById, {
       pathParams: {
         id
       }
     }),
-  create: async (body: AddressBodyType) =>
-    await http.post<ApiResponse<any>>(apiConfig.address.create, {
+  create: (body: AddressBodyType) =>
+    http.post<ApiResponse<any>>(apiConfig.address.create, {
       body
     }),
-  update: async (body: AddressBodyType) =>
-    await http.put<ApiResponse<any>>(apiConfig.address.update, {
+  update: (body: AddressBodyType) =>
+    http.put<ApiResponse<any>>(apiConfig.address.update, {
       body
     }),
-  delete: async (id: string) =>
-    await http.delete<ApiResponse<any>>(apiConfig.address.delete, {
+  delete: (id: string) =>
+    http.delete<ApiResponse<any>>(apiConfig.address.delete, {
       pathParams: { id }
     }),
-  setDefault: async (id: string) =>
-    await http.put<ApiResponse<any>>(apiConfig.address.setDefault, {
+  setDefault: (id: string) =>
+    http.put<ApiResponse<any>>(apiConfig.address.setDefault, {
       pathParams: { id }
     }),
-  getGeoCoords: async ({
+  getGeoCoords: ({
     placeid,
     sessiontoken = '51bdf842-d3b2-48fc-b267-c399cdd420f5'
   }: {
     placeid: string;
     sessiontoken?: string;
   }) =>
-    await http.get<ApiResponse<AddressGeoCoordsResType>>(
+    http.get<ApiResponse<AddressGeoCoordsResType>>(
       apiConfig.publicAddress.getGeoCoords,
       {
         params: {

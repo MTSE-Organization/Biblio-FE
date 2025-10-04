@@ -20,6 +20,7 @@ import { cn } from '@/lib';
 import { debounce } from 'lodash';
 import { productVariantConditions, productVariantFormats } from '@/constants';
 import { HamsterLoading } from '@/components/loading';
+import { Minus, Plus } from 'lucide-react';
 
 function CartItem({
   cartItem,
@@ -106,7 +107,7 @@ function CartItem({
           </Link>
           <Button
             variant={'ghost'}
-            className='absolute -top-1.5 -right-4 size-2 cursor-pointer p-0 hover:text-red-500'
+            className='absolute -top-2 -right-5.5 size-2 cursor-pointer p-0 hover:bg-transparent hover:text-red-500'
             onClick={() => onRemoveCartItem(cartItem?.id)}
           >
             <FaTimes size={12} />
@@ -114,22 +115,28 @@ function CartItem({
         </div>
         {cartItem?.productVariant?.product?.discount === 0 && (
           <p className='text-green-primary text-base font-bold'>
-            {formatPrice(cartItem?.productVariant?.modifiedPrice)} ₫
+            {formatPrice(
+              cartItem.quantity * cartItem?.productVariant?.modifiedPrice
+            )}
           </p>
         )}
         {cartItem?.productVariant?.product?.discount !== 0 && (
-          <div className='flex items-center gap-2'>
-            <p className='text-green-primary text-base font-bold'>
-              {formatPrice(
-                (cartItem?.productVariant?.modifiedPrice *
-                  (100 - cartItem?.productVariant?.product?.discount)) /
-                  100
-              )}{' '}
-              ₫
-            </p>
-            <p className='text-xs font-bold text-gray-400 line-through'>
-              {formatPrice(cartItem?.productVariant?.modifiedPrice)} ₫
-            </p>
+          <div className='flex items-center gap-4'>
+            <div className='flex flex-col text-right'>
+              <p className='text-green-primary text-base font-bold'>
+                {formatPrice(
+                  (cartItem.quantity *
+                    cartItem?.productVariant?.modifiedPrice *
+                    (100 - cartItem?.productVariant?.product?.discount)) /
+                    100
+                )}
+              </p>
+              <p className='text-sm font-bold text-gray-400 line-through'>
+                {formatPrice(
+                  cartItem.quantity * cartItem?.productVariant?.modifiedPrice
+                )}
+              </p>
+            </div>
             <p className='bg-green-primary rounded p-1 text-xs text-white'>
               -{cartItem?.productVariant?.product?.discount} %
             </p>
@@ -140,21 +147,21 @@ function CartItem({
             productVariantConditions.find(
               (pvc) => pvc.value === cartItem.productVariant.condition
             )?.label
-          }{' '}
-          &{' '}
+          }
+          &nbsp; &&nbsp;
           {
             productVariantFormats.find(
               (pvf) => pvf.value === cartItem.productVariant.format
             )?.label
           }
         </p>
-        <div className='mt-[5px] flex h-[20px] w-[90px] items-center justify-between rounded-sm border'>
+        <div className='mt-[5px] flex h-[25px] w-[90px] items-center justify-between rounded-sm border'>
           <Button
             onClick={handleDecreaseQuantity}
             variant={'ghost'}
-            className='hover:text-green-primary flex h-4 w-[20px] cursor-pointer items-center justify-center p-0 text-base hover:bg-transparent'
+            className='hover:text-green-primary ml-1 flex h-full w-5 cursor-pointer items-center justify-center p-0! transition-all duration-200 ease-linear hover:bg-transparent'
           >
-            -
+            <Minus />
           </Button>
           <input
             type='text'
@@ -167,9 +174,9 @@ function CartItem({
           <Button
             onClick={handleIncreaseQuantity}
             variant={'ghost'}
-            className='hover:text-green-primary flex h-4 w-[20px] cursor-pointer items-center justify-center p-0 text-base hover:bg-transparent'
+            className='hover:text-green-primary mr-1 flex h-full w-5 cursor-pointer items-center justify-center p-0! transition-all duration-200 ease-linear hover:bg-transparent'
           >
-            +
+            <Plus />
           </Button>
         </div>
       </div>
@@ -223,10 +230,6 @@ export default function CartSidebar() {
     );
   };
 
-  // useEffect(() => {
-  //   cartQuery.refetch();
-  // }, [profile]);
-
   return (
     <div>
       <Button
@@ -244,7 +247,7 @@ export default function CartSidebar() {
               }
             )}
           >
-            {cartItemQuantity > 9 ? '9+' : cartItemQuantity}
+            {profile ? (cartItemQuantity > 9 ? '9+' : cartItemQuantity) : 0}
           </div>
         </div>
         Giỏ hàng
@@ -274,7 +277,7 @@ export default function CartSidebar() {
                 <Button
                   variant={'ghost'}
                   onClick={() => setOpen(false)}
-                  className='absolute top-4.5 right-2 size-2 cursor-pointer p-0 hover:text-red-500'
+                  className='absolute top-4.5 right-2 size-2 cursor-pointer p-0 hover:bg-transparent hover:text-red-500'
                 >
                   <FaTimes />
                 </Button>
@@ -283,14 +286,14 @@ export default function CartSidebar() {
               {!profile ? (
                 <div className='flex flex-1 flex-col items-center justify-center overflow-y-auto p-4'>
                   <p className='text-gray-500'>
-                    Vui lòng{' '}
+                    Vui lòng&nbsp;
                     <Link
                       className='text-green-primary transition-all duration-200 ease-linear hover:opacity-80'
                       href={route.login}
                     >
                       đăng nhập
-                    </Link>{' '}
-                    để xem giỏ hàng
+                    </Link>
+                    &nbsp; để xem giỏ hàng
                   </p>
                   <Image
                     src={emptyCart.src}

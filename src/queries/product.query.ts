@@ -1,6 +1,6 @@
 import { productApiRequest } from '@/api-requests';
 import { ProductSearchType } from '@/types';
-import { useQuery } from '@tanstack/react-query';
+import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 
 export const useProductListQuery = ({
   enabled = false,
@@ -67,7 +67,7 @@ export const useFeaturedProductQuery = () => {
   });
 };
 
-export const useProductListCategoryQuery = ({
+export const useProductRelatedByCategoryQuery = ({
   id,
   enabled = false
 }: {
@@ -89,6 +89,30 @@ export const useTopViewProductListQuery = ({
   return useQuery({
     queryKey: ['top-view-product-list'],
     queryFn: () => productApiRequest.getTopViewList(),
+    enabled
+  });
+};
+
+export const useInfiniteProductQuery = ({
+  enabled = false,
+  params
+}: {
+  params?: ProductSearchType;
+  enabled: boolean;
+}) => {
+  return useInfiniteQuery({
+    queryKey: ['product-list', params],
+    queryFn: ({ pageParam = 0 }) =>
+      productApiRequest.getList({ ...params, page: pageParam }),
+    initialPageParam: 0,
+    getNextPageParam: (lastPage, allPages) => {
+      const currentPage = allPages.length - 1;
+      const totalPages = lastPage.data.totalPages;
+      if (currentPage + 1 < totalPages) {
+        return currentPage + 1;
+      }
+      return undefined;
+    },
     enabled
   });
 };

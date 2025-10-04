@@ -8,3 +8,4 @@ export { default as productVariantApiRequest } from './product-variant.api-reque
 export { default as cartItemApiRequest } from './cart-item.api-request';
 export { default as viewedProductApiRequest } from './viewed-product.api-request';
 export { default as addressApiRequest } from './address.api-request';
+export { default as couponApiRequest } from './coupon.api-request';

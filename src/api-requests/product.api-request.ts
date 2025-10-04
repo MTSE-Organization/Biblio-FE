@@ -9,31 +9,24 @@ import {
 import { http } from '@/utils';
 
 const productApiRequest = {
-  getList: async (params?: ProductSearchType) =>
-    await http.get<ApiResponseList<ProductAutoType>>(
-      apiConfig.product.getList,
-      {
-        params
-      }
-    ),
-  getLatestList: async () =>
-    await http.get<ApiResponseList<ProductAutoType>>(
-      apiConfig.product.getLatest
-    ),
-  getTopDiscountList: async () =>
-    await http.get<ApiResponseList<ProductAutoType>>(
+  getList: (params?: ProductSearchType) =>
+    http.get<ApiResponseList<ProductAutoType>>(apiConfig.product.getList, {
+      params
+    }),
+  getLatestList: () =>
+    http.get<ApiResponseList<ProductAutoType>>(apiConfig.product.getLatest),
+  getTopDiscountList: () =>
+    http.get<ApiResponseList<ProductAutoType>>(
       apiConfig.product.getTopDiscount
     ),
-  getBestSellerList: async () =>
-    await http.get<ApiResponseList<ProductAutoType>>(
-      apiConfig.product.getBestSeller
-    ),
-  getById: async (id: string) =>
-    await http.get<ApiResponse<ProductResType>>(apiConfig.product.getById, {
+  getBestSellerList: () =>
+    http.get<ApiResponseList<ProductAutoType>>(apiConfig.product.getBestSeller),
+  getById: (id: string) =>
+    http.get<ApiResponse<ProductResType>>(apiConfig.product.getById, {
       pathParams: { id }
     }),
-  getListByCategory: async (id: string) =>
-    await http.get<ApiResponseList<ProductAutoType>>(
+  getListByCategory: (id: string) =>
+    http.get<ApiResponseList<ProductAutoType>>(
       apiConfig.product.getListByCategory,
       {
         pathParams: {
@@ -41,10 +34,8 @@ const productApiRequest = {
         }
       }
     ),
-  getTopViewList: async () =>
-    await http.get<ApiResponseList<ProductAutoType>>(
-      apiConfig.product.getTopView
-    )
+  getTopViewList: () =>
+    http.get<ApiResponseList<ProductAutoType>>(apiConfig.product.getTopView)
 };
 
 export default productApiRequest;
