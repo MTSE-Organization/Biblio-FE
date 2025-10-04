@@ -12,6 +12,8 @@ import emptyList from './empty-list.webp';
 import defaultBook from './green-book.svg';
 import noImage from './no-image.jpg';
 import bgCoupon from './coupon-bg.svg';
+import cod from './cod.png';
+import vnPAY from './vn-pay.webp';
 
 export {
   defaultAvatar,
@@ -27,5 +29,7 @@ export {
   emptyList,
   defaultBook,
   noImage,
-  bgCoupon
+  bgCoupon,
+  cod,
+  vnPAY
 };

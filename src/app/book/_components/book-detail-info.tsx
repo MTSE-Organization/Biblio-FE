@@ -95,14 +95,14 @@ export default function BookDetailInfo({ book }: { book?: ProductResType }) {
     if (!accessToken) {
       notify.error(
         <p>
-          Vui lòng{' '}
+          Vui lòng&nbsp;
           <Link
             href={route.login}
             className='text-green-primary hover:text-green-primary/70 transition-all duration-200 ease-linear'
           >
             đăng nhập
-          </Link>{' '}
-          để thêm sách vào giỏ hàng
+          </Link>
+          &nbsp; để thêm sách vào giỏ hàng
         </p>
       );
       return;
@@ -121,6 +121,13 @@ export default function BookDetailInfo({ book }: { book?: ProductResType }) {
         }
       }
     );
+  };
+
+  const getPrice = (price: string | number, discount: number = 0) => {
+    const modifiedPrice =
+      bookVariants?.find((book) => book.id === productVariantId)
+        ?.modifiedPrice ?? 0;
+    return formatPrice(((+price + +modifiedPrice) * (100 - discount)) / 100);
   };
 
   return (
@@ -209,16 +216,16 @@ export default function BookDetailInfo({ book }: { book?: ProductResType }) {
       <div className='pt-5'>
         {book?.discount === 0 && (
           <p className='text-green-primary text-2xl leading-[1.167] font-bold'>
-            {formatPrice(book?.price ?? 0)}
+            {getPrice(book?.price)}
           </p>
         )}
         {book?.discount !== 0 && book?.price && (
           <div className='flex items-center gap-2'>
             <p className='text-green-primary text-2xl leading-[1.167] font-bold'>
-              {formatPrice((book.price * (100 - book.discount)) / 100)}
+              {getPrice(book.price, book.discount)}
             </p>
             <p className='text-lg leading-[1.167] font-semibold text-gray-300 line-through'>
-              {formatPrice(book.price)}
+              {getPrice(book.price)}
             </p>
             <p className='bg-green-primary rounded p-1 text-xs text-white'>
               -{book?.discount} %
@@ -270,7 +277,7 @@ export default function BookDetailInfo({ book }: { book?: ProductResType }) {
           <Button
             onClick={handleDecreaseQuantity}
             variant={'ghost'}
-            className='hover:text-green-primary ml-1 flex h-full w-5 cursor-pointer items-center justify-center p-0! transition-all duration-200 ease-linear hover:bg-transparent'
+            className='hover:text-green-primary ml-1 flex h-full w-5 cursor-pointer items-center justify-center p-0! transition-all duration-200 ease-linear'
           >
             <Minus />
           </Button>
@@ -284,7 +291,7 @@ export default function BookDetailInfo({ book }: { book?: ProductResType }) {
           <Button
             onClick={handleIncreaseQuantity}
             variant={'ghost'}
-            className='hover:text-green-primary mr-1 flex h-full w-5 cursor-pointer items-center justify-center p-0! transition-all duration-200 ease-linear hover:bg-transparent'
+            className='hover:text-green-primary mr-1 flex h-full w-5 cursor-pointer items-center justify-center p-0! transition-all duration-200 ease-linear'
           >
             <Plus />
           </Button>

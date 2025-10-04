@@ -114,7 +114,7 @@ export default function DropdownAccount() {
                       variant={'ghost'}
                       onClick={handleLogout}
                       size={'lg'}
-                      className='flex w-full justify-start rounded-none! px-4 py-3! text-left font-normal text-black transition-all duration-200 ease-linear hover:bg-slate-100 hover:bg-transparent!'
+                      className='flex w-full justify-start rounded-none! px-4 py-3! text-left font-normal text-black transition-all duration-200 ease-linear hover:bg-slate-100'
                     >
                       {logoutMutation.isPending ? (
                         <CircleLoading className='stroke-gray-500' />

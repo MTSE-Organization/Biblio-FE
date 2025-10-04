@@ -35,6 +35,7 @@ export default function CouponModal({
   const discountList = couponList
     .filter((coupon) => coupon.kind === COUPON_KIND_DISCOUNT)
     .sort((a, b) => +a.minOrderAmount - +b.minOrderAmount);
+
   return (
     <Modal open={opened} onClose={onClose} className='p-4'>
       <div className='flex max-h-[90vh] w-140 flex-col pr-0.5'>
@@ -57,7 +58,7 @@ export default function CouponModal({
           </div>
           <Button
             onClick={onClose}
-            className='text-destructive ml-auto pr-2! hover:bg-transparent'
+            className='text-destructive ml-auto pr-2!'
             variant={'ghost'}
           >
             <X />
