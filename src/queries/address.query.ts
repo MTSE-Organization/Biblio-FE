@@ -25,11 +25,38 @@ export const usePublicAddressWardListQuery = (id: string) => {
   });
 };
 
-export const usePublicAddressHamletListQuery = (id: string) => {
+export const usePublicAddressHamletListQuery = ({
+  city,
+  district,
+  input,
+  state,
+  enabled = false
+}: {
+  city: string;
+  district: string;
+  input: string;
+  state: string;
+  sessiontoken?: string;
+  enabled: boolean;
+}) => {
   return useQuery({
-    queryKey: ['public-address-hamlet-query', id],
-    queryFn: () => addressApiRequest.getPublicHamletList(id),
-    enabled: !!id
+    queryKey: [
+      'public-address-hamlet-query',
+      {
+        city,
+        district,
+        input,
+        state
+      }
+    ],
+    queryFn: () =>
+      addressApiRequest.getPublicDetail({
+        city,
+        district,
+        input,
+        state
+      }),
+    enabled
   });
 };
 
