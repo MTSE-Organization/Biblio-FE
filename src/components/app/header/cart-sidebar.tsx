@@ -20,6 +20,7 @@ import { cn } from '@/lib';
 import { debounce } from 'lodash';
 import { productVariantConditions, productVariantFormats } from '@/constants';
 import { HamsterLoading } from '@/components/loading';
+import { Minus, Plus } from 'lucide-react';
 
 function CartItem({
   cartItem,
@@ -75,6 +76,10 @@ function CartItem({
     debouncedUpdate(cartItem.id, value);
   };
 
+  const getPrice = (price: string | number, discount: number = 0) => {
+    return formatPrice((+price * (100 - discount)) / 100);
+  };
+
   return (
     <li className='mb-5 flex border-b pb-5'>
       <Link
@@ -106,7 +111,7 @@ function CartItem({
           </Link>
           <Button
             variant={'ghost'}
-            className='absolute -top-1.5 -right-4 size-2 cursor-pointer p-0 hover:text-red-500'
+            className='absolute -top-2 -right-5.5 size-2 cursor-pointer p-0 hover:text-red-500'
             onClick={() => onRemoveCartItem(cartItem?.id)}
           >
             <FaTimes size={12} />
@@ -114,22 +119,32 @@ function CartItem({
         </div>
         {cartItem?.productVariant?.product?.discount === 0 && (
           <p className='text-green-primary text-base font-bold'>
-            {formatPrice(cartItem?.productVariant?.modifiedPrice)} ₫
+            {getPrice(
+              cartItem.quantity *
+                (+cartItem.productVariant.modifiedPrice +
+                  +cartItem.productVariant.product.price)
+            )}
           </p>
         )}
         {cartItem?.productVariant?.product?.discount !== 0 && (
-          <div className='flex items-center gap-2'>
-            <p className='text-green-primary text-base font-bold'>
-              {formatPrice(
-                (cartItem?.productVariant?.modifiedPrice *
-                  (100 - cartItem?.productVariant?.product?.discount)) /
-                  100
-              )}{' '}
-              ₫
-            </p>
-            <p className='text-xs font-bold text-gray-400 line-through'>
-              {formatPrice(cartItem?.productVariant?.modifiedPrice)} ₫
-            </p>
+          <div className='flex items-center gap-4'>
+            <div className='flex flex-col text-right'>
+              <p className='text-green-primary text-base font-bold'>
+                {getPrice(
+                  cartItem.quantity *
+                    (+cartItem.productVariant.modifiedPrice +
+                      +cartItem.productVariant.product.price),
+                  cartItem.productVariant.product.discount
+                )}
+              </p>
+              <p className='text-sm font-bold text-gray-400 line-through'>
+                {getPrice(
+                  cartItem.quantity *
+                    (+cartItem.productVariant.modifiedPrice +
+                      +cartItem.productVariant.product.price)
+                )}
+              </p>
+            </div>
             <p className='bg-green-primary rounded p-1 text-xs text-white'>
               -{cartItem?.productVariant?.product?.discount} %
             </p>
@@ -140,21 +155,21 @@ function CartItem({
             productVariantConditions.find(
               (pvc) => pvc.value === cartItem.productVariant.condition
             )?.label
-          }{' '}
-          &{' '}
+          }
+          &nbsp; &&nbsp;
           {
             productVariantFormats.find(
               (pvf) => pvf.value === cartItem.productVariant.format
             )?.label
           }
         </p>
-        <div className='mt-[5px] flex h-[20px] w-[90px] items-center justify-between rounded-sm border'>
+        <div className='mt-[5px] flex h-[25px] w-[90px] items-center justify-between rounded-sm border'>
           <Button
             onClick={handleDecreaseQuantity}
             variant={'ghost'}
-            className='hover:text-green-primary flex h-4 w-[20px] cursor-pointer items-center justify-center p-0 text-base hover:bg-transparent'
+            className='hover:text-green-primary ml-1 flex h-full w-5 cursor-pointer items-center justify-center p-0! transition-all duration-200 ease-linear'
           >
-            -
+            <Minus />
           </Button>
           <input
             type='text'
@@ -167,9 +182,9 @@ function CartItem({
           <Button
             onClick={handleIncreaseQuantity}
             variant={'ghost'}
-            className='hover:text-green-primary flex h-4 w-[20px] cursor-pointer items-center justify-center p-0 text-base hover:bg-transparent'
+            className='hover:text-green-primary mr-1 flex h-full w-5 cursor-pointer items-center justify-center p-0! transition-all duration-200 ease-linear'
           >
-            +
+            <Plus />
           </Button>
         </div>
       </div>
@@ -182,10 +197,10 @@ export default function CartSidebar() {
   const { profile } = useAuthStore();
 
   const cartQuery = useCartQuery({
-    enabled: open && !!profile
+    enabled: !!profile
   });
 
-  const loading = cartQuery.isLoading || cartQuery.isFetching;
+  const loading = cartQuery.isLoading;
 
   const queryClient = useQueryClient();
 
@@ -195,8 +210,8 @@ export default function CartSidebar() {
   const removeFromCartMutation = useDeleteItemMutation();
   const updateCartItem = useUpdateCartItemMutation();
 
-  const handleRemoveFromCart = (id: string) => {
-    removeFromCartMutation.mutateAsync(id, {
+  const handleRemoveFromCart = async (id: string) => {
+    await removeFromCartMutation.mutateAsync(id, {
       onSuccess: () => {
         notify.success('Xóa sách khỏi giỏ hàng thàng công');
         queryClient.invalidateQueries({ queryKey: ['cart'] });
@@ -208,8 +223,8 @@ export default function CartSidebar() {
     });
   };
 
-  const handleUpdateCartItem = (id: string, quantity: number) => {
-    updateCartItem.mutateAsync(
+  const handleUpdateCartItem = async (id: string, quantity: number) => {
+    await updateCartItem.mutateAsync(
       { id, quantity },
       {
         onSuccess: () => {
@@ -228,7 +243,7 @@ export default function CartSidebar() {
       <Button
         variant='ghost'
         onClick={() => setOpen(true)}
-        className='hover:text-green-primary group size-full rounded-full p-0! hover:bg-transparent! focus:outline-none focus-visible:ring-0'
+        className='hover:text-green-primary group size-full rounded-full p-0! focus:outline-none focus-visible:ring-0'
       >
         <div className='relative'>
           <RiShoppingCartLine className='size-[21px]' />
@@ -240,7 +255,7 @@ export default function CartSidebar() {
               }
             )}
           >
-            {cartItemQuantity > 9 ? '9+' : cartItemQuantity}
+            {profile ? (cartItemQuantity > 9 ? '9+' : cartItemQuantity) : 0}
           </div>
         </div>
         Giỏ hàng
@@ -279,14 +294,14 @@ export default function CartSidebar() {
               {!profile ? (
                 <div className='flex flex-1 flex-col items-center justify-center overflow-y-auto p-4'>
                   <p className='text-gray-500'>
-                    Vui lòng{' '}
+                    Vui lòng&nbsp;
                     <Link
                       className='text-green-primary transition-all duration-200 ease-linear hover:opacity-80'
                       href={route.login}
                     >
                       đăng nhập
-                    </Link>{' '}
-                    để xem giỏ hàng
+                    </Link>
+                    &nbsp; để xem giỏ hàng
                   </p>
                   <Image
                     src={emptyCart.src}
@@ -326,7 +341,9 @@ export default function CartSidebar() {
               {!loading && (
                 <div className='border-t p-5'>
                   <Button variant={'primary'} className='w-full text-white'>
-                    <Link href={route.cart}>Xem giỏ hàng</Link>
+                    <Link className='h-full w-full' href={route.cart}>
+                      Xem giỏ hàng
+                    </Link>
                   </Button>
                 </div>
               )}

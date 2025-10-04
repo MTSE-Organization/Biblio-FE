@@ -51,6 +51,7 @@ type SelectFieldProps<
   disabled?: boolean;
   loading?: boolean;
   onValueChange?: (value: string | number | (string | number)[]) => void;
+  onChange?: (value: string | number | (string | number)[]) => void;
 };
 
 const normalizeText = (text: string): string => {
@@ -83,7 +84,8 @@ export default function SelectField<
   labelClassName,
   disabled = false,
   loading,
-  onValueChange
+  onValueChange,
+  onChange
 }: SelectFieldProps<TFieldValues, TOption>) {
   const [open, setOpen] = useState(false);
   const [searchValue, setSearchValue] = useState('');
@@ -255,7 +257,10 @@ export default function SelectField<
                   <CommandInput
                     placeholder={searchText}
                     value={searchValue}
-                    onValueChange={setSearchValue}
+                    onValueChange={(value) => {
+                      setSearchValue(value);
+                      onChange?.(value);
+                    }}
                     onKeyDown={(e) => {
                       if (filteredOptions.length === 0) return;
                       if (e.key === 'ArrowDown') {

@@ -38,7 +38,7 @@ export default function UserSidebar() {
     }
   ];
   return (
-    <List className='min-h-150'>
+    <List className='h-full'>
       {userSidebars.map((userSidebar) => (
         <ListItem
           className={cn(

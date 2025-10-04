@@ -118,6 +118,11 @@ const apiConfig = defineApiConfig({
       baseUrl: `${AppConstants.apiUrl}v1/category/list`,
       headers: baseHeader,
       method: 'GET'
+    },
+    getById: {
+      baseUrl: `${AppConstants.apiUrl}v1/category/get/:id`,
+      headers: baseHeader,
+      method: 'GET'
     }
   },
   cartItem: {
@@ -207,17 +212,71 @@ const apiConfig = defineApiConfig({
   },
   publicAddress: {
     province: {
-      baseUrl: `${AppConstants.addressApiUrl}v1/address/province`,
+      baseUrl: `/api/address/province`,
       headers: baseHeader,
-      method: 'GET'
+      method: 'GET',
+      ignoreAuth: true
+    },
+    district: {
+      baseUrl: `/api/address/district`,
+      headers: baseHeader,
+      method: 'GET',
+      ignoreAuth: true
     },
     ward: {
-      baseUrl: `${AppConstants.addressApiUrl}v1/address/ward`,
+      baseUrl: `/api/address/ward`,
+      headers: baseHeader,
+      method: 'GET',
+      ignoreAuth: true
+    },
+    detail: {
+      baseUrl: `/api/address/auto-complete`,
+      headers: baseHeader,
+      method: 'GET',
+      ignoreAuth: true
+    },
+    getGeoCoords: {
+      baseUrl: `/api/address/geo`,
+      headers: baseHeader,
+      method: 'GET',
+      ignoreAuth: true
+    }
+  },
+  order: {
+    cancel: {
+      baseUrl: `${AppConstants.apiUrl}v1/order/cancel`,
+      headers: baseHeader,
+      method: 'POST'
+    },
+    create: {
+      baseUrl: `${AppConstants.apiUrl}v1/order/create`,
+      headers: baseHeader,
+      method: 'PUT'
+    },
+    getById: {
+      baseUrl: `${AppConstants.apiUrl}v1/order/get/:id`,
       headers: baseHeader,
       method: 'GET'
     },
-    hamlet: {
-      baseUrl: `${AppConstants.addressApiUrl}v1/address/hamlet`,
+    getList: {
+      baseUrl: `${AppConstants.apiUrl}v1/order/list`,
+      headers: baseHeader,
+      method: 'GET'
+    },
+    place: {
+      baseUrl: `${AppConstants.apiUrl}v1/order/place`,
+      headers: baseHeader,
+      method: 'POST'
+    }
+  },
+  coupon: {
+    getList: {
+      baseUrl: `${AppConstants.apiUrl}v1/coupon/list`,
+      headers: baseHeader,
+      method: 'GET'
+    },
+    getById: {
+      baseUrl: `${AppConstants.apiUrl}v1/coupon/get/:id`,
       headers: baseHeader,
       method: 'GET'
     }

@@ -10,6 +10,8 @@ import './category.css';
 import { useCategoryListQuery } from '@/queries';
 import { Row } from '@/components/form';
 import CategorySkeleton from '@/app/(home)/_components/category/category-skeleton';
+import Link from 'next/link';
+import route from '@/routes';
 
 export default function CategoryList() {
   const categoryListQuery = useCategoryListQuery({});
@@ -19,7 +21,7 @@ export default function CategoryList() {
 
   return (
     <div className='mb-4 rounded-lg bg-white px-4 py-6 shadow-[0px_0px_10px_2px] shadow-gray-200'>
-      <h2 className='mb-4 border-b-2 border-solid border-gray-200 pb-4 text-center text-4xl font-bold'>
+      <h2 className='mb-4 border-b-2 border-solid border-gray-200 pb-4 text-center text-xl font-bold'>
         Danh mục
       </h2>
 
@@ -41,17 +43,22 @@ export default function CategoryList() {
                 className='hover:text-green-primary transition-colors! duration-200 ease-linear'
               >
                 <div className='rounded-lg'>
-                  <Image
-                    src={renderImageUrl(cate.imageUrl)}
-                    alt={cate.name}
-                    width={200}
-                    height={80}
-                    className='w-full rounded-lg object-cover'
-                  />
+                  <Link href={`${route.category}/${cate.slug}.${cate.id}`}>
+                    <Image
+                      src={renderImageUrl(cate.imageUrl)}
+                      alt={cate.name}
+                      width={200}
+                      height={80}
+                      className='w-full rounded-lg object-cover'
+                    />
+                  </Link>
                 </div>
-                <p className='mt-4 text-center text-base font-medium'>
+                <Link
+                  href={`${route.category}/${cate.slug}.${cate.id}`}
+                  className='mt-4 block text-center text-base font-medium'
+                >
                   {cate.name}
-                </p>
+                </Link>
               </SwiperSlide>
             ))
           ) : (

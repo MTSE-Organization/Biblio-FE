@@ -1,43 +1,35 @@
 'use client';
 
 import OrderItem from '@/app/user/order/_components/order-item';
-import { Container } from '@/components/layout';
-import Link from 'next/link';
+import { Button } from '@/components/form';
+import { ORDER_STATUS_ALL, orderStatuses } from '@/constants';
+import { cn } from '@/lib';
+import { useState } from 'react';
 
 export default function OrderList() {
+  const [currentStatus, setCurrentStatus] = useState<number>(ORDER_STATUS_ALL);
   return (
-    <Container className='bg-gray-100 py-5'>
+    <>
       {/* Order filter tabs */}
-      <div className='mx-auto max-w-5xl'>
-        <div className='mb-5 flex items-center justify-evenly border border-gray-200 bg-white py-3'>
-          <Link href={'/#'} className='text-dark-cyan font-medium'>
-            Tất cả
-          </Link>
-          <Link
-            href={'/#'}
-            className='hover:text-dark-cyan text-gray-500 transition-colors duration-200 ease-linear'
+      <div className='mb-4 flex items-center justify-evenly rounded-lg bg-white py-4 shadow-[0px_0px_10px_2px] shadow-gray-200'>
+        {orderStatuses.map((status) => (
+          <Button
+            variant={'ghost'}
+            key={status.value}
+            onClick={() => setCurrentStatus(status.value)}
+            className={cn('hover:text-dark-cyan/80 p-0! text-sm font-medium', {
+              'text-dark-cyan': currentStatus === status.value
+            })}
           >
-            Đang xử lý
-          </Link>
-          <Link
-            href={'/#'}
-            className='hover:text-dark-cyan text-gray-500 transition-colors duration-200 ease-linear'
-          >
-            Hoàn tất giao hàng
-          </Link>
-          <Link
-            href={'/#'}
-            className='hover:text-dark-cyan text-gray-500 transition-colors duration-200 ease-linear'
-          >
-            Đã hủy
-          </Link>
-        </div>
-        <div className='mt-5'>
-          {Array.from({ length: 8 }).map((_, index) => (
-            <OrderItem key={index} />
-          ))}
-        </div>
+            {status.label}
+          </Button>
+        ))}
       </div>
-    </Container>
+      <div className='mt-5'>
+        {Array.from({ length: 4 }).map((_, index) => (
+          <OrderItem key={index} />
+        ))}
+      </div>
+    </>
   );
 }

@@ -11,15 +11,11 @@ export default function UserLayout({
   return (
     <>
       <Header />
-      <Container className='bg-gray-100'>
-        <div className='py-4'>
-          <div className='mx-auto flex gap-x-4 rounded-lg min-[1200px]:w-180 min-[1440px]:w-300'>
-            <div className='w-50 rounded-lg bg-white'>
-              <UserSidebar />
-            </div>
-            <div className='w-250 rounded-lg bg-white'>{children}</div>
-          </div>
+      <Container contentClassName='mx-auto flex min-h-[80vh] justify-center gap-x-4'>
+        <div className='h-fit w-50 rounded-lg bg-white'>
+          <UserSidebar />
         </div>
+        <div className='w-250 rounded-lg'>{children}</div>
       </Container>
       <Footer />
     </>
