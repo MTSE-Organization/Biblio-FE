@@ -1,13 +1,21 @@
 'use client';
-
 import OrderItem from '@/app/user/order/_components/order-item';
+import OrderItemSkeleton from '@/app/user/order/_components/order-item-skeleton';
 import { Button } from '@/components/form';
+import { NoData } from '@/components/no-data';
 import { ORDER_STATUS_ALL, orderStatuses } from '@/constants';
 import { cn } from '@/lib';
+import { useOrderListQuery } from '@/queries';
 import { useState } from 'react';
 
 export default function OrderList() {
-  const [currentStatus, setCurrentStatus] = useState<number>(ORDER_STATUS_ALL);
+  const [currentStatus, setCurrentStatus] = useState<number | null>(
+    ORDER_STATUS_ALL
+  );
+  const orderListQuery = useOrderListQuery({ currentStatus });
+  const orderList = orderListQuery.data?.data.content || [];
+  const loading = orderListQuery.isLoading || orderListQuery.isFetching;
+
   return (
     <>
       {/* Order filter tabs */}
@@ -25,10 +33,20 @@ export default function OrderList() {
           </Button>
         ))}
       </div>
-      <div className='mt-5'>
-        {Array.from({ length: 4 }).map((_, index) => (
-          <OrderItem key={index} />
-        ))}
+      <div className='flex flex-col gap-4'>
+        {loading ? (
+          <OrderItemSkeleton />
+        ) : orderList.length == 0 ? (
+          <NoData />
+        ) : (
+          orderList.map((order) => (
+            <OrderItem
+              key={order.id}
+              order={order}
+              currentStatus={order.currentStatus}
+            />
+          ))
+        )}
       </div>
     </>
   );

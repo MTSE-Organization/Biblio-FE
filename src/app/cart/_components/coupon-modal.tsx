@@ -4,7 +4,11 @@ import { bgCoupon } from '@/assets';
 import { Button, ToolTip } from '@/components/form';
 import { Modal } from '@/components/modal';
 import { Separator } from '@/components/ui/separator';
-import { COUPON_KIND_DISCOUNT, COUPON_KIND_FREESHIP } from '@/constants';
+import {
+  COUPON_KIND_DISCOUNT,
+  COUPON_KIND_FREESHIP,
+  DATE_TIME_FORMAT
+} from '@/constants';
 import { cn } from '@/lib';
 import { useCartStore } from '@/store';
 import { CouponResType } from '@/types';
@@ -117,7 +121,7 @@ export default function CouponModal({
                             HSD:&nbsp;
                             {formatDate(
                               freeShip.validTo.toString(),
-                              'HH:mm:ss dd/MM/yyyy'
+                              DATE_TIME_FORMAT
                             )}
                           </span>
                           {totalPrice >= +freeShip.minOrderAmount ? (

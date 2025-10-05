@@ -385,14 +385,54 @@ export const paymentMethods = [
 ];
 
 export const orderStatuses = [
-  { label: 'Tất cả', value: ORDER_STATUS_ALL },
-  { label: 'Chờ xử lý', value: ORDER_STATUS_WAITING },
-  { label: 'Chờ xác nhận', value: ORDER_STATUS_WAITING_CONFIRMATION },
-  { label: 'Đã xác nhận', value: ORDER_STATUS_CONFIRMED },
-  { label: 'Đang đóng gói', value: ORDER_STATUS_PACKING },
-  { label: 'Đang giao hàng', value: ORDER_STATUS_SHIPPING },
-  { label: 'Hoàn tất', value: ORDER_STATUS_COMPLETE },
-  { label: 'Đã hủy', value: ORDER_STATUS_CANCELED },
-  { label: 'Yêu cầu hoàn tiền', value: ORDER_STATUS_REQUEST_REFUND },
-  { label: 'Đã hoàn tiền', value: ORDER_STATUS_REFUNDED }
+  {
+    label: 'Tất cả',
+    value: ORDER_STATUS_ALL,
+    badgeColor: 'bg-gray-200 text-gray-700'
+  },
+  {
+    label: 'Chờ xử lý',
+    value: ORDER_STATUS_WAITING,
+    badgeColor: 'bg-yellow-100 text-yellow-800'
+  },
+  {
+    label: 'Chờ xác nhận',
+    value: ORDER_STATUS_WAITING_CONFIRMATION,
+    badgeColor: 'bg-amber-100 text-amber-800'
+  },
+  {
+    label: 'Đã xác nhận',
+    value: ORDER_STATUS_CONFIRMED,
+    badgeColor: 'bg-blue-100 text-blue-800'
+  },
+  {
+    label: 'Đang đóng gói',
+    value: ORDER_STATUS_PACKING,
+    badgeColor: 'bg-indigo-100 text-indigo-800'
+  },
+  {
+    label: 'Đang giao hàng',
+    value: ORDER_STATUS_SHIPPING,
+    badgeColor: 'bg-cyan-100 text-cyan-800'
+  },
+  {
+    label: 'Hoàn tất',
+    value: ORDER_STATUS_COMPLETE,
+    badgeColor: 'bg-green-100 text-green-800'
+  },
+  {
+    label: 'Đã hủy',
+    value: ORDER_STATUS_CANCELED,
+    badgeColor: 'bg-red-100 text-red-800'
+  },
+  {
+    label: 'Yêu cầu hoàn tiền',
+    value: ORDER_STATUS_REQUEST_REFUND,
+    badgeColor: 'bg-orange-100 text-orange-800'
+  },
+  {
+    label: 'Đã hoàn tiền',
+    value: ORDER_STATUS_REFUNDED,
+    badgeColor: 'bg-emerald-100 text-emerald-800'
+  }
 ];

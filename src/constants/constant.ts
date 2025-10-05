@@ -27,7 +27,7 @@ export const COUPON_KIND_FREESHIP = 2;
 export const PAYMENT_COD = 1;
 export const PAYMENT_VNPAY = 2;
 
-export const ORDER_STATUS_ALL = -1;
+export const ORDER_STATUS_ALL = null;
 export const ORDER_STATUS_WAITING = 0;
 export const ORDER_STATUS_WAITING_CONFIRMATION = 1;
 export const ORDER_STATUS_CONFIRMED = 2;
@@ -37,3 +37,7 @@ export const ORDER_STATUS_COMPLETE = 5;
 export const ORDER_STATUS_CANCELED = 6;
 export const ORDER_STATUS_REQUEST_REFUND = 7;
 export const ORDER_STATUS_REFUNDED = 8;
+
+export const DEFAULT_DATE_FORMAT = 'dd/MM/yyyy';
+export const DATE_TIME_FORMAT = 'HH:mm:ss, dd/MM/yyyy ';
+export const DATE_DATE_TIME_FORMAT = 'EEEE, HH:mm:ss, dd/MM/yyyy';

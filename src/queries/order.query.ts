@@ -1,6 +1,13 @@
 import { orderApiRequest } from '@/api-requests';
-import { OrderBodyType } from '@/types';
+import { CreateOrderBodyType, OrderBodyType, OrderSearchType } from '@/types';
 import { useMutation, useQuery } from '@tanstack/react-query';
+
+export const useOrderListQuery = (params?: OrderSearchType) => {
+  return useQuery({
+    queryKey: ['order-list', params],
+    queryFn: () => orderApiRequest.getList(params)
+  });
+};
 
 export const useOrderQuery = (id: string) => {
   return useQuery({
@@ -9,9 +16,23 @@ export const useOrderQuery = (id: string) => {
   });
 };
 
+export const useCreateOrderMutation = () => {
+  return useMutation({
+    mutationKey: ['create-order'],
+    mutationFn: (body: CreateOrderBodyType) => orderApiRequest.create(body)
+  });
+};
+
 export const usePlaceOrderMutation = () => {
   return useMutation({
-    mutationKey: ['order-place'],
+    mutationKey: ['place-order'],
     mutationFn: (body: OrderBodyType) => orderApiRequest.place(body)
+  });
+};
+
+export const useCancelOrderMutation = () => {
+  return useMutation({
+    mutationKey: ['cancel-order'],
+    mutationFn: (id: string) => orderApiRequest.cancel(id)
   });
 };
