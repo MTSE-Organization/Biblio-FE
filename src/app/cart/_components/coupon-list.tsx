@@ -11,6 +11,7 @@ import { logger } from '@/logger';
 import { useCartCheckMutation, useCouponListQuery } from '@/queries';
 import route from '@/routes';
 import { useCartStore } from '@/store';
+import { useAppLoadingStore } from '@/store/use-app-loading-store';
 import { CartCheckoutBodyType } from '@/types';
 import { formatPrice, notify, setData } from '@/utils';
 import { ChevronRight, Info, Ticket, X } from 'lucide-react';
@@ -22,6 +23,7 @@ export default function CouponList({
   totalPrice: number;
   isSelected: boolean;
 }) {
+  const { withLoading } = useAppLoadingStore();
   const navigate = useNavigate();
   const { opened, open, close } = useDisclosure();
   const {
@@ -54,23 +56,25 @@ export default function CouponList({
         selectedDiscountCoupon?.id ?? ''
       ].filter(Boolean)
     };
-    await cartCheckoutMutation.mutateAsync(payload, {
-      onSuccess: (res) => {
-        if (res.result) {
-          const orderId = res.data?.orderId;
-          if (orderId) {
-            setData(storageKeys.ORDER_ID, orderId);
-            navigate(`${route.order.place}`);
+    await withLoading(
+      cartCheckoutMutation.mutateAsync(payload, {
+        onSuccess: (res) => {
+          if (res.result) {
+            const orderId = res.data?.orderId;
+            if (orderId) {
+              setData(storageKeys.ORDER_ID, orderId);
+              navigate(`${route.order.place}`);
+            }
+          } else {
+            notify.error('Tạo đơn hàng thất bại');
           }
-        } else {
-          notify.error('Tạo đơn hàng thất bại');
+        },
+        onError: (error) => {
+          logger.error('Error while creating cart checkout:', error);
+          notify.error('Có lỗi xảy ra');
         }
-      },
-      onError: (error) => {
-        logger.error('Error while creating cart checkout:', error);
-        notify.error('Có lỗi xảy ra');
-      }
-    });
+      })
+    );
   };
 
   return (

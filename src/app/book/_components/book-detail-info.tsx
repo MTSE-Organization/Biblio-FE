@@ -17,6 +17,7 @@ import { logger } from '@/logger';
 import { useAddItemMutation } from '@/queries/cart.query';
 import { useProductVariantListQuery } from '@/queries/product-variant.query';
 import route from '@/routes';
+import { useAppLoadingStore } from '@/store/use-app-loading-store';
 import { ProductResType } from '@/types';
 import { formatDate, formatPrice, getData, notify } from '@/utils';
 import { useQueryClient } from '@tanstack/react-query';
@@ -25,6 +26,7 @@ import Link from 'next/link';
 import { useState } from 'react';
 
 export default function BookDetailInfo({ book }: { book?: ProductResType }) {
+  const { withLoading } = useAppLoadingStore();
   const [quantity, setQuantity] = useState<number>(1);
   const [productVariantId, setProductVariantId] = useState<string | null>(null);
   const [isSelectedProductVariant, setIsSelectedProductVariant] =
@@ -107,19 +109,20 @@ export default function BookDetailInfo({ book }: { book?: ProductResType }) {
       );
       return;
     }
-
-    await addItemMutation.mutateAsync(
-      { productVariantId, quantity },
-      {
-        onSuccess: () => {
-          notify.success('Thêm sách vào giỏ hàng thành công');
-          queryClient.invalidateQueries({ queryKey: ['cart'] });
-        },
-        onError: (error) => {
-          notify.error('Đã có lỗi xảy ra');
-          logger.error('Error while adding to cart:', error);
+    await withLoading(
+      addItemMutation.mutateAsync(
+        { productVariantId, quantity },
+        {
+          onSuccess: () => {
+            notify.success('Thêm sách vào giỏ hàng thành công');
+            queryClient.invalidateQueries({ queryKey: ['cart'] });
+          },
+          onError: (error) => {
+            notify.error('Đã có lỗi xảy ra');
+            logger.error('Error while adding to cart:', error);
+          }
         }
-      }
+      )
     );
   };
 

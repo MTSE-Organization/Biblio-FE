@@ -11,11 +11,12 @@ import {
 import { logger } from '@/logger';
 import { usePlaceOrderMutation } from '@/queries';
 import { useCartStore, useOrderStore } from '@/store';
+import { useAppLoadingStore } from '@/store/use-app-loading-store';
 import { OrderBodyType, OrderResType } from '@/types';
-import { formatPrice, getData, notify } from '@/utils';
-import React from 'react';
+import { formatPrice, getData, notify, removeData } from '@/utils';
 
 export default function CompleteCheckout({ order }: { order?: OrderResType }) {
+  const { withLoading } = useAppLoadingStore();
   const { selectedDiscountCoupon, selectedFreeShipCoupon } = useCartStore();
   const { addressId, note, paymentMethod } = useOrderStore();
   const placeOrderMutation = usePlaceOrderMutation();
@@ -43,17 +44,20 @@ export default function CompleteCheckout({ order }: { order?: OrderResType }) {
       note,
       paymentMethod
     };
-    await placeOrderMutation.mutateAsync(payload, {
-      onSuccess: (res) => {
-        if (res.result) {
-          notify.success('Thanh toán thành công');
+    await withLoading(
+      placeOrderMutation.mutateAsync(payload, {
+        onSuccess: (res) => {
+          if (res.result) {
+            notify.success('Thanh toán thành công');
+            removeData(storageKeys.ORDER_ID);
+          }
+        },
+        onError: (error) => {
+          logger.error('Error while paying:', error);
+          notify.error('Có lỗi xảy ra');
         }
-      },
-      onError: (error) => {
-        logger.error('Error while paying:', error);
-        notify.error('Có lỗi xảy ra');
-      }
-    });
+      })
+    );
   };
 
   const freeShip =

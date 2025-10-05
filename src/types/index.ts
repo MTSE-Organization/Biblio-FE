@@ -1,6 +1,7 @@
 export * from './account.type';
 export * from './address.type';
 export * from './api.type';
+export * from './app-loading.store';
 export * from './auth.type';
 export * from './breadcrumb.type';
 export * from './cart-item.type';
