@@ -2,6 +2,7 @@ import { AddressResType } from '@/types/address.type';
 import { CouponResType } from '@/types/coupon.type';
 import { OrderItemResType } from '@/types/order-item.type';
 import { OrderStatusResType } from '@/types/order-status.type';
+import { BaseSearchType } from '@/types/search.type';
 
 export type OrderResType = {
   id: string;
@@ -34,4 +35,15 @@ export type OrderBodyType = {
   couponIds: string[];
   note: string;
   paymentMethod: number;
+};
+
+export type OrderSearchType = {
+  currentStatus?: number | null;
+  accountId?: number | null;
+  paymentMethod?: number | null;
+} & BaseSearchType;
+
+export type CreateOrderBodyType = {
+  productVariantId: string;
+  quantity: number;
 };

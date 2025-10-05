@@ -8,14 +8,17 @@ import {
   COUPON_KIND_FREESHIP,
   storageKeys
 } from '@/constants';
+import { useNavigate } from '@/hooks';
 import { logger } from '@/logger';
 import { usePlaceOrderMutation } from '@/queries';
+import route from '@/routes';
 import { useCartStore, useOrderStore } from '@/store';
 import { useAppLoadingStore } from '@/store/use-app-loading-store';
 import { OrderBodyType, OrderResType } from '@/types';
 import { formatPrice, getData, notify, removeData } from '@/utils';
 
 export default function CompleteCheckout({ order }: { order?: OrderResType }) {
+  const navigate = useNavigate();
   const { withLoading } = useAppLoadingStore();
   const { selectedDiscountCoupon, selectedFreeShipCoupon } = useCartStore();
   const { addressId, note, paymentMethod } = useOrderStore();
@@ -50,6 +53,7 @@ export default function CompleteCheckout({ order }: { order?: OrderResType }) {
           if (res.result) {
             notify.success('Thanh toán thành công');
             removeData(storageKeys.ORDER_ID);
+            navigate(route.user.order);
           }
         },
         onError: (error) => {

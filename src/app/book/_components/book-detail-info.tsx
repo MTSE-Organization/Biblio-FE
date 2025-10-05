@@ -12,20 +12,23 @@ import {
   productVariantFormats,
   storageKeys
 } from '@/constants';
+import { useNavigate } from '@/hooks';
 import { cn } from '@/lib';
 import { logger } from '@/logger';
+import { useCreateOrderMutation } from '@/queries';
 import { useAddItemMutation } from '@/queries/cart.query';
 import { useProductVariantListQuery } from '@/queries/product-variant.query';
 import route from '@/routes';
 import { useAppLoadingStore } from '@/store/use-app-loading-store';
 import { ProductResType } from '@/types';
-import { formatDate, formatPrice, getData, notify } from '@/utils';
+import { formatDate, formatPrice, getData, notify, setData } from '@/utils';
 import { useQueryClient } from '@tanstack/react-query';
 import { Eye, Minus, Plus } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
 
 export default function BookDetailInfo({ book }: { book?: ProductResType }) {
+  const navigate = useNavigate();
   const { withLoading } = useAppLoadingStore();
   const [quantity, setQuantity] = useState<number>(1);
   const [productVariantId, setProductVariantId] = useState<string | null>(null);
@@ -39,6 +42,7 @@ export default function BookDetailInfo({ book }: { book?: ProductResType }) {
   const accessToken = getData(storageKeys.ACCESS_TOKEN);
 
   const addItemMutation = useAddItemMutation();
+  const createOrderMutation = useCreateOrderMutation();
   const queryClient = useQueryClient();
 
   const authors = book?.contributors
@@ -131,6 +135,35 @@ export default function BookDetailInfo({ book }: { book?: ProductResType }) {
       bookVariants?.find((book) => book.id === productVariantId)
         ?.modifiedPrice ?? 0;
     return formatPrice(((+price + +modifiedPrice) * (100 - discount)) / 100);
+  };
+
+  const handleBuyNow = async () => {
+    if (!productVariantId) {
+      notify.error('Vui lòng chọn phân loại sách');
+      setIsSelectedProductVariant(false);
+      return;
+    }
+
+    await withLoading(
+      createOrderMutation.mutateAsync(
+        { productVariantId, quantity },
+        {
+          onSuccess: (res) => {
+            if (res.result) {
+              const orderId = res.data?.orderId;
+              if (orderId) {
+                setData(storageKeys.ORDER_ID, orderId);
+                navigate(route.order.place);
+              }
+            }
+          },
+          onError: (error) => {
+            logger.error('Error while buying now', error);
+            notify.error('Có lỗi xảy ra');
+          }
+        }
+      )
+    );
   };
 
   return (
@@ -301,7 +334,7 @@ export default function BookDetailInfo({ book }: { book?: ProductResType }) {
         </div>
         <div className='ml-[15px]'>
           <Button
-            className='text-green-primary border-green-primary hover:bg-green-primary flex items-center justify-center rounded-[5px] border border-solid bg-white px-[22px] py-2 leading-[1.2] font-bold capitalize hover:text-white'
+            className='text-green-primary border-green-primary hover:bg-green-primary flex items-center justify-center rounded-[5px] border border-solid bg-white px-[22px] py-2 leading-[1.2] font-semibold capitalize hover:text-white'
             variant={'outline'}
             onClick={handleAddToCart}
           >
@@ -309,7 +342,10 @@ export default function BookDetailInfo({ book }: { book?: ProductResType }) {
           </Button>
         </div>
         <div className='ml-[15px]'>
-          <Button className='text-green-primary border-green-primary bg-green-primary hover:bg-green-primary/80 flex items-center justify-center rounded-[5px] border border-solid px-[22px] py-2 leading-[1.2] font-bold text-white capitalize'>
+          <Button
+            onClick={handleBuyNow}
+            className='text-green-primary border-green-primary bg-green-primary hover:bg-green-primary/80 flex items-center justify-center rounded-[5px] border border-solid px-[22px] py-2 leading-[1.2] font-semibold text-white capitalize'
+          >
             Mua ngay
           </Button>
         </div>
