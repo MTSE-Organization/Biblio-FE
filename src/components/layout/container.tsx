@@ -1,4 +1,8 @@
+'use client';
+
+import { FullPageLoading } from '@/components/loading';
 import { cn } from '@/lib';
+import { useAppLoadingStore } from '@/store/use-app-loading-store';
 
 export default function Container({
   children,
@@ -7,9 +11,10 @@ export default function Container({
 }: React.HTMLAttributes<HTMLElement> & {
   contentClassName?: string;
 }) {
+  const { loading } = useAppLoadingStore();
   return (
     <div
-      className={cn('bg-gray-100 py-4', {
+      className={cn('relative bg-gray-100 py-4', {
         'min-h-[90vh]': !contentClassName
       })}
       {...props}
@@ -17,6 +22,8 @@ export default function Container({
       <div className={cn('content mx-auto max-w-[1320px]', contentClassName)}>
         {children}
       </div>
+
+      <FullPageLoading show={loading} />
     </div>
   );
 }

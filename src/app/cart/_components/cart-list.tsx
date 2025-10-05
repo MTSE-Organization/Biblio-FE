@@ -18,8 +18,10 @@ import { useCallback } from 'react';
 import { Check } from 'lucide-react';
 import CartItem from '@/app/cart/_components/cart-item';
 import CouponList from '@/app/cart/_components/coupon-list';
+import { useAppLoadingStore } from '@/store/use-app-loading-store';
 
 export default function CartList() {
+  const { withLoading } = useAppLoadingStore();
   const { profile } = useAuthStore();
   const queryClient = useQueryClient();
 
@@ -32,33 +34,37 @@ export default function CartList() {
   const { selectedCartItems, setSelectedCartItems } = useCartStore();
 
   const handleRemoveFromCart = useCallback(
-    (id: string) => {
-      removeFromCartMutation.mutate(id, {
-        onSuccess: () => {
-          notify.success('Xóa sách khỏi giỏ hàng thành công');
-          queryClient.invalidateQueries({ queryKey: ['cart'] });
-        },
-        onError: (error) => {
-          notify.error('Đã có lỗi xảy ra');
-          logger.error(error);
-        }
-      });
+    async (id: string) => {
+      await withLoading(
+        removeFromCartMutation.mutateAsync(id, {
+          onSuccess: () => {
+            notify.success('Xóa sách khỏi giỏ hàng thành công');
+            queryClient.invalidateQueries({ queryKey: ['cart'] });
+          },
+          onError: (error) => {
+            notify.error('Đã có lỗi xảy ra');
+            logger.error(error);
+          }
+        })
+      );
     },
     [removeFromCartMutation, queryClient]
   );
 
   const handleUpdateCartItem = useCallback(
-    (id: string, quantity: number) => {
-      updateCartItemMutation.mutate(
-        { id, quantity },
-        {
-          onSuccess: () =>
-            queryClient.invalidateQueries({ queryKey: ['cart'] }),
-          onError: (error) => {
-            notify.error('Đã có lỗi xảy ra');
-            logger.error(error);
+    async (id: string, quantity: number) => {
+      await withLoading(
+        updateCartItemMutation.mutateAsync(
+          { id, quantity },
+          {
+            onSuccess: () =>
+              queryClient.invalidateQueries({ queryKey: ['cart'] }),
+            onError: (error) => {
+              notify.error('Đã có lỗi xảy ra');
+              logger.error(error);
+            }
           }
-        }
+        )
       );
     },
     [updateCartItemMutation, queryClient]

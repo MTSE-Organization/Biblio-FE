@@ -21,6 +21,7 @@ import { debounce } from 'lodash';
 import { productVariantConditions, productVariantFormats } from '@/constants';
 import { HamsterLoading } from '@/components/loading';
 import { Minus, Plus } from 'lucide-react';
+import { useAppLoadingStore } from '@/store/use-app-loading-store';
 
 function CartItem({
   cartItem,
@@ -199,6 +200,7 @@ export default function CartSidebar() {
   const cartQuery = useCartQuery({
     enabled: !!profile
   });
+  const { withLoading } = useAppLoadingStore();
 
   const loading = cartQuery.isLoading;
 
@@ -211,30 +213,34 @@ export default function CartSidebar() {
   const updateCartItem = useUpdateCartItemMutation();
 
   const handleRemoveFromCart = async (id: string) => {
-    await removeFromCartMutation.mutateAsync(id, {
-      onSuccess: () => {
-        notify.success('Xóa sách khỏi giỏ hàng thàng công');
-        queryClient.invalidateQueries({ queryKey: ['cart'] });
-      },
-      onError: (error) => {
-        notify.error('Đã có lỗi xảy ra');
-        logger.error(error);
-      }
-    });
-  };
-
-  const handleUpdateCartItem = async (id: string, quantity: number) => {
-    await updateCartItem.mutateAsync(
-      { id, quantity },
-      {
+    await withLoading(
+      removeFromCartMutation.mutateAsync(id, {
         onSuccess: () => {
+          notify.success('Xóa sách khỏi giỏ hàng thàng công');
           queryClient.invalidateQueries({ queryKey: ['cart'] });
         },
         onError: (error) => {
           notify.error('Đã có lỗi xảy ra');
           logger.error(error);
         }
-      }
+      })
+    );
+  };
+
+  const handleUpdateCartItem = async (id: string, quantity: number) => {
+    await withLoading(
+      updateCartItem.mutateAsync(
+        { id, quantity },
+        {
+          onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['cart'] });
+          },
+          onError: (error) => {
+            notify.error('Đã có lỗi xảy ra');
+            logger.error(error);
+          }
+        }
+      )
     );
   };
 
