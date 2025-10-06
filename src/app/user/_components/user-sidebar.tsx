@@ -3,7 +3,7 @@
 import { List, ListItem } from '@/components/list';
 import { cn } from '@/lib';
 import route from '@/routes';
-import { Heart, MapPin, User } from 'lucide-react';
+import { Eye, Heart, MapPin, User } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { RiNotification3Line } from 'react-icons/ri';
@@ -41,6 +41,12 @@ export default function UserSidebar() {
       path: route.user.favorite,
       label: 'Yêu thích',
       icon: Heart
+    },
+    {
+      key: 'viewed-history',
+      path: route.user.viewedHistory,
+      label: 'Lịch sử xem',
+      icon: Eye
     }
   ];
   return (

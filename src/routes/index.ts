@@ -12,7 +12,8 @@ const route = defineRoute({
     order: '/user/order',
     notification: '/user/notification',
     address: '/user/address',
-    favorite: '/user/favorite'
+    favorite: '/user/favorite',
+    viewedHistory: '/user/viewed-history'
   },
   book: '/book',
   cart: '/cart',
