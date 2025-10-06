@@ -3,7 +3,7 @@
 import { List, ListItem } from '@/components/list';
 import { cn } from '@/lib';
 import route from '@/routes';
-import { MapPin, User } from 'lucide-react';
+import { Heart, MapPin, User } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { RiNotification3Line } from 'react-icons/ri';
@@ -35,6 +35,12 @@ export default function UserSidebar() {
       path: route.user.order,
       label: 'Đơn hàng',
       icon: LuNotepadText
+    },
+    {
+      key: 'favorite',
+      path: route.user.favorite,
+      label: 'Yêu thích',
+      icon: Heart
     }
   ];
   return (
@@ -42,7 +48,7 @@ export default function UserSidebar() {
       {userSidebars.map((userSidebar) => (
         <ListItem
           className={cn(
-            'hover:text-green-primary border-b border-solid border-gray-200 transition-all duration-200 ease-linear',
+            'hover:text-green-primary border-b border-solid border-gray-200 transition-all duration-200 ease-linear last:border-b-0',
             {
               'text-green-primary': pathname === userSidebar.path
             }

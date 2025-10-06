@@ -9,3 +9,4 @@ export * from './file.query';
 export * from './product-variant.query';
 export * from './product.query';
 export * from './viewed-product.query';
+export * from './favorite-product.query';
