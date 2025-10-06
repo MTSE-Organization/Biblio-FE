@@ -42,6 +42,7 @@ import {
   useUpdateAddressMutation
 } from '@/queries';
 import { addressSchema } from '@/schemaValidations';
+import { useAppLoadingStore } from '@/store/use-app-loading-store';
 import { AddressBodyType } from '@/types';
 import { notify } from '@/utils';
 import { useQueryClient } from '@tanstack/react-query';
@@ -57,6 +58,7 @@ import {
 import { useEffect, useMemo, useState } from 'react';
 
 export default function AddressList() {
+  const { withLoading } = useAppLoadingStore();
   const { opened, open, close } = useDisclosure();
   const [selectedAddress, setSelectedAddress] = useState<string>('');
   const [provinceId, setProvinceId] = useState<
@@ -196,11 +198,6 @@ export default function AddressList() {
     }
   }, [selectedAddress, address?.ward, wardList]);
 
-  const debouncedSetDetailSearch = useMemo(
-    () => debounce((val: string) => setDetailSearch(val), 400),
-    []
-  );
-
   useEffect(() => {
     if (address?.hamlet) {
       setDetailSearch(address?.hamlet ?? '');
@@ -208,6 +205,11 @@ export default function AddressList() {
       setDetailSearch('');
     }
   }, [address?.hamlet]);
+
+  const debouncedSetDetailSearch = useMemo(
+    () => debounce((val: string) => setDetailSearch(val), 400),
+    []
+  );
 
   const mutation = selectedAddress
     ? updateAddressMutation
@@ -229,8 +231,10 @@ export default function AddressList() {
       latitude: coords.data?.lat ?? 0,
       longitude: coords.data?.lng ?? 0
     };
-    await mutation.mutateAsync(
-      selectedAddress ? { ...payload, id: address?.id } : payload
+    await withLoading(
+      mutation.mutateAsync(
+        selectedAddress ? { ...payload, id: address?.id } : payload
+      )
     );
     await Promise.all([
       queryClient.invalidateQueries({ queryKey: ['address-list'] }),
@@ -249,33 +253,37 @@ export default function AddressList() {
   };
 
   const handleDelete = async (id: string) => {
-    await deleteAddressMutation.mutateAsync(id, {
-      onSuccess: (res) => {
-        if (res.result) {
-          notify.success('Xóa thành công');
-          addressListQuery.refetch();
+    await withLoading(
+      deleteAddressMutation.mutateAsync(id, {
+        onSuccess: (res) => {
+          if (res.result) {
+            notify.success('Xóa địa chỉ thành công');
+            addressListQuery.refetch();
+          }
+        },
+        onError: (error) => {
+          notify.error('Có lỗi xảy ra');
+          logger.error('Error while deleting address', error);
         }
-      },
-      onError: (error) => {
-        notify.error('Có lỗi xảy ra');
-        logger.error('Error while deleting address', error);
-      }
-    });
+      })
+    );
   };
 
   const handleSetDefault = async (id: string) => {
-    await setDefaultAddressMutation.mutateAsync(id, {
-      onSuccess: (res) => {
-        if (res.result) {
-          notify.success('Đặt địa chỉ mặc định thành công');
-          addressListQuery.refetch();
+    await withLoading(
+      setDefaultAddressMutation.mutateAsync(id, {
+        onSuccess: (res) => {
+          if (res.result) {
+            notify.success('Đặt địa chỉ mặc định thành công');
+            addressListQuery.refetch();
+          }
+        },
+        onError: (error) => {
+          notify.error('Có lẽ xảy ra');
+          logger.error('Error while setting default address', error);
         }
-      },
-      onError: (error) => {
-        notify.error('Có lẽ xảy ra');
-        logger.error('Error while setting default address', error);
-      }
-    });
+      })
+    );
   };
 
   return (
@@ -287,7 +295,11 @@ export default function AddressList() {
           </Button>
         </div>
         <List className='px-4'>
-          {addressList.length > 0 ? (
+          {addressListQuery.isLoading ? (
+            <div className='mt-4'>
+              <CircleLoading className='stroke-green-primary size-8' />
+            </div>
+          ) : addressList.length > 0 ? (
             addressList.map((address, index) => (
               <ListItem
                 key={address.id}
@@ -296,14 +308,15 @@ export default function AddressList() {
                     addressList.length > 1
                 })}
               >
-                <div className='flex items-center gap-x-2'>
-                  Địa chỉ {index + 1}: {address.detail}, {address.hamlet},
-                  &nbsp;
-                  {address.ward}, &nbsp;
-                  {address.district}, &nbsp;
-                  {address.city}
+                <div className='flex items-start gap-x-2'>
+                  <div>
+                    Địa chỉ {index + 1}: {address.detail}, {address.hamlet},
+                    &nbsp;
+                    {address.ward}, <br />
+                    {address.district},{address.city}
+                  </div>
                   {address.isDefault && (
-                    <div className='bg-green-primary rounded-lg px-2 py-0.5 text-white'>
+                    <div className='bg-green-primary rounded-lg px-2 py-0.5 whitespace-nowrap text-white'>
                       Mặc định
                     </div>
                   )}
@@ -313,7 +326,7 @@ export default function AddressList() {
                     <Button
                       onClick={() => handleEdit(address.id)}
                       variant={'ghost'}
-                      className='size-5 p-0 hover:bg-transparent'
+                      className='size-5 p-0'
                     >
                       <Pencil className='size-5 stroke-blue-700/80' />
                     </Button>
@@ -324,7 +337,7 @@ export default function AddressList() {
                       onClick={() => handleSetDefault(address.id)}
                       disabled={address.isDefault}
                       variant={'ghost'}
-                      className='size-5 p-0 hover:bg-transparent'
+                      className='size-5 p-0'
                     >
                       <Check className='size-5 stroke-blue-700/80' />
                     </Button>
@@ -334,7 +347,10 @@ export default function AddressList() {
                     <AlertDialogTrigger asChild>
                       <span>
                         <ToolTip title={`Xóa`}>
-                          <Button className='h-5 border-none bg-transparent p-1! shadow-none hover:bg-transparent'>
+                          <Button
+                            variant={'ghost'}
+                            className='h-5 border-none p-1! shadow-none'
+                          >
                             <Trash className='size-5 stroke-red-600' />
                           </Button>
                         </ToolTip>

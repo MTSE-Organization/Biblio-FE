@@ -244,14 +244,14 @@ const apiConfig = defineApiConfig({
   },
   order: {
     cancel: {
-      baseUrl: `${AppConstants.apiUrl}v1/order/cancel`,
+      baseUrl: `${AppConstants.apiUrl}v1/order/cancel/:id`,
       headers: baseHeader,
-      method: 'POST'
+      method: 'PUT'
     },
     create: {
       baseUrl: `${AppConstants.apiUrl}v1/order/create`,
       headers: baseHeader,
-      method: 'PUT'
+      method: 'POST'
     },
     getById: {
       baseUrl: `${AppConstants.apiUrl}v1/order/get/:id`,

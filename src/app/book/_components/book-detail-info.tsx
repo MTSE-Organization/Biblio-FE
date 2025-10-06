@@ -12,24 +12,29 @@ import {
   productVariantFormats,
   storageKeys
 } from '@/constants';
+import { useNavigate } from '@/hooks';
 import { cn } from '@/lib';
 import { logger } from '@/logger';
 import {
   useAddFavoriteProductMutation,
+  useCreateOrderMutation,
   useDeleteFavoriteProductMutation,
   useFavoriteProductListQuery
 } from '@/queries';
 import { useAddItemMutation } from '@/queries/cart.query';
 import { useProductVariantListQuery } from '@/queries/product-variant.query';
 import route from '@/routes';
+import { useAppLoadingStore } from '@/store/use-app-loading-store';
 import { ProductResType } from '@/types';
-import { formatDate, formatPrice, getData, notify } from '@/utils';
+import { formatDate, formatPrice, getData, notify, setData } from '@/utils';
 import { useQueryClient } from '@tanstack/react-query';
 import { Eye, Heart, Minus, Plus } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
 
 export default function BookDetailInfo({ book }: { book?: ProductResType }) {
+  const navigate = useNavigate();
+  const { withLoading } = useAppLoadingStore();
   const [quantity, setQuantity] = useState<number>(1);
   const [productVariantId, setProductVariantId] = useState<string | null>(null);
   const [isSelectedProductVariant, setIsSelectedProductVariant] =
@@ -42,6 +47,7 @@ export default function BookDetailInfo({ book }: { book?: ProductResType }) {
   const accessToken = getData(storageKeys.ACCESS_TOKEN);
 
   const addItemMutation = useAddItemMutation();
+  const createOrderMutation = useCreateOrderMutation();
   const queryClient = useQueryClient();
 
   const addFavoriteProductMutation = useAddFavoriteProductMutation();
@@ -109,31 +115,68 @@ export default function BookDetailInfo({ book }: { book?: ProductResType }) {
     if (!accessToken) {
       notify.error(
         <p>
-          Vui lòng{' '}
+          Vui lòng&nbsp;
           <Link
             href={route.login}
             className='text-green-primary hover:text-green-primary/70 transition-all duration-200 ease-linear'
           >
             đăng nhập
-          </Link>{' '}
-          để thêm sách vào giỏ hàng
+          </Link>
+          &nbsp; để thêm sách vào giỏ hàng
         </p>
       );
       return;
     }
-
-    await addItemMutation.mutateAsync(
-      { productVariantId, quantity },
-      {
-        onSuccess: () => {
-          notify.success('Thêm sách vào giỏ hàng thành công');
-          queryClient.invalidateQueries({ queryKey: ['cart'] });
-        },
-        onError: (error) => {
-          notify.error('Đã có lỗi xảy ra');
-          logger.error('Error while adding to cart:', error);
+    await withLoading(
+      addItemMutation.mutateAsync(
+        { productVariantId, quantity },
+        {
+          onSuccess: () => {
+            notify.success('Thêm sách vào giỏ hàng thành công');
+            queryClient.invalidateQueries({ queryKey: ['cart'] });
+          },
+          onError: (error) => {
+            notify.error('Đã có lỗi xảy ra');
+            logger.error('Error while adding to cart:', error);
+          }
         }
-      }
+      )
+    );
+  };
+
+  const getPrice = (price: string | number, discount: number = 0) => {
+    const modifiedPrice =
+      bookVariants?.find((book) => book.id === productVariantId)
+        ?.modifiedPrice ?? 0;
+    return formatPrice(((+price + +modifiedPrice) * (100 - discount)) / 100);
+  };
+
+  const handleBuyNow = async () => {
+    if (!productVariantId) {
+      notify.error('Vui lòng chọn phân loại sách');
+      setIsSelectedProductVariant(false);
+      return;
+    }
+
+    await withLoading(
+      createOrderMutation.mutateAsync(
+        { productVariantId, quantity },
+        {
+          onSuccess: (res) => {
+            if (res.result) {
+              const orderId = res.data?.orderId;
+              if (orderId) {
+                setData(storageKeys.ORDER_ID, orderId);
+                navigate(route.order.place);
+              }
+            }
+          },
+          onError: (error) => {
+            logger.error('Error while buying now', error);
+            notify.error('Có lỗi xảy ra');
+          }
+        }
+      )
     );
   };
 
@@ -271,16 +314,16 @@ export default function BookDetailInfo({ book }: { book?: ProductResType }) {
       <div className='pt-5'>
         {book?.discount === 0 && (
           <p className='text-green-primary text-2xl leading-[1.167] font-bold'>
-            {formatPrice(book?.price ?? 0)}
+            {getPrice(book?.price)}
           </p>
         )}
         {book?.discount !== 0 && book?.price && (
           <div className='flex items-center gap-2'>
             <p className='text-green-primary text-2xl leading-[1.167] font-bold'>
-              {formatPrice((book.price * (100 - book.discount)) / 100)}
+              {getPrice(book.price, book.discount)}
             </p>
             <p className='text-lg leading-[1.167] font-semibold text-gray-300 line-through'>
-              {formatPrice(book.price)}
+              {getPrice(book.price)}
             </p>
             <p className='bg-green-primary rounded p-1 text-xs text-white'>
               -{book?.discount} %
@@ -332,7 +375,7 @@ export default function BookDetailInfo({ book }: { book?: ProductResType }) {
           <Button
             onClick={handleDecreaseQuantity}
             variant={'ghost'}
-            className='hover:text-green-primary ml-1 flex h-full w-5 cursor-pointer items-center justify-center p-0! transition-all duration-200 ease-linear hover:bg-transparent'
+            className='hover:text-green-primary ml-1 flex h-full w-5 cursor-pointer items-center justify-center p-0! transition-all duration-200 ease-linear'
           >
             <Minus />
           </Button>
@@ -346,14 +389,14 @@ export default function BookDetailInfo({ book }: { book?: ProductResType }) {
           <Button
             onClick={handleIncreaseQuantity}
             variant={'ghost'}
-            className='hover:text-green-primary mr-1 flex h-full w-5 cursor-pointer items-center justify-center p-0! transition-all duration-200 ease-linear hover:bg-transparent'
+            className='hover:text-green-primary mr-1 flex h-full w-5 cursor-pointer items-center justify-center p-0! transition-all duration-200 ease-linear'
           >
             <Plus />
           </Button>
         </div>
         <div className='ml-[15px]'>
           <Button
-            className='text-green-primary border-green-primary hover:bg-green-primary flex items-center justify-center rounded-[5px] border border-solid bg-white px-[22px] py-2 leading-[1.2] font-bold capitalize hover:text-white'
+            className='text-green-primary border-green-primary hover:bg-green-primary flex items-center justify-center rounded-[5px] border border-solid bg-white px-[22px] py-2 leading-[1.2] font-semibold capitalize hover:text-white'
             variant={'outline'}
             onClick={handleAddToCart}
           >
@@ -361,7 +404,10 @@ export default function BookDetailInfo({ book }: { book?: ProductResType }) {
           </Button>
         </div>
         <div className='ml-[15px]'>
-          <Button className='text-green-primary border-green-primary bg-green-primary hover:bg-green-primary/80 flex items-center justify-center rounded-[5px] border border-solid px-[22px] py-2 leading-[1.2] font-bold text-white capitalize'>
+          <Button
+            onClick={handleBuyNow}
+            className='text-green-primary border-green-primary bg-green-primary hover:bg-green-primary/80 flex items-center justify-center rounded-[5px] border border-solid px-[22px] py-2 leading-[1.2] font-semibold text-white capitalize'
+          >
             Mua ngay
           </Button>
         </div>

@@ -16,7 +16,10 @@ const route = defineRoute({
   },
   book: '/book',
   cart: '/cart',
-  category: '/category'
+  category: '/category',
+  order: {
+    place: '/order/place'
+  }
 });
 
 export default route;

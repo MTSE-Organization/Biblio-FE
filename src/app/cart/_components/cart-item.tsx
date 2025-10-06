@@ -18,14 +18,14 @@ function calcDiscountedPrice(item: CartItemResType) {
   const { modifiedPrice, product } = item.productVariant;
   if (!product.discount) {
     return {
-      final: modifiedPrice,
+      final: +modifiedPrice + +product.price,
       original: null,
       discount: null
     };
   }
   return {
-    final: (modifiedPrice * (100 - product.discount)) / 100,
-    original: modifiedPrice,
+    final: ((+modifiedPrice + +product.price) * (100 - product.discount)) / 100,
+    original: +modifiedPrice + +product.price,
     discount: product.discount
   };
 }

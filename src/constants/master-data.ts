@@ -1,3 +1,4 @@
+import { cod, vnPAY } from '@/assets';
 import {
   AGE_RATING_0_2,
   AGE_RATING_12_15,
@@ -9,6 +10,18 @@ import {
   GENDER_FEMALE,
   GENDER_MALE,
   GENDER_OTHER,
+  ORDER_STATUS_ALL,
+  ORDER_STATUS_CANCELED,
+  ORDER_STATUS_COMPLETE,
+  ORDER_STATUS_CONFIRMED,
+  ORDER_STATUS_PACKING,
+  ORDER_STATUS_REFUNDED,
+  ORDER_STATUS_REQUEST_REFUND,
+  ORDER_STATUS_SHIPPING,
+  ORDER_STATUS_WAITING,
+  ORDER_STATUS_WAITING_CONFIRMATION,
+  PAYMENT_COD,
+  PAYMENT_VNPAY,
   PRODUCT_VARIANT_CONDITION_NEW,
   PRODUCT_VARIANT_CONDITION_OLD,
   PRODUCT_VARIANT_FORMAT_HARD_COVER,
@@ -355,5 +368,71 @@ export const productVariantFormats = [
   {
     label: 'Bìa mềm',
     value: PRODUCT_VARIANT_FORMAT_PAPER_BACK
+  }
+];
+
+export const paymentMethods = [
+  {
+    label: 'COD',
+    icon: cod,
+    value: PAYMENT_COD
+  },
+  {
+    label: 'VNPAY',
+    icon: vnPAY,
+    value: PAYMENT_VNPAY
+  }
+];
+
+export const orderStatuses = [
+  {
+    label: 'Tất cả',
+    value: ORDER_STATUS_ALL,
+    badgeColor: 'bg-gray-200 text-gray-700'
+  },
+  {
+    label: 'Chờ xử lý',
+    value: ORDER_STATUS_WAITING,
+    badgeColor: 'bg-yellow-100 text-yellow-800'
+  },
+  {
+    label: 'Chờ xác nhận',
+    value: ORDER_STATUS_WAITING_CONFIRMATION,
+    badgeColor: 'bg-amber-100 text-amber-800'
+  },
+  {
+    label: 'Đã xác nhận',
+    value: ORDER_STATUS_CONFIRMED,
+    badgeColor: 'bg-blue-100 text-blue-800'
+  },
+  {
+    label: 'Đang đóng gói',
+    value: ORDER_STATUS_PACKING,
+    badgeColor: 'bg-indigo-100 text-indigo-800'
+  },
+  {
+    label: 'Đang giao hàng',
+    value: ORDER_STATUS_SHIPPING,
+    badgeColor: 'bg-cyan-100 text-cyan-800'
+  },
+  {
+    label: 'Hoàn tất',
+    value: ORDER_STATUS_COMPLETE,
+    badgeColor: 'bg-green-100 text-green-800'
+  },
+  {
+    label: 'Đã hủy',
+    value: ORDER_STATUS_CANCELED,
+    badgeColor: 'bg-red-100 text-red-800'
+  },
+  {
+    label: 'Yêu cầu hoàn tiền',
+    value: ORDER_STATUS_REQUEST_REFUND,
+    badgeColor: 'bg-orange-100 text-orange-800'
+  },
+  {
+    label: 'Đã hoàn tiền',
+    value: ORDER_STATUS_REFUNDED,
+    badgeColor: 'bg-emerald-100 text-emerald-800'
   }
 ];

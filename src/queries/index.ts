@@ -6,6 +6,7 @@ export * from './cart.query';
 export * from './category.query';
 export * from './coupon.query';
 export * from './file.query';
+export * from './order.query';
 export * from './product-variant.query';
 export * from './product.query';
 export * from './viewed-product.query';

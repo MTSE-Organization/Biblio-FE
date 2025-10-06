@@ -4,7 +4,11 @@ import { bgCoupon } from '@/assets';
 import { Button, ToolTip } from '@/components/form';
 import { Modal } from '@/components/modal';
 import { Separator } from '@/components/ui/separator';
-import { COUPON_KIND_DISCOUNT, COUPON_KIND_FREESHIP } from '@/constants';
+import {
+  COUPON_KIND_DISCOUNT,
+  COUPON_KIND_FREESHIP,
+  DATE_TIME_FORMAT
+} from '@/constants';
 import { cn } from '@/lib';
 import { useCartStore } from '@/store';
 import { CouponResType } from '@/types';
@@ -35,6 +39,7 @@ export default function CouponModal({
   const discountList = couponList
     .filter((coupon) => coupon.kind === COUPON_KIND_DISCOUNT)
     .sort((a, b) => +a.minOrderAmount - +b.minOrderAmount);
+
   return (
     <Modal open={opened} onClose={onClose} className='p-4'>
       <div className='flex max-h-[90vh] w-140 flex-col pr-0.5'>
@@ -57,7 +62,7 @@ export default function CouponModal({
           </div>
           <Button
             onClick={onClose}
-            className='text-destructive ml-auto pr-2! hover:bg-transparent'
+            className='text-destructive ml-auto pr-2!'
             variant={'ghost'}
           >
             <X />
@@ -116,7 +121,7 @@ export default function CouponModal({
                             HSD:&nbsp;
                             {formatDate(
                               freeShip.validTo.toString(),
-                              'HH:mm:ss dd/MM/yyyy'
+                              DATE_TIME_FORMAT
                             )}
                           </span>
                           {totalPrice >= +freeShip.minOrderAmount ? (

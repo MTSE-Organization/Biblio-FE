@@ -21,6 +21,7 @@ import { debounce } from 'lodash';
 import { productVariantConditions, productVariantFormats } from '@/constants';
 import { HamsterLoading } from '@/components/loading';
 import { Minus, Plus } from 'lucide-react';
+import { useAppLoadingStore } from '@/store/use-app-loading-store';
 
 function CartItem({
   cartItem,
@@ -76,6 +77,10 @@ function CartItem({
     debouncedUpdate(cartItem.id, value);
   };
 
+  const getPrice = (price: string | number, discount: number = 0) => {
+    return formatPrice((+price * (100 - discount)) / 100);
+  };
+
   return (
     <li className='mb-5 flex border-b pb-5'>
       <Link
@@ -107,7 +112,7 @@ function CartItem({
           </Link>
           <Button
             variant={'ghost'}
-            className='absolute -top-2 -right-5.5 size-2 cursor-pointer p-0 hover:bg-transparent hover:text-red-500'
+            className='absolute -top-2 -right-5.5 size-2 cursor-pointer p-0 hover:text-red-500'
             onClick={() => onRemoveCartItem(cartItem?.id)}
           >
             <FaTimes size={12} />
@@ -115,8 +120,10 @@ function CartItem({
         </div>
         {cartItem?.productVariant?.product?.discount === 0 && (
           <p className='text-green-primary text-base font-bold'>
-            {formatPrice(
-              cartItem.quantity * cartItem?.productVariant?.modifiedPrice
+            {getPrice(
+              cartItem.quantity *
+                (+cartItem.productVariant.modifiedPrice +
+                  +cartItem.productVariant.product.price)
             )}
           </p>
         )}
@@ -124,16 +131,18 @@ function CartItem({
           <div className='flex items-center gap-4'>
             <div className='flex flex-col text-right'>
               <p className='text-green-primary text-base font-bold'>
-                {formatPrice(
-                  (cartItem.quantity *
-                    cartItem?.productVariant?.modifiedPrice *
-                    (100 - cartItem?.productVariant?.product?.discount)) /
-                    100
+                {getPrice(
+                  cartItem.quantity *
+                    (+cartItem.productVariant.modifiedPrice +
+                      +cartItem.productVariant.product.price),
+                  cartItem.productVariant.product.discount
                 )}
               </p>
               <p className='text-sm font-bold text-gray-400 line-through'>
-                {formatPrice(
-                  cartItem.quantity * cartItem?.productVariant?.modifiedPrice
+                {getPrice(
+                  cartItem.quantity *
+                    (+cartItem.productVariant.modifiedPrice +
+                      +cartItem.productVariant.product.price)
                 )}
               </p>
             </div>
@@ -159,7 +168,7 @@ function CartItem({
           <Button
             onClick={handleDecreaseQuantity}
             variant={'ghost'}
-            className='hover:text-green-primary ml-1 flex h-full w-5 cursor-pointer items-center justify-center p-0! transition-all duration-200 ease-linear hover:bg-transparent'
+            className='hover:text-green-primary ml-1 flex h-full w-5 cursor-pointer items-center justify-center p-0! transition-all duration-200 ease-linear'
           >
             <Minus />
           </Button>
@@ -174,7 +183,7 @@ function CartItem({
           <Button
             onClick={handleIncreaseQuantity}
             variant={'ghost'}
-            className='hover:text-green-primary mr-1 flex h-full w-5 cursor-pointer items-center justify-center p-0! transition-all duration-200 ease-linear hover:bg-transparent'
+            className='hover:text-green-primary mr-1 flex h-full w-5 cursor-pointer items-center justify-center p-0! transition-all duration-200 ease-linear'
           >
             <Plus />
           </Button>
@@ -191,6 +200,7 @@ export default function CartSidebar() {
   const cartQuery = useCartQuery({
     enabled: !!profile
   });
+  const { withLoading } = useAppLoadingStore();
 
   const loading = cartQuery.isLoading;
 
@@ -203,30 +213,34 @@ export default function CartSidebar() {
   const updateCartItem = useUpdateCartItemMutation();
 
   const handleRemoveFromCart = async (id: string) => {
-    await removeFromCartMutation.mutateAsync(id, {
-      onSuccess: () => {
-        notify.success('Xóa sách khỏi giỏ hàng thàng công');
-        queryClient.invalidateQueries({ queryKey: ['cart'] });
-      },
-      onError: (error) => {
-        notify.error('Đã có lỗi xảy ra');
-        logger.error(error);
-      }
-    });
-  };
-
-  const handleUpdateCartItem = async (id: string, quantity: number) => {
-    await updateCartItem.mutateAsync(
-      { id, quantity },
-      {
+    await withLoading(
+      removeFromCartMutation.mutateAsync(id, {
         onSuccess: () => {
+          notify.success('Xóa sách khỏi giỏ hàng thàng công');
           queryClient.invalidateQueries({ queryKey: ['cart'] });
         },
         onError: (error) => {
           notify.error('Đã có lỗi xảy ra');
           logger.error(error);
         }
-      }
+      })
+    );
+  };
+
+  const handleUpdateCartItem = async (id: string, quantity: number) => {
+    await withLoading(
+      updateCartItem.mutateAsync(
+        { id, quantity },
+        {
+          onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['cart'] });
+          },
+          onError: (error) => {
+            notify.error('Đã có lỗi xảy ra');
+            logger.error(error);
+          }
+        }
+      )
     );
   };
 
@@ -235,7 +249,7 @@ export default function CartSidebar() {
       <Button
         variant='ghost'
         onClick={() => setOpen(true)}
-        className='hover:text-green-primary group size-full rounded-full p-0! hover:bg-transparent! focus:outline-none focus-visible:ring-0'
+        className='hover:text-green-primary group size-full rounded-full p-0! focus:outline-none focus-visible:ring-0'
       >
         <div className='relative'>
           <RiShoppingCartLine className='size-[21px]' />
@@ -277,7 +291,7 @@ export default function CartSidebar() {
                 <Button
                   variant={'ghost'}
                   onClick={() => setOpen(false)}
-                  className='absolute top-4.5 right-2 size-2 cursor-pointer p-0 hover:bg-transparent hover:text-red-500'
+                  className='absolute top-4.5 right-2 size-2 cursor-pointer p-0 hover:text-red-500'
                 >
                   <FaTimes />
                 </Button>

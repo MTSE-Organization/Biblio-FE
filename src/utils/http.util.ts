@@ -79,8 +79,12 @@ const sendRequest = async <T>(
       throw new Error(`Error in API request: ${error.message}`);
     }
   }
-
-  const queryParams = new URLSearchParams(params).toString();
+  const filteredParams = Object.fromEntries(
+    Object.entries(params).filter(
+      ([, value]) => value !== '' && value !== null && value !== undefined
+    )
+  );
+  const queryParams = new URLSearchParams(filteredParams).toString();
   const fullUrl = queryParams ? `${baseUrl}?${queryParams}` : baseUrl;
   try {
     const response = await fetch(fullUrl, {

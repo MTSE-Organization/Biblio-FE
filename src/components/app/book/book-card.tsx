@@ -31,7 +31,7 @@ export default function BookCard({ book }: { book: ProductAutoType }) {
                 onMouseMove={handleMouseMove}
                 src={renderImageUrl(book.image?.url) || defaultBook.src}
                 fill
-                className='object-cover transition-all duration-200 ease-linear'
+                className='object-cover'
                 alt='Product'
                 sizes='(max-width: 768px) 50vw,
                       (max-width: 1200px) 25vw,
