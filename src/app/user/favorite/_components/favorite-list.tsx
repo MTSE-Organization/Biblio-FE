@@ -2,8 +2,8 @@
 
 import { useFavoriteProductListQuery } from '@/queries';
 import FavoriteItem from './favorite-item';
-import Image from 'next/image';
-import { emptyList } from '@/assets';
+import { NoData } from '@/components/no-data';
+import FavoriteItemSkeleton from '@/app/user/favorite/_components/favorite-item-skeleton';
 
 export default function FavoriteList() {
   const favoriteQuery = useFavoriteProductListQuery({
@@ -11,21 +11,19 @@ export default function FavoriteList() {
   });
 
   const favoriteProducts = favoriteQuery?.data?.data?.content;
-
-  if (!favoriteProducts?.length) {
-    return (
-      <div className='flex flex-1 flex-col items-center justify-center p-4'>
-        <p className='text-gray-500'>Không có sản phẩm nào</p>
-        <Image src={emptyList.src} alt='Empty List' width={200} height={200} />
-      </div>
-    );
-  }
+  const loading = favoriteQuery.isLoading || favoriteQuery.isFetching;
 
   return (
     <>
-      {favoriteProducts?.map((favorite, index) => (
-        <FavoriteItem favorite={favorite} key={index} />
-      ))}
+      {loading ? (
+        [...Array(4)].map((_, index) => <FavoriteItemSkeleton key={index} />)
+      ) : favoriteProducts?.length == 0 ? (
+        <NoData />
+      ) : (
+        favoriteProducts?.map((favorite, index) => (
+          <FavoriteItem favorite={favorite} key={index} />
+        ))
+      )}
     </>
   );
 }

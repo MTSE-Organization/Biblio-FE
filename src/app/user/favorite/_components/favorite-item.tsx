@@ -3,6 +3,7 @@ import { StarRating } from '@/components/star-rating';
 import { logger } from '@/logger';
 import { useDeleteFavoriteProductMutation } from '@/queries';
 import route from '@/routes';
+import { useAppLoadingStore } from '@/store/use-app-loading-store';
 import { FavoriteProductResType } from '@/types';
 import { formatPrice, notify, renderImageUrl } from '@/utils';
 import { useQueryClient } from '@tanstack/react-query';
@@ -16,25 +17,30 @@ export default function FavoriteItem({
 }: {
   favorite: FavoriteProductResType;
 }) {
+  const { withLoading } = useAppLoadingStore();
   const deleteFavoriteProductMutation = useDeleteFavoriteProductMutation();
   const queryClient = useQueryClient();
 
   const handleRemoveFavorite = async () => {
     if (!favorite?.id) return;
-    await deleteFavoriteProductMutation.mutateAsync(favorite?.id, {
-      onSuccess: () => {
-        // notify.success('Xóa sách khỏi yêu thích thành công');
-        queryClient.invalidateQueries({ queryKey: ['favorite-product-list'] });
-      },
-      onError: (error) => {
-        notify.error('Đã có lỗi xảy ra');
-        logger.error('Error while adding to cart:', error);
-      }
-    });
+    await withLoading(
+      deleteFavoriteProductMutation.mutateAsync(favorite?.id, {
+        onSuccess: () => {
+          notify.success('Xóa sách khỏi yêu thích thành công');
+          queryClient.invalidateQueries({
+            queryKey: ['favorite-product-list']
+          });
+        },
+        onError: (error) => {
+          notify.error('Đã có lỗi xảy ra');
+          logger.error('Error while adding to cart:', error);
+        }
+      })
+    );
   };
 
   return (
-    <div className='relative mb-5 flex gap-5 rounded-lg border border-gray-200 bg-white p-4 shadow-[0px_0px_10px_2px] shadow-gray-200'>
+    <div className='relative flex gap-5 rounded-lg border border-gray-200 bg-white p-4 shadow-[0px_0px_10px_2px] shadow-gray-200 not-last:mb-5'>
       <div className='flex-shrink-0'>
         <Image
           src={
@@ -53,7 +59,6 @@ export default function FavoriteItem({
           href={`${route.book}/${favorite.product.slug}.${favorite.product.id}`}
           className='hover:text-green-primary mb-3 line-clamp-1 leading-6 font-medium break-all transition-all duration-200 ease-linear'
           title={favorite.product.name}
-          // onClick={handleClick}
         >
           {favorite.product.name}
         </Link>
@@ -96,7 +101,7 @@ export default function FavoriteItem({
         onClick={handleRemoveFavorite}
         className='absolute right-5 bottom-5 flex cursor-pointer items-center gap-1 text-gray-600'
       >
-        <Heart className='scale-100 fill-red-500 text-red-500 transition-all duration-300 hover:scale-125' />
+        <Heart className='scale-100 fill-red-500 text-red-500 transition-all duration-300' />
         <span>Yêu thích</span>
       </div>
     </div>
