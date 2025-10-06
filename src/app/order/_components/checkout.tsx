@@ -23,7 +23,7 @@ export default function Checkout() {
           <PaymentMethod />
         </Col>
         <Col className='flex flex-row-reverse rounded-lg bg-white px-6 py-4 shadow-[0px_0px_10px_2px] shadow-gray-200'>
-          <Row className='gap-x-4'>
+          <Row className='mb-0 gap-x-4'>
             <Col span={16}>
               <OrderNote />
             </Col>

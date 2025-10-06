@@ -11,7 +11,7 @@ export default function FavoriteList() {
   });
 
   const favoriteProducts = favoriteQuery?.data?.data?.content;
-  const loading = favoriteQuery.isLoading || favoriteQuery.isFetching;
+  const loading = favoriteQuery.isLoading;
 
   return (
     <>
@@ -21,7 +21,7 @@ export default function FavoriteList() {
         <NoData />
       ) : (
         favoriteProducts?.map((favorite, index) => (
-          <FavoriteItem favorite={favorite} key={index} />
+          <FavoriteItem favorite={favorite} key={favorite.id} index={index} />
         ))
       )}
     </>

@@ -2,7 +2,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 
 export default function ViewedItemSkeleton() {
   return (
-    <div className='relative flex gap-5 rounded-lg border border-gray-200 bg-white p-4 shadow-[0px_0px_10px_2px] shadow-gray-200 not-last:mb-5'>
+    <div className='relative flex gap-5 rounded-lg border border-gray-200 bg-white p-4 shadow-[0px_0px_10px_2px] shadow-gray-200 not-last:mb-4'>
       <div className='flex-shrink-0'>
         <Skeleton className='h-[100px] w-[100px] rounded-lg' />
       </div>

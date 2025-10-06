@@ -98,6 +98,11 @@ const addressApiRequest = {
           sessiontoken
         }
       }
+    ),
+  shippingFee: (body: { addressId: string; orderId: string }) =>
+    http.post<ApiResponse<{ shippingFee: number }>>(
+      apiConfig.address.shippingFee,
+      { body }
     )
 };
 

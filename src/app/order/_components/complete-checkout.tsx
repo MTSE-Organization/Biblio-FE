@@ -10,20 +10,41 @@ import {
 } from '@/constants';
 import { useNavigate } from '@/hooks';
 import { logger } from '@/logger';
-import { usePlaceOrderMutation } from '@/queries';
+import { usePlaceOrderMutation, useShippingAddressMutation } from '@/queries';
 import route from '@/routes';
 import { useCartStore, useOrderStore } from '@/store';
 import { useAppLoadingStore } from '@/store/use-app-loading-store';
 import { OrderBodyType, OrderResType } from '@/types';
 import { formatPrice, getData, notify, removeData } from '@/utils';
+import { useEffect, useState } from 'react';
 
 export default function CompleteCheckout({ order }: { order?: OrderResType }) {
   const navigate = useNavigate();
   const { withLoading } = useAppLoadingStore();
   const { selectedDiscountCoupon, selectedFreeShipCoupon } = useCartStore();
+  const [shippingFee, setShippingFee] = useState<number>(0);
   const { addressId, note, paymentMethod } = useOrderStore();
   const placeOrderMutation = usePlaceOrderMutation();
   const orderId = getData(storageKeys.ORDER_ID) as string;
+
+  const shippingFeeMutation = useShippingAddressMutation();
+
+  useEffect(() => {
+    const getShippingFee = async () => {
+      if (!orderId || !addressId) return;
+      try {
+        const res = await shippingFeeMutation.mutateAsync({
+          addressId,
+          orderId
+        });
+        setShippingFee(res.data?.shippingFee ?? 0);
+      } catch (error) {
+        logger.error('Error getting shipping fee:', error);
+      }
+    };
+
+    getShippingFee();
+  }, [orderId, addressId]);
 
   if (!order) return null;
 
@@ -35,6 +56,12 @@ export default function CompleteCheckout({ order }: { order?: OrderResType }) {
       0
     )
     .toFixed(2);
+
+  const handleGetShippingFee = async () => {
+    if (!orderId && !addressId) return 0;
+    const res = await shippingFeeMutation.mutateAsync({ addressId, orderId });
+    return res.data?.shippingFee;
+  };
 
   const handleCompleteCheckout = async () => {
     const payload: OrderBodyType = {
@@ -81,22 +108,19 @@ export default function CompleteCheckout({ order }: { order?: OrderResType }) {
         <ListItem className='flex justify-between py-[5px] text-[#777]'>
           <label className='mr-2.5 flex min-w-44 justify-between font-medium text-[#2b2b2d]'>
             Tổng tiền hàng
-            <span>:</span>
           </label>
           {formatPrice(total)}
         </ListItem>
         <ListItem className='flex justify-between py-[5px] text-[#777]'>
           <label className='mr-2.5 flex min-w-44 justify-between font-medium text-[#2b2b2d]'>
             Phí vận chuyển
-            <span>:</span>
           </label>
-          {+order.deliveryFee === 0 ? 'Miễn phí' : formatPrice(order.total)}
+          {+shippingFee === 0 ? 'Miễn phí' : formatPrice(+shippingFee)}
         </ListItem>
         {freeShip ? (
           <ListItem className='flex justify-between py-[5px] text-[#777]'>
             <label className='mr-2.5 flex min-w-44 justify-between font-medium text-[#2b2b2d]'>
               Giảm phí vận chuyển
-              <span>:</span>
             </label>
             -{formatPrice(+freeShip)}
           </ListItem>
@@ -105,9 +129,8 @@ export default function CompleteCheckout({ order }: { order?: OrderResType }) {
           <ListItem className='flex justify-between py-[5px] text-[#777]'>
             <label className='mr-2.5 flex min-w-44 justify-between font-medium text-[#2b2b2d]'>
               Giảm giá sách
-              <span>:</span>
             </label>
-            -{formatPrice((+discount / 100) * +order.total)}
+            -{formatPrice((+discount / 100) * +total)}
           </ListItem>
         ) : null}
         <ListItem>
@@ -116,7 +139,6 @@ export default function CompleteCheckout({ order }: { order?: OrderResType }) {
         <ListItem className='text-green-primary flex items-center justify-between py-[5px] font-semibold'>
           <label className='mr-2.5 flex min-w-44 justify-between font-medium text-[#2b2b2d]'>
             Tổng thanh toán
-            <span>:</span>
           </label>
           {formatPrice(order.total)}
         </ListItem>
