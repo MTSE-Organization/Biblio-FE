@@ -133,43 +133,45 @@ export default function OrderItem({
               </div>
             </div>
           </div>
-          <div className='text-right'>
-            <div>
-              Thành tiền: &nbsp;
-              <span className='font-semibold'>{formatPrice(total)}</span>
-            </div>
-          </div>
-          <div className='mt-4 flex justify-end gap-2 text-right'>
-            {currentStatus === ORDER_STATUS_WAITING && (
-              <>
-                <Button variant={'primary'}>Thanh toán</Button>
-                <Button
-                  variant={'outline'}
-                  onClick={handleCancel}
-                  className='text-destructive border-destructive hover:text-destructive/80 w-20 hover:bg-transparent'
-                >
-                  Hủy
-                </Button>
-              </>
-            )}
-            {currentStatus === ORDER_STATUS_WAITING_CONFIRMATION && (
-              <>
-                <Button variant={'primary'}>Xem chi tiết</Button>
-                <Button
-                  variant={'outline'}
-                  onClick={handleCancel}
-                  className='text-destructive border-destructive hover:text-destructive/80 w-20 hover:bg-transparent'
-                >
-                  Hủy
-                </Button>
-              </>
-            )}
-            {currentStatus === ORDER_STATUS_CANCELED && (
-              <>
-                <Button variant={'primary'}>Mua lại</Button>
-              </>
-            )}
-            {/* <Button
+        </div>
+      ))}
+      <div className='text-right'>
+        <div>
+          Thành tiền: &nbsp;
+          <span className='font-semibold'>{formatPrice(total)}</span>
+        </div>
+      </div>
+      <div className='mt-4 flex justify-end gap-2 text-right'>
+        {currentStatus === ORDER_STATUS_WAITING && (
+          <>
+            <Button variant={'primary'}>Thanh toán</Button>
+            <Button
+              variant={'outline'}
+              onClick={handleCancel}
+              className='text-destructive border-destructive hover:text-destructive/80 w-20 hover:bg-transparent'
+            >
+              Hủy
+            </Button>
+          </>
+        )}
+        {currentStatus === ORDER_STATUS_WAITING_CONFIRMATION && (
+          <>
+            <Button variant={'primary'}>Xem chi tiết</Button>
+            <Button
+              variant={'outline'}
+              onClick={handleCancel}
+              className='text-destructive border-destructive hover:text-destructive/80 w-20 hover:bg-transparent'
+            >
+              Hủy
+            </Button>
+          </>
+        )}
+        {currentStatus === ORDER_STATUS_CANCELED && (
+          <>
+            <Button variant={'primary'}>Mua lại</Button>
+          </>
+        )}
+        {/* <Button
               variant={'primary'}
               className='rounded px-4 py-2 text-white'
             >
@@ -181,9 +183,7 @@ export default function OrderItem({
             >
               Liên hệ người bán
             </Button> */}
-          </div>
-        </div>
-      ))}
+      </div>
     </div>
   );
 }

@@ -102,3 +102,11 @@ export const useSetDefaultAddressMutation = () => {
     mutationFn: (id: string) => addressApiRequest.setDefault(id)
   });
 };
+
+export const useShippingAddressMutation = () => {
+  return useMutation({
+    mutationKey: ['shipping-fee'],
+    mutationFn: (body: { addressId: string; orderId: string }) =>
+      addressApiRequest.shippingFee(body)
+  });
+};

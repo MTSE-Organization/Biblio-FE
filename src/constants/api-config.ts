@@ -208,6 +208,11 @@ const apiConfig = defineApiConfig({
       baseUrl: `${AppConstants.apiUrl}v1/address/update`,
       headers: baseHeader,
       method: 'PUT'
+    },
+    shippingFee: {
+      baseUrl: `${AppConstants.apiUrl}v1/address/shipping-fee`,
+      headers: baseHeader,
+      method: 'POST'
     }
   },
   publicAddress: {

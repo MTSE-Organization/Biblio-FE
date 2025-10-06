@@ -183,8 +183,23 @@ export default function BookDetailInfo({ book }: { book?: ProductResType }) {
   const handleAddAndRemoveFavorite = async () => {
     if (!book?.id) return;
     if (favoriteProduct) {
-      await withLoading(
-        deleteFavoriteProductMutation.mutateAsync(favoriteProduct?.id, {
+      await deleteFavoriteProductMutation.mutateAsync(favoriteProduct?.id, {
+        onSuccess: (res) => {
+          if (res.result) {
+            queryClient.invalidateQueries({
+              queryKey: ['favorite-product-list', { productId: book?.id }]
+            });
+          }
+        },
+        onError: (error) => {
+          notify.error('Đã có lỗi xảy ra');
+          logger.error('Error while adding to cart:', error);
+        }
+      });
+    } else {
+      await addFavoriteProductMutation.mutateAsync(
+        { productId: book?.id },
+        {
           onSuccess: (res) => {
             if (res.result) {
               queryClient.invalidateQueries({
@@ -196,26 +211,7 @@ export default function BookDetailInfo({ book }: { book?: ProductResType }) {
             notify.error('Đã có lỗi xảy ra');
             logger.error('Error while adding to cart:', error);
           }
-        })
-      );
-    } else {
-      await withLoading(
-        addFavoriteProductMutation.mutateAsync(
-          { productId: book?.id },
-          {
-            onSuccess: (res) => {
-              if (res.result) {
-                queryClient.invalidateQueries({
-                  queryKey: ['favorite-product-list', { productId: book?.id }]
-                });
-              }
-            },
-            onError: (error) => {
-              notify.error('Đã có lỗi xảy ra');
-              logger.error('Error while adding to cart:', error);
-            }
-          }
-        )
+        }
       );
     }
   };
