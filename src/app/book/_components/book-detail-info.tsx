@@ -183,33 +183,39 @@ export default function BookDetailInfo({ book }: { book?: ProductResType }) {
   const handleAddAndRemoveFavorite = async () => {
     if (!book?.id) return;
     if (favoriteProduct) {
-      await deleteFavoriteProductMutation.mutateAsync(favoriteProduct?.id, {
-        onSuccess: () => {
-          // notify.success('Xóa sách khỏi yêu thích thành công');
-          queryClient.invalidateQueries({
-            queryKey: ['favorite-product-list', { productId: book?.id }]
-          });
-        },
-        onError: (error) => {
-          notify.error('Đã có lỗi xảy ra');
-          logger.error('Error while adding to cart:', error);
-        }
-      });
-    } else {
-      await addFavoriteProductMutation.mutateAsync(
-        { productId: book?.id },
-        {
-          onSuccess: () => {
-            // notify.success('Thêm sách vào yêu thích thành công');
-            queryClient.invalidateQueries({
-              queryKey: ['favorite-product-list', { productId: book?.id }]
-            });
+      await withLoading(
+        deleteFavoriteProductMutation.mutateAsync(favoriteProduct?.id, {
+          onSuccess: (res) => {
+            if (res.result) {
+              queryClient.invalidateQueries({
+                queryKey: ['favorite-product-list', { productId: book?.id }]
+              });
+            }
           },
           onError: (error) => {
             notify.error('Đã có lỗi xảy ra');
             logger.error('Error while adding to cart:', error);
           }
-        }
+        })
+      );
+    } else {
+      await withLoading(
+        addFavoriteProductMutation.mutateAsync(
+          { productId: book?.id },
+          {
+            onSuccess: (res) => {
+              if (res.result) {
+                queryClient.invalidateQueries({
+                  queryKey: ['favorite-product-list', { productId: book?.id }]
+                });
+              }
+            },
+            onError: (error) => {
+              notify.error('Đã có lỗi xảy ra');
+              logger.error('Error while adding to cart:', error);
+            }
+          }
+        )
       );
     }
   };
@@ -241,7 +247,7 @@ export default function BookDetailInfo({ book }: { book?: ProductResType }) {
               favoriteProduct
                 ? 'scale-100 fill-red-500 text-red-500'
                 : 'scale-100 text-gray-600'
-            } hover:scale-125`}
+            }`}
           />
           <span>Yêu thích</span>
         </div>

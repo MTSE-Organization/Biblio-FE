@@ -6,7 +6,7 @@ export default function NoData({ className }: { className?: string }) {
   return (
     <div
       className={cn(
-        'flex h-[70dvh] flex-col items-center justify-center gap-4 rounded-lg bg-white py-4',
+        'flex h-[80dvh] flex-col items-center justify-center gap-4 rounded-lg bg-white py-4',
         className
       )}
     >
