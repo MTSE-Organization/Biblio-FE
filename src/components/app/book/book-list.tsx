@@ -20,7 +20,7 @@ export default function BookList({
       </h2>
       <div className='grid grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-5'>
         {!loading &&
-          books.map((book, index) => <BookCard book={book} key={index} />)}
+          books?.map((book, index) => <BookCard book={book} key={index} />)}
         {loading &&
           Array(10)
             .fill(0)

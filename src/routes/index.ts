@@ -11,7 +11,8 @@ const route = defineRoute({
     changePassword: '/user/change-password',
     order: '/user/order',
     notification: '/user/notification',
-    address: '/user/address'
+    address: '/user/address',
+    favorite: '/user/favorite'
   },
   book: '/book',
   cart: '/cart',

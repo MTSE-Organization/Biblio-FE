@@ -5,6 +5,7 @@ export { default as cartApiRequest } from './cart.api-request';
 export { default as cartItemApiRequest } from './cart-item.api-request';
 export { default as categoryApiRequest } from './category.api-request';
 export { default as couponApiRequest } from './coupon.api-request';
+export { default as favoriteApiRequest } from './favorite-product.api-request';
 export { default as fileApiRequest } from './file.api-request';
 export { default as orderApiRequest } from './order.api-request';
 export { default as productApiRequest } from './product.api-request';

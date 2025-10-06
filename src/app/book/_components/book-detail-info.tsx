@@ -15,7 +15,12 @@ import {
 import { useNavigate } from '@/hooks';
 import { cn } from '@/lib';
 import { logger } from '@/logger';
-import { useCreateOrderMutation } from '@/queries';
+import {
+  useAddFavoriteProductMutation,
+  useCreateOrderMutation,
+  useDeleteFavoriteProductMutation,
+  useFavoriteProductListQuery
+} from '@/queries';
 import { useAddItemMutation } from '@/queries/cart.query';
 import { useProductVariantListQuery } from '@/queries/product-variant.query';
 import route from '@/routes';
@@ -23,7 +28,7 @@ import { useAppLoadingStore } from '@/store/use-app-loading-store';
 import { ProductResType } from '@/types';
 import { formatDate, formatPrice, getData, notify, setData } from '@/utils';
 import { useQueryClient } from '@tanstack/react-query';
-import { Eye, Minus, Plus } from 'lucide-react';
+import { Eye, Heart, Minus, Plus } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
 
@@ -44,6 +49,15 @@ export default function BookDetailInfo({ book }: { book?: ProductResType }) {
   const addItemMutation = useAddItemMutation();
   const createOrderMutation = useCreateOrderMutation();
   const queryClient = useQueryClient();
+
+  const addFavoriteProductMutation = useAddFavoriteProductMutation();
+  const deleteFavoriteProductMutation = useDeleteFavoriteProductMutation();
+  const getFavoriteProduct = useFavoriteProductListQuery({
+    params: { productId: book?.id },
+    enabled: !!book?.id
+  });
+
+  const favoriteProduct = getFavoriteProduct?.data?.data?.content[0] || null;
 
   const authors = book?.contributors
     .filter((contr) => contr.kind === CONTRIBUTOR_AUTHOR)
@@ -166,6 +180,40 @@ export default function BookDetailInfo({ book }: { book?: ProductResType }) {
     );
   };
 
+  const handleAddAndRemoveFavorite = async () => {
+    if (!book?.id) return;
+    if (favoriteProduct) {
+      await deleteFavoriteProductMutation.mutateAsync(favoriteProduct?.id, {
+        onSuccess: () => {
+          // notify.success('Xóa sách khỏi yêu thích thành công');
+          queryClient.invalidateQueries({
+            queryKey: ['favorite-product-list', { productId: book?.id }]
+          });
+        },
+        onError: (error) => {
+          notify.error('Đã có lỗi xảy ra');
+          logger.error('Error while adding to cart:', error);
+        }
+      });
+    } else {
+      await addFavoriteProductMutation.mutateAsync(
+        { productId: book?.id },
+        {
+          onSuccess: () => {
+            // notify.success('Thêm sách vào yêu thích thành công');
+            queryClient.invalidateQueries({
+              queryKey: ['favorite-product-list', { productId: book?.id }]
+            });
+          },
+          onError: (error) => {
+            notify.error('Đã có lỗi xảy ra');
+            logger.error('Error while adding to cart:', error);
+          }
+        }
+      );
+    }
+  };
+
   return (
     <>
       <div className='border-b border-solid border-b-gray-200 pb-5'>
@@ -182,6 +230,20 @@ export default function BookDetailInfo({ book }: { book?: ProductResType }) {
         <div className='flex items-center gap-1 text-gray-600'>
           <Eye />
           <span>{book?.totalViews} lượt xem</span>
+        </div>
+        <Separator orientation='vertical' />
+        <div
+          onClick={handleAddAndRemoveFavorite}
+          className='flex cursor-pointer items-center gap-1 text-gray-600'
+        >
+          <Heart
+            className={`transition-all duration-300 ${
+              favoriteProduct
+                ? 'scale-100 fill-red-500 text-red-500'
+                : 'scale-100 text-gray-600'
+            } hover:scale-125`}
+          />
+          <span>Yêu thích</span>
         </div>
       </div>
       <List className='mt-[15px]'>

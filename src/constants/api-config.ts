@@ -280,6 +280,23 @@ const apiConfig = defineApiConfig({
       headers: baseHeader,
       method: 'GET'
     }
+  },
+  favorite: {
+    getList: {
+      baseUrl: `${AppConstants.apiUrl}v1/favorite-product/list`,
+      headers: baseHeader,
+      method: 'GET'
+    },
+    create: {
+      baseUrl: `${AppConstants.apiUrl}v1/favorite-product/create`,
+      headers: baseHeader,
+      method: 'POST'
+    },
+    delete: {
+      baseUrl: `${AppConstants.apiUrl}v1/favorite-product/delete/:id`,
+      headers: baseHeader,
+      method: 'DELETE'
+    }
   }
 });
 

@@ -20,3 +20,5 @@ export * from './product.type';
 export * from './publisher.type';
 export * from './search.type';
 export * from './upload.type';
+export * from './favorite-product.type';
+export * from './group.type';
