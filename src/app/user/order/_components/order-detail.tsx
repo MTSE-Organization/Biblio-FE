@@ -1,5 +1,6 @@
 'use client';
 
+import OrderItemSkeleton from '@/app/user/order/_components/order-item-skeleton';
 import { Button } from '@/components/form';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
@@ -29,6 +30,8 @@ export default function OrderDetail() {
   const order = orderQuery.data?.data;
   const orderStatusList = order?.orderStatuses || [];
   const orderItems = order?.orderItems || [];
+
+  if (orderQuery.isLoading) return <OrderItemSkeleton />;
 
   if (!order) return null;
 
@@ -64,7 +67,7 @@ export default function OrderDetail() {
       ?.value ?? 0;
 
   return (
-    <div className='h-full rounded-lg bg-white px-4 shadow-[0px_0px_10px_2px] shadow-gray-200'>
+    <div className='rounded-lg bg-white px-4 shadow-[0px_0px_10px_2px] shadow-gray-200'>
       <div className='flex items-center justify-between py-4'>
         <Button
           variant='ghost'
