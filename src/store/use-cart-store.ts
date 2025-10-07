@@ -1,15 +1,24 @@
 import { CartStoreType } from '@/types';
 import { create } from 'zustand';
 
-const useCartStore = create<CartStoreType>((set) => ({
+const initialState = {
   selectedFreeShipCoupon: null,
   selectedDiscountCoupon: null,
-  selectedCartItems: [],
+  selectedCartItems: []
+};
+
+const useCartStore = create<CartStoreType>((set) => ({
+  ...initialState,
+
   setSelectedFreeShipCoupon: (selectedFreeShipCoupon) =>
     set({ selectedFreeShipCoupon }),
+
   setSelectedDiscountCoupon: (selectedDiscountCoupon) =>
     set({ selectedDiscountCoupon }),
-  setSelectedCartItems: (selectedCartItems) => set({ selectedCartItems })
+
+  setSelectedCartItems: (selectedCartItems) => set({ selectedCartItems }),
+
+  resetStore: () => set(initialState)
 }));
 
 export default useCartStore;

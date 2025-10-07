@@ -113,7 +113,7 @@ export default function CartList() {
 
   if (!cart?.cartItems?.length) {
     return (
-      <div className='flex h-[80dvh] flex-1 flex-col items-center justify-center bg-white p-4'>
+      <div className='flex h-[80dvh] flex-1 flex-col items-center justify-center rounded-lg bg-white p-4'>
         <p className='text-gray-500'>Giỏ hàng của bạn trống</p>
         <Image src={emptyCart.src} alt='Empty Cart' width={200} height={200} />
       </div>
@@ -121,7 +121,7 @@ export default function CartList() {
   }
 
   return (
-    <Row className='mt-4 gap-x-4'>
+    <Row className='mb-0 gap-x-4'>
       <Col span={16}>
         <div className='w-full overflow-hidden rounded-lg'>
           <div className='mb-4 flex items-center rounded-lg bg-white pl-6'>

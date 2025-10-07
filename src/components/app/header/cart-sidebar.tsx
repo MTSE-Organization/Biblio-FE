@@ -164,7 +164,7 @@ function CartItem({
             )?.label
           }
         </p>
-        <div className='mt-[5px] flex h-[25px] w-[90px] items-center justify-between rounded-sm border'>
+        <div className='focus-within:ring-green-primary mt-[5px] flex h-7.5 w-22.5 items-center justify-between rounded-sm border border-1 transition-all duration-200 ease-linear focus-within:border-transparent focus-within:ring-2'>
           <Button
             onClick={handleDecreaseQuantity}
             variant={'ghost'}

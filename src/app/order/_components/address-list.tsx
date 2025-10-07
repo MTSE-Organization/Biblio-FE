@@ -6,7 +6,7 @@ import { Button } from '@/components/form';
 import useDisclosure from '@/hooks/use-disclosure';
 import { useAddressListQuery } from '@/queries';
 import { useOrderStore } from '@/store';
-import { Plus } from 'lucide-react';
+import { MapPin, Plus } from 'lucide-react';
 import { useEffect } from 'react';
 
 export default function AddressList() {
@@ -28,7 +28,7 @@ export default function AddressList() {
     <>
       <div className='flex w-full flex-col rounded-md bg-white px-6 py-4 shadow-[0_0_10px_2px_rgba(0,0,0,0.1)]'>
         <h2 className='text-green-primary mb-3 font-medium'>
-          Địa chỉ nhận hàng
+          <MapPin /> Địa chỉ nhận hàng
         </h2>
         <div className='flex items-center justify-between'>
           {defaultAddress ? (

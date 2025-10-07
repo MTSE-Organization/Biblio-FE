@@ -29,6 +29,14 @@ import {
   UPLOAD_AVATAR,
   UPLOAD_SYSTEM
 } from '@/constants/constant';
+import { PackageCheck } from 'lucide-react';
+import {
+  RiCheckLine,
+  RiPencilLine,
+  RiStarLine,
+  RiSurveyFill,
+  RiTruckLine
+} from 'react-icons/ri';
 
 export const masterData = {};
 
@@ -373,7 +381,7 @@ export const productVariantFormats = [
 
 export const paymentMethods = [
   {
-    label: 'COD',
+    label: 'Thanh toán đi nhận hàng',
     icon: cod,
     value: PAYMENT_COD
   },
@@ -391,7 +399,7 @@ export const orderStatuses = [
     badgeColor: 'bg-gray-200 text-gray-700'
   },
   {
-    label: 'Chờ xử lý',
+    label: 'Chờ thanh toán',
     value: ORDER_STATUS_WAITING,
     badgeColor: 'bg-yellow-100 text-yellow-800'
   },
@@ -435,4 +443,38 @@ export const orderStatuses = [
     value: ORDER_STATUS_REFUNDED,
     badgeColor: 'bg-emerald-100 text-emerald-800'
   }
+];
+
+export const orderDetailStatuses = [
+  {
+    label: 'Đơn hàng đã đặt',
+    value: 0,
+    icon: RiSurveyFill
+  },
+  {
+    label: 'Đã thanh toán',
+    value: 1,
+    icon: RiPencilLine
+  },
+  {
+    label: 'Chờ xác nhận',
+    value: 2,
+    icon: RiPencilLine
+  },
+  {
+    label: 'Đang đóng gói',
+    value: 3,
+    icon: PackageCheck
+  },
+  {
+    label: 'Đang giao hàng',
+    value: 4,
+    icon: RiTruckLine
+  },
+  {
+    label: 'Giao hàng thành công',
+    value: 5,
+    icon: RiCheckLine
+  },
+  { label: 'Đánh giá', value: 6, icon: RiStarLine }
 ];

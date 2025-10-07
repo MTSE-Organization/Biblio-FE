@@ -12,7 +12,8 @@ export const useOrderListQuery = (params?: OrderSearchType) => {
 export const useOrderQuery = (id: string) => {
   return useQuery({
     queryKey: ['order', id],
-    queryFn: () => orderApiRequest.getById(id)
+    queryFn: () => orderApiRequest.getById(id),
+    enabled: !!id
   });
 };
 
