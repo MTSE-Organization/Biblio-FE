@@ -167,7 +167,13 @@ export default function CouponList({
           <div className='mt-4 flex justify-between'>
             <span>Giảm giá vận chuyển ({selectedFreeShipCoupon.name})</span>
             <span className='whitespace-nowrap'>
-              -{formatPrice(selectedFreeShipCoupon.value)}
+              -
+              {formatPrice(
+                +selectedFreeShipCoupon.value > 0 &&
+                  +selectedFreeShipCoupon.value <= 100
+                  ? (+selectedFreeShipCoupon.value * +totalPrice) / 100
+                  : +selectedFreeShipCoupon.value
+              )}
             </span>
           </div>
         )}
@@ -175,7 +181,13 @@ export default function CouponList({
           <div className='mt-4 flex justify-between'>
             <span>Giảm giá theo % ({selectedDiscountCoupon.name})</span>
             <span>
-              -{formatPrice((totalPrice * +selectedDiscountCoupon.value) / 100)}
+              -
+              {formatPrice(
+                +selectedDiscountCoupon.value > 0 &&
+                  +selectedDiscountCoupon.value <= 100
+                  ? (+selectedDiscountCoupon.value * +totalPrice) / 100
+                  : +selectedDiscountCoupon.value
+              )}
             </span>
           </div>
         )}

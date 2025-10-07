@@ -35,7 +35,7 @@ export default function OrderItem({
     [orderItem]
   );
   return (
-    <div className='flex items-center pl-6'>
+    <div className='flex items-center pl-6 not-last:border-b'>
       <div className='flex flex-1 p-4 font-semibold'>
         <Link
           className='shrink-0'

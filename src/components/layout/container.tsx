@@ -15,7 +15,7 @@ export default function Container({
   return (
     <div
       className={cn('relative bg-gray-100 py-4', {
-        'min-h-[90vh]': !contentClassName
+        'min-h-[90dvh]': !contentClassName
       })}
       {...props}
     >

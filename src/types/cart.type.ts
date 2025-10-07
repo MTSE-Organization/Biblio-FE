@@ -22,4 +22,5 @@ export type CartStoreType = {
   setSelectedFreeShipCoupon: (coupon: CouponResType | null) => void;
   setSelectedDiscountCoupon: (coupon: CouponResType | null) => void;
   setSelectedCartItems: (selectedCartItems: string[]) => void;
+  resetStore: () => void;
 };

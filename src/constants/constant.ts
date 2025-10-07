@@ -40,4 +40,4 @@ export const ORDER_STATUS_REFUNDED = 8;
 
 export const DEFAULT_DATE_FORMAT = 'dd/MM/yyyy';
 export const DATE_TIME_FORMAT = 'HH:mm:ss, dd/MM/yyyy ';
-export const DATE_DATE_TIME_FORMAT = 'EEEE, HH:mm:ss, dd/MM/yyyy';
+export const DATE_DAY_TIME_FORMAT = 'EEEE, HH:mm:ss, dd/MM/yyyy';

@@ -3,7 +3,7 @@
 import { Button } from '@/components/form';
 import { Badge } from '@/components/ui/badge';
 import {
-  DATE_DATE_TIME_FORMAT,
+  DATE_DAY_TIME_FORMAT,
   ORDER_STATUS_CANCELED,
   ORDER_STATUS_WAITING,
   ORDER_STATUS_WAITING_CONFIRMATION,
@@ -11,6 +11,7 @@ import {
   productVariantConditions,
   productVariantFormats
 } from '@/constants';
+import { useNavigate } from '@/hooks';
 import { cn } from '@/lib';
 import { logger } from '@/logger';
 import { useCancelOrderMutation } from '@/queries';
@@ -32,19 +33,11 @@ export default function OrderItem({
   const { withLoading } = useAppLoadingStore();
   const cancelOrderMutation = useCancelOrderMutation();
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
   const orderStatus = orderStatuses.find(
     (status) => status.value === currentStatus
   );
-
-  const total = order.orderItems
-    .reduce(
-      (sum, item) =>
-        sum +
-        (parseFloat(item.price) * item.quantity * (100 - item.discount)) / 100,
-      0
-    )
-    .toFixed(2);
 
   const handleCancel = async () => {
     await withLoading(
@@ -67,9 +60,12 @@ export default function OrderItem({
     <div className='relative rounded rounded-lg border border-gray-200 bg-white p-4 shadow-[0px_0px_10px_2px] shadow-gray-200'>
       <div className='mb-4 flex items-center justify-between border-b border-solid border-gray-200 pb-4 font-medium'>
         <div className='text-sm text-gray-600'>
-          {formatDate(order.createdDate, DATE_DATE_TIME_FORMAT)}
+          {formatDate(order.createdDate, DATE_DAY_TIME_FORMAT)}
         </div>
-        <Badge className={cn(orderStatus?.badgeColor, 'py-1 text-sm')}>
+        <Badge
+          onClick={() => navigate(`${route.user.order}/${order.id}`)}
+          className={cn(orderStatus?.badgeColor, 'cursor-pointer py-1 text-sm')}
+        >
           {orderStatus?.label}
         </Badge>
       </div>
@@ -138,10 +134,16 @@ export default function OrderItem({
       <div className='text-right'>
         <div>
           Thành tiền: &nbsp;
-          <span className='font-semibold'>{formatPrice(total)}</span>
+          <span className='font-semibold'>{formatPrice(order.total)}</span>
         </div>
       </div>
       <div className='mt-4 flex justify-end gap-2 text-right'>
+        <Button
+          onClick={() => navigate(`${route.user.order}/${order.id}`)}
+          variant={'primary'}
+        >
+          Xem chi tiết
+        </Button>
         {currentStatus === ORDER_STATUS_WAITING && (
           <>
             <Button variant={'primary'}>Thanh toán</Button>
@@ -156,7 +158,6 @@ export default function OrderItem({
         )}
         {currentStatus === ORDER_STATUS_WAITING_CONFIRMATION && (
           <>
-            <Button variant={'primary'}>Xem chi tiết</Button>
             <Button
               variant={'outline'}
               onClick={handleCancel}

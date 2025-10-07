@@ -37,7 +37,7 @@ export default function OrderList() {
         {loading ? (
           <OrderItemSkeleton />
         ) : orderList.length == 0 ? (
-          <NoData />
+          <NoData className='h-[70dvh]' />
         ) : (
           orderList.map((order) => (
             <OrderItem

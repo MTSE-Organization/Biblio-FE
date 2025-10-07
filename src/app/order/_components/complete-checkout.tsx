@@ -8,7 +8,6 @@ import {
   COUPON_KIND_FREESHIP,
   storageKeys
 } from '@/constants';
-import { useNavigate } from '@/hooks';
 import { logger } from '@/logger';
 import { usePlaceOrderMutation, useShippingAddressMutation } from '@/queries';
 import route from '@/routes';
@@ -16,15 +15,19 @@ import { useCartStore, useOrderStore } from '@/store';
 import { useAppLoadingStore } from '@/store/use-app-loading-store';
 import { OrderBodyType, OrderResType } from '@/types';
 import { formatPrice, getData, notify, removeData } from '@/utils';
+import { useQueryClient } from '@tanstack/react-query';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 export default function CompleteCheckout({ order }: { order?: OrderResType }) {
-  const navigate = useNavigate();
+  const router = useRouter();
   const { withLoading } = useAppLoadingStore();
-  const { selectedDiscountCoupon, selectedFreeShipCoupon } = useCartStore();
+  const { selectedDiscountCoupon, selectedFreeShipCoupon, resetStore } =
+    useCartStore();
   const [shippingFee, setShippingFee] = useState<number>(0);
   const { addressId, note, paymentMethod } = useOrderStore();
   const placeOrderMutation = usePlaceOrderMutation();
+  const queryClient = useQueryClient();
   const orderId = getData(storageKeys.ORDER_ID) as string;
 
   const shippingFeeMutation = useShippingAddressMutation();
@@ -33,16 +36,17 @@ export default function CompleteCheckout({ order }: { order?: OrderResType }) {
     const getShippingFee = async () => {
       if (!orderId || !addressId) return;
       try {
-        const res = await shippingFeeMutation.mutateAsync({
-          addressId,
-          orderId
-        });
+        const res = await withLoading(
+          shippingFeeMutation.mutateAsync({
+            addressId,
+            orderId
+          })
+        );
         setShippingFee(res.data?.shippingFee ?? 0);
       } catch (error) {
         logger.error('Error getting shipping fee:', error);
       }
     };
-
     getShippingFee();
   }, [orderId, addressId]);
 
@@ -56,12 +60,6 @@ export default function CompleteCheckout({ order }: { order?: OrderResType }) {
       0
     )
     .toFixed(2);
-
-  const handleGetShippingFee = async () => {
-    if (!orderId && !addressId) return 0;
-    const res = await shippingFeeMutation.mutateAsync({ addressId, orderId });
-    return res.data?.shippingFee;
-  };
 
   const handleCompleteCheckout = async () => {
     const payload: OrderBodyType = {
@@ -79,8 +77,10 @@ export default function CompleteCheckout({ order }: { order?: OrderResType }) {
         onSuccess: (res) => {
           if (res.result) {
             notify.success('Thanh toán thành công');
+            queryClient.refetchQueries({ queryKey: ['order', orderId] });
+            resetStore();
+            router.replace(`${route.user.order}/${orderId}`);
             removeData(storageKeys.ORDER_ID);
-            navigate(route.user.order);
           }
         },
         onError: (error) => {
@@ -122,7 +122,12 @@ export default function CompleteCheckout({ order }: { order?: OrderResType }) {
             <label className='mr-2.5 flex min-w-44 justify-between font-medium text-[#2b2b2d]'>
               Giảm phí vận chuyển
             </label>
-            -{formatPrice(+freeShip)}
+            -
+            {formatPrice(
+              +freeShip > 0 && +freeShip <= 100
+                ? (+freeShip * +total) / 100
+                : +freeShip
+            )}
           </ListItem>
         ) : null}
         {discount ? (
@@ -130,7 +135,12 @@ export default function CompleteCheckout({ order }: { order?: OrderResType }) {
             <label className='mr-2.5 flex min-w-44 justify-between font-medium text-[#2b2b2d]'>
               Giảm giá sách
             </label>
-            -{formatPrice((+discount / 100) * +total)}
+            -
+            {formatPrice(
+              +discount > 0 && +discount <= 100
+                ? (+discount * +total) / 100
+                : +discount
+            )}
           </ListItem>
         ) : null}
         <ListItem>
