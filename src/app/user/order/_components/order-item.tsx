@@ -9,7 +9,8 @@ import {
   ORDER_STATUS_WAITING_CONFIRMATION,
   orderStatuses,
   productVariantConditions,
-  productVariantFormats
+  productVariantFormats,
+  storageKeys
 } from '@/constants';
 import { useNavigate } from '@/hooks';
 import { cn } from '@/lib';
@@ -18,7 +19,13 @@ import { useCancelOrderMutation } from '@/queries';
 import route from '@/routes';
 import { useAppLoadingStore } from '@/store/use-app-loading-store';
 import { OrderResType } from '@/types';
-import { formatDate, formatPrice, notify, renderImageUrl } from '@/utils';
+import {
+  formatDate,
+  formatPrice,
+  notify,
+  renderImageUrl,
+  setData
+} from '@/utils';
 import { useQueryClient } from '@tanstack/react-query';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -54,6 +61,11 @@ export default function OrderItem({
         }
       })
     );
+  };
+
+  const handlePayment = () => {
+    setData(storageKeys.ORDER_ID, order.id);
+    navigate(route.order.place);
   };
 
   return (
@@ -146,7 +158,9 @@ export default function OrderItem({
         </Button>
         {currentStatus === ORDER_STATUS_WAITING && (
           <>
-            <Button variant={'primary'}>Thanh toán</Button>
+            <Button onClick={handlePayment} variant={'primary'}>
+              Thanh toán
+            </Button>
             <Button
               variant={'outline'}
               onClick={handleCancel}

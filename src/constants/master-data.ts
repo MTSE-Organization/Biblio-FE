@@ -30,6 +30,7 @@ import {
   UPLOAD_SYSTEM
 } from '@/constants/constant';
 import { PackageCheck } from 'lucide-react';
+import { FaMoneyBill } from 'react-icons/fa';
 import {
   RiCheckLine,
   RiPencilLine,
@@ -454,7 +455,7 @@ export const orderDetailStatuses = [
   {
     label: 'Đã thanh toán',
     value: 1,
-    icon: RiPencilLine
+    icon: FaMoneyBill
   },
   {
     label: 'Chờ xác nhận',
