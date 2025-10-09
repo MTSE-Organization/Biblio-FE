@@ -253,6 +253,11 @@ const apiConfig = defineApiConfig({
       headers: baseHeader,
       method: 'PUT'
     },
+    complete: {
+      baseUrl: `${AppConstants.apiUrl}v1/order/complete/:id`,
+      headers: baseHeader,
+      method: 'PUT'
+    },
     create: {
       baseUrl: `${AppConstants.apiUrl}v1/order/create`,
       headers: baseHeader,

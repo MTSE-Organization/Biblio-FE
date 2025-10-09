@@ -37,3 +37,10 @@ export const useCancelOrderMutation = () => {
     mutationFn: (id: string) => orderApiRequest.cancel(id)
   });
 };
+
+export const useCompleteOrderMutation = () => {
+  return useMutation({
+    mutationKey: ['complete-order'],
+    mutationFn: (id: string) => orderApiRequest.complete(id)
+  });
+};

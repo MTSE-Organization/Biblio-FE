@@ -33,6 +33,12 @@ const orderApiRequest = {
   place: (body: OrderBodyType) =>
     http.post<ApiResponse<any>>(apiConfig.order.place, {
       body
+    }),
+  complete: (id: string) =>
+    http.put<ApiResponse<any>>(apiConfig.order.complete, {
+      pathParams: {
+        id
+      }
     })
 };
 

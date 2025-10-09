@@ -1,16 +1,19 @@
 'use client';
 
-import { List, ListItem } from '@/components/list';
 import { cn } from '@/lib';
-import route from '@/routes';
 import { Eye, Heart, MapPin, User } from 'lucide-react';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { RiNotification3Line } from 'react-icons/ri';
+import { List, ListItem } from '@/components/list';
 import { LuNotepadText } from 'react-icons/lu';
+import { RiNotification3Line } from 'react-icons/ri';
+import { useIsMounted } from '@/hooks';
+import { usePathname } from 'next/navigation';
+import Link from 'next/link';
+import route from '@/routes';
 
 export default function UserSidebar() {
   const pathname = usePathname();
+  const isMounted = useIsMounted();
+
   const userSidebars = [
     {
       key: 'profile',
@@ -49,24 +52,24 @@ export default function UserSidebar() {
       icon: Eye
     }
   ];
+
+  if (!isMounted) {
+    return null;
+  }
+
   return (
     <List className='h-full'>
-      {userSidebars.map((userSidebar) => (
+      {userSidebars.map((item) => (
         <ListItem
+          key={item.key}
           className={cn(
             'hover:text-green-primary border-b border-solid border-gray-200 transition-all duration-200 ease-linear last:border-b-0',
-            {
-              'text-green-primary': pathname === userSidebar.path
-            }
+            pathname.includes(item.path) && 'text-green-primary'
           )}
-          key={userSidebar.key}
         >
-          <Link
-            href={userSidebar.path}
-            className='flex items-center gap-x-2 p-4'
-          >
-            <userSidebar.icon className='size-5' />
-            {userSidebar.label}
+          <Link href={item.path} className='flex items-center gap-x-2 p-4'>
+            <item.icon className='size-5' />
+            {item.label}
           </Link>
         </ListItem>
       ))}

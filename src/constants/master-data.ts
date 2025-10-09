@@ -22,6 +22,7 @@ import {
   ORDER_STATUS_COMPLETE,
   ORDER_STATUS_CONFIRMED,
   ORDER_STATUS_PACKING,
+  ORDER_STATUS_RECEIVED,
   ORDER_STATUS_REFUNDED,
   ORDER_STATUS_REQUEST_REFUND,
   ORDER_STATUS_SHIPPING,
@@ -407,7 +408,7 @@ export const orderStatuses = [
     badgeColor: 'bg-gray-200 text-gray-700'
   },
   {
-    label: 'Chờ thanh toán',
+    label: 'Đã đặt',
     value: ORDER_STATUS_WAITING,
     badgeColor: 'bg-yellow-100 text-yellow-800'
   },
@@ -434,6 +435,11 @@ export const orderStatuses = [
   {
     label: 'Hoàn tất',
     value: ORDER_STATUS_COMPLETE,
+    badgeColor: 'bg-green-100 text-green-800'
+  },
+  {
+    label: 'Đã nhận được hàng',
+    value: ORDER_STATUS_RECEIVED,
     badgeColor: 'bg-green-100 text-green-800'
   },
   {
