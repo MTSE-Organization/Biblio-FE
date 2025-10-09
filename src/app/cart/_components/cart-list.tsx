@@ -97,14 +97,14 @@ export default function CartList() {
     return (
       <div className='flex h-[80vh] flex-1 flex-col items-center justify-center rounded-lg bg-white p-4'>
         <p className='text-gray-500'>
-          Vui lòng{' '}
+          Vui lòng&nbsp;
           <Link
             className='text-green-primary transition-all duration-200 hover:opacity-80'
             href={route.login}
           >
             đăng nhập
-          </Link>{' '}
-          để xem giỏ hàng
+          </Link>
+          &nbsp; để xem giỏ hàng
         </p>
         <Image src={emptyCart} alt='Empty Cart' width={200} height={200} />
       </div>
@@ -113,9 +113,9 @@ export default function CartList() {
 
   if (!cart?.cartItems?.length) {
     return (
-      <div className='flex h-[80dvh] flex-1 flex-col items-center justify-center rounded-lg bg-white p-4'>
-        <p className='text-gray-500'>Giỏ hàng của bạn trống</p>
+      <div className='flex h-[calc(90dvh_-_32px)] flex-1 flex-col items-center justify-center rounded-lg bg-white p-4'>
         <Image src={emptyCart.src} alt='Empty Cart' width={200} height={200} />
+        <span className='font-medium'>Giỏ hàng của bạn đang trống</span>
       </div>
     );
   }

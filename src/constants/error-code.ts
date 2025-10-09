@@ -21,7 +21,13 @@ export const ErrorCode = {
   CATEGORY_ERROR_NAME_EXISTED: 'ERROR-CATEGORY-0001',
 
   // Network connection
-  NETWORK_ECONNREFUSED: 'ECONNREFUSED'
+  NETWORK_ECONNREFUSED: 'ECONNREFUSED',
+
+  // ORDER NOT FOUND
+  ORDER_ERROR_NOT_FOUND: 'ERROR-ORDER-0000',
+
+  // ORDER NOT FOUND
+  PRODUCT_ERROR_NOT_FOUND: 'ERROR-PRODUCT-0000'
 } as const;
 
 export const registerErrorMaps: ErrorMaps<RegisterBodyType> = {

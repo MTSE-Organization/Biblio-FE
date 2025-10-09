@@ -2,6 +2,8 @@
 
 import { BookList } from '@/components/app/book';
 import { DotLoading } from '@/components/loading';
+import { CategoryNotFound } from '@/components/not-found';
+import { ErrorCode } from '@/constants';
 import { useCategoryQuery, useInfiniteProductQuery } from '@/queries';
 import { getIdFromSlug } from '@/utils';
 import { useParams } from 'next/navigation';
@@ -12,6 +14,8 @@ export default function CategoryBookList() {
   const id = getIdFromSlug(params.slug);
 
   const categoryQuery = useCategoryQuery({ id, enabled: true });
+
+  const code = categoryQuery.data?.code;
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
     useInfiniteProductQuery({
@@ -44,6 +48,8 @@ export default function CategoryBookList() {
       if (loadMoreRef.current) observer.unobserve(loadMoreRef.current);
     };
   }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
+
+  if (code == ErrorCode.CATEGORY_ERROR_NOT_FOUND) return <CategoryNotFound />;
 
   return (
     <div className='rounded-lg bg-white p-4'>

@@ -6,7 +6,7 @@ import { NoData } from '@/components/no-data';
 import { ORDER_STATUS_ALL, orderStatuses } from '@/constants';
 import { cn } from '@/lib';
 import { useOrderListQuery } from '@/queries';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function OrderList() {
   const [currentStatus, setCurrentStatus] = useState<number | null>(
@@ -14,7 +14,11 @@ export default function OrderList() {
   );
   const orderListQuery = useOrderListQuery({ currentStatus });
   const orderList = orderListQuery.data?.data.content || [];
-  const loading = orderListQuery.isLoading || orderListQuery.isFetching;
+  const loading = orderListQuery.isLoading;
+
+  useEffect(() => {
+    orderListQuery.refetch();
+  }, [currentStatus]);
 
   return (
     <>

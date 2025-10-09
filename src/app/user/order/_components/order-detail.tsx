@@ -1,13 +1,15 @@
 'use client';
 
-import OrderItemSkeleton from '@/app/user/order/_components/order-item-skeleton';
+import OrderDetailSkeleton from '@/app/user/order/_components/order-detail-skeleton';
 import { Button } from '@/components/form';
+import { OrderNotFound } from '@/components/not-found';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import {
   COUPON_KIND_DISCOUNT,
   COUPON_KIND_FREESHIP,
   DATE_TIME_FORMAT,
+  ErrorCode,
   orderDetailStatuses,
   orderStatuses,
   paymentMethods,
@@ -30,8 +32,10 @@ export default function OrderDetail() {
   const order = orderQuery.data?.data;
   const orderStatusList = order?.orderStatuses || [];
   const orderItems = order?.orderItems || [];
+  const code = orderQuery.data?.code;
 
-  if (orderQuery.isLoading) return <OrderItemSkeleton />;
+  if (code === ErrorCode.ORDER_ERROR_NOT_FOUND) return <OrderNotFound />;
+  if (orderQuery.isLoading) return <OrderDetailSkeleton />;
 
   if (!order) return null;
 
@@ -130,7 +134,7 @@ export default function OrderDetail() {
                 </div>
               )}
 
-              <h3 className='mt-4 mb-1 text-sm font-medium text-slate-800'>
+              <h3 className='mt-4 mb-1 block text-center text-sm font-medium whitespace-nowrap text-slate-800'>
                 {item.label}
               </h3>
               <span className='h-[14px] text-xs text-gray-400'>
@@ -237,9 +241,11 @@ export default function OrderDetail() {
               </div>
             </div>
           </div>
-          <Separator />
+          {orderItems.length > 1 && <Separator />}
         </div>
       ))}
+
+      <Separator />
 
       <SummaryRow
         title='Phương thức thanh toán'
@@ -260,6 +266,14 @@ export default function OrderDetail() {
 
       <SummaryRow
         title='Giảm phí vận chuyển'
+        prefix={
+          +freeShip > 0 &&
+          +freeShip <= 100 && (
+            <span className='bg-green-primary mr-1 rounded-sm p-0.5 text-xs text-white'>
+              -{freeShip}%
+            </span>
+          )
+        }
         value={
           +freeShip > 0 && +freeShip <= 100
             ? (+freeShip * +total) / 100

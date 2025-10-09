@@ -10,6 +10,13 @@ import {
   GENDER_FEMALE,
   GENDER_MALE,
   GENDER_OTHER,
+  ORDER_DETAIL_STATUS_COMPLETED,
+  ORDER_DETAIL_STATUS_DELIVERED,
+  ORDER_DETAIL_STATUS_PACKAGING,
+  ORDER_DETAIL_STATUS_PAID,
+  ORDER_DETAIL_STATUS_PLACED,
+  ORDER_DETAIL_STATUS_SHIPPING,
+  ORDER_DETAIL_STATUS_WAITING_CONFIRM,
   ORDER_STATUS_ALL,
   ORDER_STATUS_CANCELED,
   ORDER_STATUS_COMPLETE,
@@ -30,6 +37,7 @@ import {
   UPLOAD_SYSTEM
 } from '@/constants/constant';
 import { PackageCheck } from 'lucide-react';
+import { FaMoneyBill } from 'react-icons/fa';
 import {
   RiCheckLine,
   RiPencilLine,
@@ -381,7 +389,7 @@ export const productVariantFormats = [
 
 export const paymentMethods = [
   {
-    label: 'Thanh toán đi nhận hàng',
+    label: 'Thanh toán khi nhận hàng',
     icon: cod,
     value: PAYMENT_COD
   },
@@ -448,33 +456,33 @@ export const orderStatuses = [
 export const orderDetailStatuses = [
   {
     label: 'Đơn hàng đã đặt',
-    value: 0,
+    value: ORDER_DETAIL_STATUS_PLACED,
     icon: RiSurveyFill
   },
   {
     label: 'Đã thanh toán',
-    value: 1,
-    icon: RiPencilLine
+    value: ORDER_DETAIL_STATUS_PAID,
+    icon: FaMoneyBill
   },
   {
     label: 'Chờ xác nhận',
-    value: 2,
+    value: ORDER_DETAIL_STATUS_WAITING_CONFIRM,
     icon: RiPencilLine
   },
   {
     label: 'Đang đóng gói',
-    value: 3,
+    value: ORDER_DETAIL_STATUS_PACKAGING,
     icon: PackageCheck
   },
   {
     label: 'Đang giao hàng',
-    value: 4,
+    value: ORDER_DETAIL_STATUS_SHIPPING,
     icon: RiTruckLine
   },
   {
     label: 'Giao hàng thành công',
-    value: 5,
+    value: ORDER_DETAIL_STATUS_DELIVERED,
     icon: RiCheckLine
   },
-  { label: 'Đánh giá', value: 6, icon: RiStarLine }
+  { label: 'Đánh giá', value: ORDER_DETAIL_STATUS_COMPLETED, icon: RiStarLine }
 ];

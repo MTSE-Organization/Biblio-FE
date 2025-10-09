@@ -318,13 +318,15 @@ export default function CartSidebar() {
                 </div>
               ) : !cart?.cartItems?.length && !loading ? (
                 <div className='flex flex-1 flex-col items-center justify-center overflow-y-auto p-4'>
-                  <p className='text-gray-500'>Giỏ hàng của bạn đang trống</p>
                   <Image
                     src={emptyCart.src}
                     alt='Empty Cart'
                     width={200}
                     height={200}
                   />
+                  <span className='text-gray-500'>
+                    Giỏ hàng của bạn đang trống
+                  </span>
                 </div>
               ) : loading ? (
                 <div className='m-auto flex h-full items-center justify-center'>

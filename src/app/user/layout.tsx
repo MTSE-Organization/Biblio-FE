@@ -15,7 +15,7 @@ export default function UserLayout({
         <div className='h-fit w-50 rounded-lg bg-white'>
           <UserSidebar />
         </div>
-        <div className='w-250 rounded-lg'>{children}</div>
+        <div className='flex-1 rounded-lg'>{children}</div>
       </Container>
       <Footer />
     </>

@@ -12,7 +12,7 @@ import {
 import { cn } from '@/lib';
 import { useCartStore } from '@/store';
 import { CouponResType } from '@/types';
-import { formatDate } from '@/utils';
+import { formatDate, formatNumberShort } from '@/utils';
 import { Check, Info, Ticket, X } from 'lucide-react';
 import Image from 'next/image';
 
@@ -109,7 +109,14 @@ export default function CouponModal({
                         <span className='mt-2 text-xs'>Freeship</span>
                       </div>
                       <div className='flex w-[74%] flex-col px-3 py-4'>
-                        <h4 className='font-medium'>{freeShip.name}</h4>
+                        <h4
+                          title={`${freeShip.name}, tối thiểu &nbsp;
+                          ${formatNumberShort(+freeShip.minOrderAmount)}`}
+                          className='line-clamp-1 block truncate font-medium'
+                        >
+                          {freeShip.name}, tối thiểu &nbsp;
+                          {formatNumberShort(+freeShip.minOrderAmount)}
+                        </h4>
                         <p
                           className='line-clamp-2 truncate text-[13px] whitespace-pre-wrap text-gray-500'
                           dangerouslySetInnerHTML={{
@@ -153,10 +160,13 @@ export default function CouponModal({
                           ) : (
                             <Button
                               className={
-                                'h-7 w-20 bg-blue-500 text-xs hover:bg-blue-500/80'
+                                'h-7 w-30 bg-blue-500 text-xs hover:bg-blue-500/80'
                               }
                             >
-                              Mua thêm
+                              Mua thêm &nbsp;
+                              {formatNumberShort(
+                                +freeShip.minOrderAmount - totalPrice
+                              )}
                             </Button>
                           )}
                         </div>
@@ -227,32 +237,47 @@ export default function CouponModal({
                             HSD:&nbsp;
                             {formatDate(
                               discount.validTo.toString(),
-                              'HH:mm:ss dd/MM/yyyy'
+                              DATE_TIME_FORMAT
                             )}
                           </span>
-                          <Button
-                            onClick={() => {
-                              if (selectedDiscountCoupon?.id === discount.id) {
-                                setSelectedDiscountCoupon(null);
-                              } else {
-                                setSelectedDiscountCoupon(discount);
+                          {totalPrice >= +discount.minOrderAmount ? (
+                            <Button
+                              onClick={() => {
+                                if (
+                                  selectedDiscountCoupon?.id === discount.id
+                                ) {
+                                  setSelectedDiscountCoupon(null);
+                                } else {
+                                  setSelectedDiscountCoupon(discount);
+                                }
+                              }}
+                              className={`h-7 text-xs ${
+                                selectedDiscountCoupon?.id === discount.id
+                                  ? 'w-28 border border-blue-500 bg-transparent text-blue-500 hover:bg-transparent'
+                                  : 'w-20 bg-blue-500 hover:bg-blue-500/80'
+                              } `}
+                            >
+                              {selectedDiscountCoupon?.id === discount.id ? (
+                                <>
+                                  Đã áp dụng
+                                  <Check />
+                                </>
+                              ) : (
+                                'Áp dụng'
+                              )}
+                            </Button>
+                          ) : (
+                            <Button
+                              className={
+                                'h-7 w-30 bg-blue-500 text-xs hover:bg-blue-500/80'
                               }
-                            }}
-                            className={`h-7 text-xs ${
-                              selectedDiscountCoupon?.id === discount.id
-                                ? 'w-28 border border-blue-500 bg-transparent text-blue-500 hover:bg-transparent'
-                                : 'w-20 bg-blue-500 hover:bg-blue-500/80'
-                            } `}
-                          >
-                            {selectedDiscountCoupon?.id === discount.id ? (
-                              <>
-                                Đã áp dụng
-                                <Check />
-                              </>
-                            ) : (
-                              'Áp dụng'
-                            )}
-                          </Button>
+                            >
+                              Mua thêm &nbsp;
+                              {formatNumberShort(
+                                +discount.minOrderAmount - totalPrice
+                              )}
+                            </Button>
+                          )}
                         </div>
                       </div>
                       <div className='absolute -z-1 h-full w-full'>
