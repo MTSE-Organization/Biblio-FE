@@ -1,5 +1,6 @@
 'use client';
 
+import ConfirmReceivedOrderButton from '@/app/user/order/_components/confirm-received-order-button';
 import OrderDetailSkeleton from '@/app/user/order/_components/order-detail-skeleton';
 import { Button } from '@/components/form';
 import { OrderNotFound } from '@/components/not-found';
@@ -10,6 +11,8 @@ import {
   COUPON_KIND_FREESHIP,
   DATE_TIME_FORMAT,
   ErrorCode,
+  ORDER_STATUS_COMPLETE,
+  ORDER_STATUS_SHIPPING,
   orderDetailStatuses,
   orderStatuses,
   paymentMethods,
@@ -107,7 +110,7 @@ export default function OrderDetail() {
                   transitionDelay: `${borderDelay}ms`
                 }}
                 className={cn(
-                  'relative z-10 flex h-14 w-14 items-center justify-center rounded-full border-4 border-solid transition-all duration-500 ease-in-out',
+                  'relative z-1 flex h-14 w-14 items-center justify-center rounded-full border-4 border-solid transition-all duration-500 ease-in-out',
                   {
                     'border-green-500 bg-green-50 text-green-600': isActive,
                     'border-neutral-300 bg-white text-neutral-300': !isActive
@@ -300,7 +303,24 @@ export default function OrderDetail() {
         hidden={+discount === 0}
       />
 
-      <SummaryRow title='Thành tiền' value={+order.total} bottomLine={false} />
+      <SummaryRow
+        title='Thành tiền'
+        value={+order.total}
+        bottomLine={
+          orderStatus?.value === ORDER_STATUS_SHIPPING ||
+          orderStatus?.value === ORDER_STATUS_COMPLETE
+        }
+      />
+
+      {(orderStatus?.value === ORDER_STATUS_SHIPPING ||
+        orderStatus?.value === ORDER_STATUS_COMPLETE) && (
+        <div className='flex w-full justify-end py-4'>
+          <ConfirmReceivedOrderButton
+            disabled={orderStatus?.value === ORDER_STATUS_SHIPPING}
+            orderId={order.id}
+          />
+        </div>
+      )}
     </div>
   );
 }

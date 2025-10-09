@@ -34,9 +34,10 @@ export const ORDER_STATUS_CONFIRMED = 2;
 export const ORDER_STATUS_PACKING = 3;
 export const ORDER_STATUS_SHIPPING = 4;
 export const ORDER_STATUS_COMPLETE = 5;
-export const ORDER_STATUS_CANCELED = 6;
-export const ORDER_STATUS_REQUEST_REFUND = 7;
-export const ORDER_STATUS_REFUNDED = 8;
+export const ORDER_STATUS_RECEIVED = 6;
+export const ORDER_STATUS_CANCELED = 7;
+export const ORDER_STATUS_REQUEST_REFUND = 8;
+export const ORDER_STATUS_REFUNDED = 9;
 
 export const ORDER_DETAIL_STATUS_PLACED = 0;
 export const ORDER_DETAIL_STATUS_PAID = 1;
