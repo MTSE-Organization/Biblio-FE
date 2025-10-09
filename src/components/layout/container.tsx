@@ -13,17 +13,18 @@ export default function Container({
 }) {
   const { loading } = useAppLoadingStore();
   return (
-    <div
-      className={cn('relative bg-gray-100 py-4', {
-        'min-h-[90dvh]': !contentClassName
-      })}
-      {...props}
-    >
-      <div className={cn('content mx-auto max-w-[1320px]', contentClassName)}>
-        {children}
+    <>
+      <div
+        className={cn('relative bg-gray-100 py-4', {
+          'min-h-[90dvh]': !contentClassName
+        })}
+        {...props}
+      >
+        <div className={cn('content mx-auto max-w-[1320px]', contentClassName)}>
+          {children}
+        </div>
       </div>
-
       <FullPageLoading show={loading} />
-    </div>
+    </>
   );
 }

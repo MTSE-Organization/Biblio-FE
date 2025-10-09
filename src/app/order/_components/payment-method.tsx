@@ -40,6 +40,7 @@ export default function PaymentMethod() {
               src={payment.icon}
               alt={payment.label}
               height={48}
+              title={payment.label}
               onClick={() => setPaymentMethod(payment.value)}
               width={80}
               className='h-12 w-20 object-contain object-center select-none'

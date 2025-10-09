@@ -11,6 +11,8 @@ import {
   BookSimilarCategoryList,
   BookTabs
 } from '@/app/book/_components';
+import { ProductNotFound } from '@/components/not-found';
+import { ErrorCode } from '@/constants';
 
 export default function BookDetail() {
   const { slug } = useParams<{ slug: string }>();
@@ -18,6 +20,10 @@ export default function BookDetail() {
   const bookQuery = useProductQuery(id);
   const book = bookQuery.data?.data;
   const loading = bookQuery.isLoading || bookQuery.isFetching;
+  const code = bookQuery.data?.code;
+
+  if (code == ErrorCode.PRODUCT_ERROR_NOT_FOUND) return <ProductNotFound />;
+
   return (
     <>
       <Row className='my-0 gap-x-8 rounded-lg bg-white p-4 shadow-[0px_0px_10px_2px] shadow-gray-200'>

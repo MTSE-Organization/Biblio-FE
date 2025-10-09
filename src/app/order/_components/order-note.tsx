@@ -30,7 +30,7 @@ export default function OrderNote() {
         <Textarea
           defaultValue={note}
           onChange={(e) => debouncedSetNote(e.target.value)}
-          className='order-note focus-visible:ring-green-primary max-h-65 min-h-30 overflow-auto focus-visible:border-transparent focus-visible:ring-2 focus-visible:outline-none'
+          className='order-note focus-visible:ring-green-primary max-h-80 min-h-40 overflow-auto focus-visible:border-transparent focus-visible:ring-2 focus-visible:outline-none'
         />
       </div>
     </div>

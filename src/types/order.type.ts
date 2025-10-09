@@ -1,3 +1,4 @@
+import { AccountResType } from '@/types/account.type';
 import { AddressResType } from '@/types/address.type';
 import { CouponResType } from '@/types/coupon.type';
 import { OrderItemResType } from '@/types/order-item.type';
@@ -6,7 +7,7 @@ import { BaseSearchType } from '@/types/search.type';
 
 export type OrderResType = {
   id: string;
-  accountId: number;
+  accountId: AccountResType;
   orderItems: OrderItemResType[];
   orderStatuses: OrderStatusResType[];
   currentStatus: number;

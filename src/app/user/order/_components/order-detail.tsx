@@ -1,13 +1,15 @@
 'use client';
 
-import OrderItemSkeleton from '@/app/user/order/_components/order-item-skeleton';
+import OrderDetailSkeleton from '@/app/user/order/_components/order-detail-skeleton';
 import { Button } from '@/components/form';
+import { OrderNotFound } from '@/components/not-found';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import {
   COUPON_KIND_DISCOUNT,
   COUPON_KIND_FREESHIP,
   DATE_TIME_FORMAT,
+  ErrorCode,
   orderDetailStatuses,
   orderStatuses,
   paymentMethods,
@@ -30,8 +32,10 @@ export default function OrderDetail() {
   const order = orderQuery.data?.data;
   const orderStatusList = order?.orderStatuses || [];
   const orderItems = order?.orderItems || [];
+  const code = orderQuery.data?.code;
 
-  if (orderQuery.isLoading) return <OrderItemSkeleton />;
+  if (code === ErrorCode.ORDER_ERROR_NOT_FOUND) return <OrderNotFound />;
+  if (orderQuery.isLoading) return <OrderDetailSkeleton />;
 
   if (!order) return null;
 
@@ -67,182 +71,179 @@ export default function OrderDetail() {
       ?.value ?? 0;
 
   return (
-    <div className='flex h-full flex-col rounded-lg bg-white px-4 shadow-[0px_0px_10px_2px] shadow-gray-200'>
-      <div className='flex-1'>
-        <div className='flex items-center justify-between py-4'>
-          <Button
-            variant='ghost'
-            className='h-fit p-0!'
-            onClick={() => router.replace(route.user.order)}
-          >
-            <ChevronLeft />
-            Danh sách đơn hàng
-          </Button>
-          <Badge className={cn(orderStatus?.badgeColor, 'py-1 text-sm')}>
-            {orderStatus?.label}
-          </Badge>
-        </div>
+    <div className='rounded-lg bg-white px-4 shadow-[0px_0px_10px_2px] shadow-gray-200'>
+      <div className='flex items-center justify-between py-4'>
+        <Button
+          variant='ghost'
+          className='h-fit p-0!'
+          onClick={() => router.replace(route.user.order)}
+        >
+          <ChevronLeft />
+          Danh sách đơn hàng
+        </Button>
+        <Badge className={cn(orderStatus?.badgeColor, 'py-1 text-sm')}>
+          {orderStatus?.label}
+        </Badge>
+      </div>
 
-        <Separator />
+      <Separator />
 
-        <div className='relative grid grid-cols-7 py-4'>
-          {orderDetailStatuses.map((item, index) => {
-            const isLast = index === orderDetailStatuses.length - 1;
-            const isActive = index <= currentIndex;
-            const isLineActive = index < currentIndex;
+      <div className='relative grid grid-cols-7 py-4'>
+        {orderDetailStatuses.map((item, index) => {
+          const isLast = index === orderDetailStatuses.length - 1;
+          const isActive = index <= currentIndex;
+          const isLineActive = index < currentIndex;
 
-            const borderDelay = index * 300;
-            const lineDelay = borderDelay + 100;
+          const borderDelay = index * 300;
+          const lineDelay = borderDelay + 100;
 
-            return (
+          return (
+            <div
+              key={item.label}
+              className='relative flex flex-col items-center text-center select-none'
+            >
               <div
-                key={item.label}
-                className='relative flex flex-col items-center text-center select-none'
-              >
-                <div
-                  style={{
-                    transitionDelay: `${borderDelay}ms`
-                  }}
-                  className={cn(
-                    'relative z-10 flex h-14 w-14 items-center justify-center rounded-full border-4 border-solid transition-all duration-500 ease-in-out',
-                    {
-                      'border-green-500 bg-green-50 text-green-600': isActive,
-                      'border-neutral-300 bg-white text-neutral-300': !isActive
-                    }
-                  )}
-                >
-                  <item.icon className='size-7' />
-                </div>
-
-                {!isLast && (
-                  <div className='absolute top-[28px] left-1/2 -z-0 h-[4px] w-full bg-neutral-300'>
-                    <div
-                      style={{
-                        transitionDelay: `${lineDelay}ms`
-                      }}
-                      className={cn(
-                        'h-full w-full origin-left transform bg-green-500 transition-transform duration-700 ease-in-out',
-                        {
-                          'scale-x-100': isLineActive,
-                          'scale-x-0': !isLineActive
-                        }
-                      )}
-                    />
-                  </div>
+                style={{
+                  transitionDelay: `${borderDelay}ms`
+                }}
+                className={cn(
+                  'relative z-10 flex h-14 w-14 items-center justify-center rounded-full border-4 border-solid transition-all duration-500 ease-in-out',
+                  {
+                    'border-green-500 bg-green-50 text-green-600': isActive,
+                    'border-neutral-300 bg-white text-neutral-300': !isActive
+                  }
                 )}
-
-                <h3 className='mt-4 mb-1 text-sm font-medium text-slate-800'>
-                  {item.label}
-                </h3>
-                <span className='h-[14px] text-xs text-gray-400'>
-                  {getStatusDate(item.value)}
-                </span>
+              >
+                <item.icon className='size-7' />
               </div>
-            );
-          })}
-        </div>
 
-        <Separator />
-
-        <div className='flex items-center py-4'>
-          <MapPin className='size-5' />
-          <span className='ml-1 font-semibold'>Địa chỉ giao hàng:</span>
-          &nbsp;
-          {order.address.detail}, {order.address.hamlet}, &nbsp;
-          {order.address.ward}, {order.address.district}, &nbsp;
-          {order.address.city}
-        </div>
-
-        <Separator />
-
-        {order.note && (
-          <>
-            <div className='py-4'>
-              <div className='flex items-center'>
-                <Send className='size-5' />
-                <span className='ml-1 font-semibold'>Lời nhắn:</span>
-                &nbsp;
-                {order.note}
-              </div>
-            </div>
-            <Separator />
-          </>
-        )}
-
-        {orderItems.map((orderItem, index) => (
-          <div key={orderItem.id}>
-            <div className='flex items-center py-4'>
-              <div className='flex h-20 w-full items-center'>
-                <Link
-                  href={`${route.book}/${orderItem.productVariant.product.slug}.${orderItem.productVariant.product.id}`}
-                  className='flex-shrink-0'
-                >
-                  <Image
-                    src={renderImageUrl(orderItem.productVariant.imageUrl)}
-                    width={90}
-                    height={90}
-                    alt={'Sách'}
-                    className='rounded-lg object-contain'
+              {!isLast && (
+                <div className='absolute top-[28px] left-1/2 -z-0 h-[4px] w-full bg-neutral-300'>
+                  <div
+                    style={{
+                      transitionDelay: `${lineDelay}ms`
+                    }}
+                    className={cn(
+                      'h-full w-full origin-left transform bg-green-500 transition-transform duration-700 ease-in-out',
+                      {
+                        'scale-x-100': isLineActive,
+                        'scale-x-0': !isLineActive
+                      }
+                    )}
                   />
-                </Link>
-                <div className='ml-6 flex h-full w-full items-stretch justify-between'>
-                  <div className='flex flex-col justify-between'>
-                    <Link
-                      href={`${route.book}/${orderItem.productVariant.product.slug}.${orderItem.productVariant.product.id}`}
-                      className='hover:text-green-primary block flex-1 flex-shrink-0 transition-all duration-200 ease-linear'
-                    >
-                      {orderItem.productVariant.product.name}
-                    </Link>
-                    <>
-                      <p className='font-medium text-gray-400'>
-                        Phân loại: &nbsp;
-                        {
-                          productVariantConditions.find(
-                            (pvc) =>
-                              pvc.value === orderItem.productVariant.condition
-                          )?.label
-                        }
-                        &nbsp; & &nbsp;
-                        {
-                          productVariantFormats.find(
-                            (pvf) =>
-                              pvf.value === orderItem.productVariant.format
-                          )?.label
-                        }
-                      </p>
-                      <p className='text-zinc-800'>x{orderItem.quantity}</p>
-                    </>
-                  </div>
-                  <div className='flex flex-col items-end justify-center'>
-                    {orderItem.discount === 0 ? (
+                </div>
+              )}
+
+              <h3 className='mt-4 mb-1 block text-center text-sm font-medium whitespace-nowrap text-slate-800'>
+                {item.label}
+              </h3>
+              <span className='h-[14px] text-xs text-gray-400'>
+                {getStatusDate(item.value)}
+              </span>
+            </div>
+          );
+        })}
+      </div>
+
+      <Separator />
+
+      <div className='flex items-center py-4'>
+        <MapPin className='size-5' />
+        <span className='ml-1 font-semibold'>Địa chỉ giao hàng:</span>
+        &nbsp;
+        {order.address.detail}, {order.address.hamlet}, &nbsp;
+        {order.address.ward}, {order.address.district}, &nbsp;
+        {order.address.city}
+      </div>
+
+      <Separator />
+
+      {order.note && (
+        <>
+          <div className='py-4'>
+            <div className='flex items-center'>
+              <Send className='size-5' />
+              <span className='ml-1 font-semibold'>Lời nhắn:</span>
+              &nbsp;
+              {order.note}
+            </div>
+          </div>
+          <Separator />
+        </>
+      )}
+
+      {orderItems.map((orderItem) => (
+        <div key={orderItem.id}>
+          <div className='flex items-center py-4'>
+            <div className='flex h-20 w-full items-center'>
+              <Link
+                href={`${route.book}/${orderItem.productVariant.product.slug}.${orderItem.productVariant.product.id}`}
+                className='flex-shrink-0'
+              >
+                <Image
+                  src={renderImageUrl(orderItem.productVariant.imageUrl)}
+                  width={90}
+                  height={90}
+                  alt={'Sách'}
+                  className='rounded-lg object-contain'
+                />
+              </Link>
+              <div className='ml-6 flex h-full w-full items-stretch justify-between'>
+                <div className='flex flex-col justify-between'>
+                  <Link
+                    href={`${route.book}/${orderItem.productVariant.product.slug}.${orderItem.productVariant.product.id}`}
+                    className='hover:text-green-primary block flex-1 flex-shrink-0 transition-all duration-200 ease-linear'
+                  >
+                    {orderItem.productVariant.product.name}
+                  </Link>
+                  <>
+                    <p className='font-medium text-gray-400'>
+                      Phân loại: &nbsp;
+                      {
+                        productVariantConditions.find(
+                          (pvc) =>
+                            pvc.value === orderItem.productVariant.condition
+                        )?.label
+                      }
+                      &nbsp; & &nbsp;
+                      {
+                        productVariantFormats.find(
+                          (pvf) => pvf.value === orderItem.productVariant.format
+                        )?.label
+                      }
+                    </p>
+                    <p className='text-zinc-800'>x{orderItem.quantity}</p>
+                  </>
+                </div>
+                <div className='flex flex-col items-end justify-center'>
+                  {orderItem.discount === 0 ? (
+                    <p className='text-zinc-800'>
+                      {formatPrice(orderItem.total)}
+                    </p>
+                  ) : (
+                    <div className='flex items-center gap-x-2'>
                       <p className='text-zinc-800'>
                         {formatPrice(orderItem.total)}
                       </p>
-                    ) : (
-                      <div className='flex items-center gap-x-2'>
-                        <p className='text-zinc-800'>
-                          {formatPrice(orderItem.total)}
-                        </p>
-                        <p className='text-xs text-gray-400 line-through'>
-                          {formatPrice(orderItem.price)}
-                        </p>
-                        {orderItem.productVariant.product.discount !== 0 && (
-                          <div className='flex items-center gap-2'>
-                            <p className='bg-green-primary rounded p-0.5 text-xs text-white'>
-                              -{orderItem.productVariant.product.discount} %
-                            </p>
-                          </div>
-                        )}
-                      </div>
-                    )}
-                  </div>
+                      <p className='text-xs text-gray-400 line-through'>
+                        {formatPrice(orderItem.price)}
+                      </p>
+                      {orderItem.productVariant.product.discount !== 0 && (
+                        <div className='flex items-center gap-2'>
+                          <p className='bg-green-primary rounded p-0.5 text-xs text-white'>
+                            -{orderItem.productVariant.product.discount} %
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
-            {index > 0 && <Separator />}
           </div>
-        ))}
-      </div>
+          {orderItems.length > 1 && <Separator />}
+        </div>
+      ))}
 
       <Separator />
 
@@ -265,6 +266,14 @@ export default function OrderDetail() {
 
       <SummaryRow
         title='Giảm phí vận chuyển'
+        prefix={
+          +freeShip > 0 &&
+          +freeShip <= 100 && (
+            <span className='bg-green-primary mr-1 rounded-sm p-0.5 text-xs text-white'>
+              -{freeShip}%
+            </span>
+          )
+        }
         value={
           +freeShip > 0 && +freeShip <= 100
             ? (+freeShip * +total) / 100
