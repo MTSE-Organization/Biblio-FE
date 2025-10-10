@@ -17,6 +17,11 @@ import orderNotFound from './order-not-found.png';
 import product from './product.jpg';
 import vnPAY from './vn-pay.webp';
 import whiteLogo from './logo.webp';
+import angryIcon from './angry-icon.png';
+import sadIcon from './sad-icon.png';
+import neutralIcon from './neutral-icon.png';
+import happyIcon from './happy-icon.png';
+import veryHappyIcon from './very-happy-icon.png';
 
 export {
   banner1,
@@ -37,5 +42,10 @@ export {
   orderNotFound,
   product,
   vnPAY,
-  whiteLogo
+  whiteLogo,
+  angryIcon,
+  sadIcon,
+  neutralIcon,
+  happyIcon,
+  veryHappyIcon
 };

@@ -24,7 +24,19 @@ import Link from 'next/link';
 import route from '@/routes';
 import { useAuthStore } from '@/store';
 import { StarRating } from '@/components/star-rating';
-import { Pen } from 'lucide-react';
+import { Angry, Frown, Laugh, Meh, Pen, Smile, X } from 'lucide-react';
+import useDisclosure from '@/hooks/use-disclosure';
+import { Modal } from '@/components/modal';
+import { Separator } from '@/components/ui/separator';
+import {
+  angryIcon,
+  emptyNotification,
+  happyIcon,
+  neutralIcon,
+  sadIcon,
+  veryHappyIcon
+} from '@/assets';
+import { Textarea } from '@/components/ui/textarea';
 
 const BookTabs = ({ book }: { book?: ProductResType }) => {
   const [activeTab, setActiveTab] = useState('review');
@@ -337,58 +349,151 @@ function PublisherInfo({
 
 function BookReview() {
   const { profile } = useAuthStore();
+  const { opened, open, close } = useDisclosure();
+
+  const handleOpenReviewModal = () => {
+    open();
+  };
+
   return (
-    <Row className='mt-4 justify-between'>
-      <Col span={10} className='flex-row items-center gap-x-5'>
-        <div className='flex flex-col items-center justify-center gap-y-2'>
-          <p className='text-xl'>
-            <span className='text-4xl'>5</span>/5
-          </p>
-          <StarRating showValue={false} value={5} />
-          <div>2 đánh giá</div>
-        </div>
-        <div className='flex-1'>
-          {[...Array(5)].map((item, index) => (
-            <div
-              key={index}
-              className='flex items-center justify-between gap-x-2 not-last:mb-1'
-            >
-              <span className='w-10 text-right whitespace-nowrap'>
-                {5 - index} sao
-              </span>
-              <div className='relative h-1.5 w-4/5 overflow-hidden rounded-lg bg-gray-200'>
-                <div
-                  className='h-full rounded-lg bg-yellow-400'
-                  style={{ width: `${36}%` }}
-                />
+    <>
+      <Row className='mt-4 justify-between'>
+        <Col span={10} className='flex-row items-center gap-x-5'>
+          <div className='flex flex-col items-center justify-center gap-y-2'>
+            <p className='text-xl'>
+              <span className='text-4xl'>5</span>/5
+            </p>
+            <StarRating showValue={false} value={5} />
+            <div>2 đánh giá</div>
+          </div>
+          <div className='flex-1'>
+            {[...Array(5)].map((item, index) => (
+              <div
+                key={index}
+                className='flex items-center justify-between gap-x-2 not-last:mb-1'
+              >
+                <span className='w-10 text-right whitespace-nowrap'>
+                  {5 - index} sao
+                </span>
+                <div className='relative h-1.5 w-4/5 overflow-hidden rounded-lg bg-gray-200'>
+                  <div
+                    className='h-full rounded-lg bg-yellow-400'
+                    style={{ width: `${36}%` }}
+                  />
+                </div>
+                <span>36%</span>
               </div>
-              <span>36%</span>
-            </div>
-          ))}
+            ))}
+          </div>
+        </Col>
+        <Col span={14} className='items-center justify-center'>
+          {!profile && (
+            <>
+              Vui lòng&nbsp;
+              <Link
+                className='text-green-primary hover:text-green-primary/80 transition-all duration-20 ease-linear'
+                href={route.login}
+              >
+                đăng nhập
+              </Link>
+              &nbsp;để đánh giá sản phẩm
+            </>
+          )}
+          <Button
+            variant={'outline'}
+            onClick={handleOpenReviewModal}
+            className='border-green-primary text-green-primary hover:text-green-primary/80 font-medium transition-all duration-200 ease-linear hover:border-transparent hover:bg-transparent hover:ring-2'
+          >
+            <Pen />
+            Viết đánh giá
+          </Button>
+        </Col>
+      </Row>
+      <ReviewModal opened={opened} onClose={close} />
+    </>
+  );
+}
+
+const ratings = [
+  { icon: angryIcon, text: 'Rất tệ' },
+  { icon: sadIcon, text: 'Không hài lòng' },
+  { icon: neutralIcon, text: 'Bình thường' },
+  { icon: happyIcon, text: 'Hài lòng' },
+  { icon: veryHappyIcon, text: 'Rất hài lòng' }
+];
+
+function ReviewModal({
+  opened,
+  onClose
+}: {
+  opened: boolean;
+  onClose: () => void;
+}) {
+  const [selectedRating, setSelectedRating] = useState<number>(5);
+
+  const handleSelect = (index: number) => {
+    setSelectedRating(index + 1);
+  };
+
+  return (
+    <Modal open={opened} onClose={onClose} className='p-4'>
+      <div className='flex max-h-[90vh] w-140 flex-col'>
+        <div className='flex items-center gap-x-4 py-2'>
+          <div className='pl-4'>
+            <h3 className='text-lg font-semibold'>Đánh giá sản phẩm</h3>
+          </div>
+          <Button
+            onClick={onClose}
+            className='text-destructive ml-auto'
+            variant={'ghost'}
+          >
+            <X />
+          </Button>
         </div>
-      </Col>
-      <Col span={14} className='items-center justify-center'>
-        {!profile && (
-          <>
-            Vui lòng&nbsp;
-            <Link
-              className='text-green-primary hover:text-green-primary/80 transition-all duration-20 ease-linear'
-              href={route.login}
-            >
-              đăng nhập
-            </Link>
-            &nbsp;để đánh giá sản phẩm
-          </>
-        )}
-        <Button
-          variant={'outline'}
-          className='border-green-primary text-green-primary hover:text-green-primary/80 font-medium transition-all duration-200 ease-linear hover:border-transparent hover:bg-transparent hover:ring-2'
-        >
-          <Pen />
-          Viết đánh giá
-        </Button>
-      </Col>
-    </Row>
+        <Separator />
+        <div className='my-5 flex flex-col items-center justify-center gap-6 px-4'>
+          <p className='text-base font-medium'>
+            {ratings[selectedRating - 1].text}
+          </p>
+          <Image
+            src={ratings[selectedRating - 1].icon}
+            width={100}
+            alt='Review Icon'
+          />
+          <div className='flex gap-3'>
+            {[...Array(5)].map((_, index) => (
+              <button
+                key={index}
+                onClick={() => handleSelect(index)}
+                className='cursor-pointer transition-transform hover:scale-110'
+              >
+                <svg
+                  viewBox='0 0 576 512'
+                  width={40}
+                  className={
+                    selectedRating >= index + 1
+                      ? 'fill-yellow-400'
+                      : 'fill-gray-300'
+                  }
+                >
+                  <path d='M259.3 17.8L194 150.2 47.9 171.5c-26.2 3.8-36.7 36.1-17.7 54.6l105.7 103-25 145.5c-4.5 26.3 23.2 46 46.4 33.7L288 439.6l130.7 68.7c23.2 12.2 50.9-7.4 46.4-33.7l-25-145.5 105.7-103c19-18.5 8.5-50.8-17.7-54.6L382 150.2 316.7 17.8c-11.7-23.6-45.6-23.9-57.4 0z' />
+                </svg>
+              </button>
+            ))}
+          </div>
+          <p>Chọn sao để đánh giá</p>
+        </div>
+        <div className='px-4'>
+          <Textarea
+            placeholder='Hãy chia sẻ cảm nhận của bạn về sản phẩm này nhé!'
+            className='min-h-[20vh]'
+          />
+        </div>
+        <div className='flex justify-end p-4'>
+          <Button variant={'primary'}>Gửi đánh giá</Button>
+        </div>
+      </div>
+    </Modal>
   );
 }
 
