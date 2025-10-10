@@ -11,3 +11,4 @@ export { default as orderApiRequest } from './order.api-request';
 export { default as productApiRequest } from './product.api-request';
 export { default as productVariantApiRequest } from './product-variant.api-request';
 export { default as viewedProductApiRequest } from './viewed-product.api-request';
+export { default as reviewApiRequest } from './review.api-request';

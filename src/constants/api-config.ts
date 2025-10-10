@@ -307,6 +307,13 @@ const apiConfig = defineApiConfig({
       headers: baseHeader,
       method: 'DELETE'
     }
+  },
+  review: {
+    create: {
+      baseUrl: `${AppConstants.apiUrl}v1/review/create`,
+      headers: baseHeader,
+      method: 'POST'
+    }
   }
 });
 
