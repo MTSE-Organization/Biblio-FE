@@ -3,5 +3,9 @@
 import { Button } from '@/components/form';
 
 export default function RefundButton() {
-  return <Button variant={'primary'}>Yêu cầu hoàn tiền/trả hàng</Button>;
+  return (
+    <Button className='bg-amber-500' variant={'primary'}>
+      Yêu cầu trả hàng/hoàn tiền
+    </Button>
+  );
 }

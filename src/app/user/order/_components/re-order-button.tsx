@@ -44,7 +44,7 @@ export default function ReOrderButton({
     });
   };
   return (
-    <Button onClick={handleReOrder} variant={'primary'}>
+    <Button onClick={handleReOrder} variant={'outline'}>
       Mua lại
     </Button>
   );

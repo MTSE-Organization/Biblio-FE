@@ -5,6 +5,7 @@ import CompletePaymentButton from '@/app/user/order/_components/complete-payment
 import ConfirmReceivedOrderButton from '@/app/user/order/_components/confirm-received-order-button';
 import ContactShopButton from '@/app/user/order/_components/contact-shop-button';
 import OrderDetailSkeleton from '@/app/user/order/_components/order-detail-skeleton';
+import RatingButton from '@/app/user/order/_components/rating-button';
 import ReOrderButton from '@/app/user/order/_components/re-order-button';
 import RefundButton from '@/app/user/order/_components/refund-button';
 import { Button } from '@/components/form';
@@ -16,7 +17,7 @@ import {
   COUPON_KIND_FREESHIP,
   DATE_TIME_FORMAT,
   ErrorCode,
-  ORDER_DETAIL_STATUS_CANCELED,
+  ORDER_DETAIL_STATUS_CANCELLED,
   ORDER_STATUS_CANCELLED,
   ORDER_STATUS_COMPLETE,
   ORDER_STATUS_RECEIVED,
@@ -100,7 +101,13 @@ export default function OrderDetail() {
 
       <Separator />
 
-      {currentIndex < ORDER_DETAIL_STATUS_CANCELED ? (
+      {order.currentStatus === ORDER_DETAIL_STATUS_CANCELLED ? (
+        <div className='py-8 pl-4'>
+          <span className='text-lg text-orange-600'>Đã hủy đơn hàng</span>
+          <br />
+          vào: {getStatusDate(order.currentStatus)}
+        </div>
+      ) : (
         <div className='relative grid grid-cols-7 py-4'>
           {orderDetailStatuses.map((item, index) => {
             const isLast = index === orderDetailStatuses.length - 1;
@@ -156,12 +163,6 @@ export default function OrderDetail() {
               </div>
             );
           })}
-        </div>
-      ) : (
-        <div className='py-8 pl-4'>
-          <span className='text-lg text-orange-600'>Đã hủy đơn hàng</span>
-          <br />
-          vào: {getStatusDate(currentIndex)}
         </div>
       )}
 
@@ -270,7 +271,7 @@ export default function OrderDetail() {
       <SummaryRow
         title='Yêu cầu bởi'
         value='Nguời mua'
-        hidden={currentIndex < ORDER_DETAIL_STATUS_CANCELED}
+        hidden={currentIndex < ORDER_DETAIL_STATUS_CANCELLED}
       />
 
       <SummaryRow
@@ -338,7 +339,8 @@ export default function OrderDetail() {
       )}
 
       <div className='flex w-full justify-end gap-x-2 py-4'>
-        {/* Contact shop */}
+        {/* Rating if order received */}
+        {orderStatus?.value === ORDER_STATUS_RECEIVED && <RatingButton />}
 
         {/* Complete payment if just created other */}
         {orderStatus?.value === ORDER_STATUS_WAITING && (
@@ -363,6 +365,7 @@ export default function OrderDetail() {
         {/* Request refund */}
         {orderStatus?.value === ORDER_STATUS_RECEIVED && <RefundButton />}
 
+        {/* Contact shop */}
         <ContactShopButton />
 
         {/* Re-order when status is cancelled or received */}

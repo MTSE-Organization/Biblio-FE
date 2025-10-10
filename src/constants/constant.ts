@@ -46,7 +46,7 @@ export const ORDER_DETAIL_STATUS_PACKAGING = 3;
 export const ORDER_DETAIL_STATUS_SHIPPING = 4;
 export const ORDER_DETAIL_STATUS_DELIVERED = 5;
 export const ORDER_DETAIL_STATUS_COMPLETED = 6;
-export const ORDER_DETAIL_STATUS_CANCELED = 7;
+export const ORDER_DETAIL_STATUS_CANCELLED = 7;
 
 export const DEFAULT_DATE_FORMAT = 'dd/MM/yyyy';
 export const DATE_TIME_FORMAT = 'HH:mm:ss, dd/MM/yyyy ';

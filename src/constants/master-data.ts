@@ -10,7 +10,6 @@ import {
   GENDER_FEMALE,
   GENDER_MALE,
   GENDER_OTHER,
-  ORDER_DETAIL_STATUS_CANCELED,
   ORDER_DETAIL_STATUS_COMPLETED,
   ORDER_DETAIL_STATUS_DELIVERED,
   ORDER_DETAIL_STATUS_PACKAGING,
@@ -464,43 +463,36 @@ export const orderDetailStatuses = [
   {
     label: 'Đơn hàng đã đặt',
     value: ORDER_DETAIL_STATUS_PLACED,
-    icon: RiSurveyFill,
-    show: true
+    icon: RiSurveyFill
   },
   {
     label: 'Đã thanh toán',
     value: ORDER_DETAIL_STATUS_PAID,
-    icon: FaMoneyBill,
-    show: true
+    icon: FaMoneyBill
   },
   {
     label: 'Đã xác nhận',
     value: ORDER_DETAIL_STATUS_WAITING_CONFIRM,
-    icon: RiPencilLine,
-    show: true
+    icon: RiPencilLine
   },
   {
     label: 'Đang đóng gói',
     value: ORDER_DETAIL_STATUS_PACKAGING,
-    icon: PackageCheck,
-    show: true
+    icon: PackageCheck
   },
   {
     label: 'Đang giao hàng',
     value: ORDER_DETAIL_STATUS_SHIPPING,
-    icon: RiTruckLine,
-    show: true
+    icon: RiTruckLine
   },
   {
     label: 'Giao hàng thành công',
     value: ORDER_DETAIL_STATUS_DELIVERED,
-    icon: RiCheckLine,
-    show: true
+    icon: RiCheckLine
   },
   {
     label: 'Đã nhận được hàng',
     value: ORDER_DETAIL_STATUS_COMPLETED,
-    icon: RiStarLine,
-    show: true
+    icon: RiStarLine
   }
 ];
