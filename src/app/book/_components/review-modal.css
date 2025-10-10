@@ -1,0 +1,27 @@
+.emoji-wrapper {
+  @apply relative h-28 w-28 overflow-hidden;
+}
+
+.emoji-list {
+  @apply flex flex-col items-center gap-3 transition-transform duration-500 ease-in-out;
+}
+
+.emoji-list[data-rating='1'] {
+  transform: translateY(0rem);
+}
+
+.emoji-list[data-rating='2'] {
+  transform: translateY(-7rem);
+}
+
+.emoji-list[data-rating='3'] {
+  transform: translateY(-14rem);
+}
+
+.emoji-list[data-rating='4'] {
+  transform: translateY(-21rem);
+}
+
+.emoji-list[data-rating='5'] {
+  transform: translateY(-28rem);
+}
