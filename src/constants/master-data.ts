@@ -10,6 +10,7 @@ import {
   GENDER_FEMALE,
   GENDER_MALE,
   GENDER_OTHER,
+  ORDER_DETAIL_STATUS_CANCELED,
   ORDER_DETAIL_STATUS_COMPLETED,
   ORDER_DETAIL_STATUS_DELIVERED,
   ORDER_DETAIL_STATUS_PACKAGING,
@@ -18,7 +19,7 @@ import {
   ORDER_DETAIL_STATUS_SHIPPING,
   ORDER_DETAIL_STATUS_WAITING_CONFIRM,
   ORDER_STATUS_ALL,
-  ORDER_STATUS_CANCELED,
+  ORDER_STATUS_CANCELLED,
   ORDER_STATUS_COMPLETE,
   ORDER_STATUS_CONFIRMED,
   ORDER_STATUS_PACKING,
@@ -405,57 +406,57 @@ export const orderStatuses = [
   {
     label: 'Tất cả',
     value: ORDER_STATUS_ALL,
-    badgeColor: 'bg-gray-200 text-gray-700'
+    color: 'bg-gray-200 text-gray-700'
   },
   {
-    label: 'Đã đặt',
+    label: 'Đơn hàng đã đặt',
     value: ORDER_STATUS_WAITING,
-    badgeColor: 'bg-yellow-100 text-yellow-800'
+    color: 'bg-yellow-100 text-yellow-800'
   },
   {
     label: 'Chờ xác nhận',
     value: ORDER_STATUS_WAITING_CONFIRMATION,
-    badgeColor: 'bg-amber-100 text-amber-800'
+    color: 'bg-amber-100 text-amber-800'
   },
   {
     label: 'Đã xác nhận',
     value: ORDER_STATUS_CONFIRMED,
-    badgeColor: 'bg-blue-100 text-blue-800'
+    color: 'bg-blue-100 text-blue-800'
   },
   {
     label: 'Đang đóng gói',
     value: ORDER_STATUS_PACKING,
-    badgeColor: 'bg-indigo-100 text-indigo-800'
+    color: 'bg-indigo-100 text-indigo-800'
   },
   {
     label: 'Đang giao hàng',
     value: ORDER_STATUS_SHIPPING,
-    badgeColor: 'bg-cyan-100 text-cyan-800'
+    color: 'bg-cyan-100 text-cyan-800'
   },
   {
-    label: 'Hoàn tất',
+    label: 'Giao hàng thành công',
     value: ORDER_STATUS_COMPLETE,
-    badgeColor: 'bg-green-100 text-green-800'
+    color: 'bg-green-100 text-green-800'
   },
   {
     label: 'Đã nhận được hàng',
     value: ORDER_STATUS_RECEIVED,
-    badgeColor: 'bg-green-100 text-green-800'
+    color: 'bg-green-100 text-green-800'
   },
   {
     label: 'Đã hủy',
-    value: ORDER_STATUS_CANCELED,
-    badgeColor: 'bg-red-100 text-red-800'
+    value: ORDER_STATUS_CANCELLED,
+    color: 'bg-red-100 text-red-800'
   },
   {
     label: 'Yêu cầu hoàn tiền',
     value: ORDER_STATUS_REQUEST_REFUND,
-    badgeColor: 'bg-orange-100 text-orange-800'
+    color: 'bg-orange-100 text-orange-800'
   },
   {
     label: 'Đã hoàn tiền',
     value: ORDER_STATUS_REFUNDED,
-    badgeColor: 'bg-emerald-100 text-emerald-800'
+    color: 'bg-emerald-100 text-emerald-800'
   }
 ];
 
@@ -463,32 +464,43 @@ export const orderDetailStatuses = [
   {
     label: 'Đơn hàng đã đặt',
     value: ORDER_DETAIL_STATUS_PLACED,
-    icon: RiSurveyFill
+    icon: RiSurveyFill,
+    show: true
   },
   {
     label: 'Đã thanh toán',
     value: ORDER_DETAIL_STATUS_PAID,
-    icon: FaMoneyBill
+    icon: FaMoneyBill,
+    show: true
   },
   {
-    label: 'Chờ xác nhận',
+    label: 'Đã xác nhận',
     value: ORDER_DETAIL_STATUS_WAITING_CONFIRM,
-    icon: RiPencilLine
+    icon: RiPencilLine,
+    show: true
   },
   {
     label: 'Đang đóng gói',
     value: ORDER_DETAIL_STATUS_PACKAGING,
-    icon: PackageCheck
+    icon: PackageCheck,
+    show: true
   },
   {
     label: 'Đang giao hàng',
     value: ORDER_DETAIL_STATUS_SHIPPING,
-    icon: RiTruckLine
+    icon: RiTruckLine,
+    show: true
   },
   {
     label: 'Giao hàng thành công',
     value: ORDER_DETAIL_STATUS_DELIVERED,
-    icon: RiCheckLine
+    icon: RiCheckLine,
+    show: true
   },
-  { label: 'Đánh giá', value: ORDER_DETAIL_STATUS_COMPLETED, icon: RiStarLine }
+  {
+    label: 'Đã nhận được hàng',
+    value: ORDER_DETAIL_STATUS_COMPLETED,
+    icon: RiStarLine,
+    show: true
+  }
 ];

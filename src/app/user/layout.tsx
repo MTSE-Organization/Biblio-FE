@@ -12,7 +12,7 @@ export default function UserLayout({
     <>
       <Header />
       <Container contentClassName='mx-auto flex min-h-[80vh] justify-center gap-x-4'>
-        <div className='h-fit w-50 rounded-lg bg-white'>
+        <div className='h-fit w-50 shrink-0 rounded-lg bg-white'>
           <UserSidebar />
         </div>
         <div className='flex-1 rounded-lg'>{children}</div>
