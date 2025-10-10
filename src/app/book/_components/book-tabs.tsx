@@ -36,6 +36,7 @@ import {
   veryHappyIcon
 } from '@/assets';
 import { Textarea } from '@/components/ui/textarea';
+import './review-modal.css';
 
 const BookTabs = ({ book }: { book?: ProductResType }) => {
   const [activeTab, setActiveTab] = useState('review');
@@ -454,11 +455,26 @@ function ReviewModal({
           <p className='text-base font-medium'>
             {ratings[selectedRating - 1].text}
           </p>
-          <Image
-            src={ratings[selectedRating - 1].icon}
-            width={100}
-            alt='Review Icon'
-          />
+          <div className='relative h-28 w-28 overflow-hidden'>
+            <div
+              className='flex flex-col items-center gap-3 transition-transform duration-500 ease-in-out'
+              style={{
+                transform: `translateY(-${(selectedRating - 1) * 7}rem)`
+              }}
+            >
+              {ratings.map((rating, index) => (
+                <Image
+                  key={index}
+                  src={rating.icon}
+                  width={100}
+                  height={100}
+                  alt={rating.text}
+                  className='mx-auto'
+                />
+              ))}
+            </div>
+          </div>
+
           <div className='flex gap-3'>
             {[...Array(5)].map((_, index) => (
               <button
