@@ -16,7 +16,7 @@ import {
   CONTRIBUTOR_TRANSLATOR,
   languageOptions
 } from '@/constants';
-import { formatDate, renderImageUrl } from '@/utils';
+import { formatDate, notify, renderImageUrl } from '@/utils';
 import { logger } from '@/logger';
 import { NoData } from '@/components/no-data';
 import { List, ListItem } from '@/components/list';
@@ -37,6 +37,8 @@ import {
 } from '@/assets';
 import { Textarea } from '@/components/ui/textarea';
 import './review-modal.css';
+import { useCreateReviewMutation } from '@/queries/review.query';
+import { useAppLoadingStore } from '@/store/use-app-loading-store';
 
 const BookTabs = ({ book }: { book?: ProductResType }) => {
   const [activeTab, setActiveTab] = useState('review');
@@ -85,7 +87,7 @@ const BookTabs = ({ book }: { book?: ProductResType }) => {
               />
             )}
             {activeTab === 'detail' && <BookInfo book={book} />}
-            {activeTab == 'review' && <BookReview />}
+            {activeTab == 'review' && <BookReview productId={book?.id ?? ''} />}
             {activeTab === 'author' && (
               <ContributorInfo
                 contributors={
@@ -347,7 +349,7 @@ function PublisherInfo({
   );
 }
 
-function BookReview() {
+function BookReview({ productId }: { productId: string }) {
   const { profile } = useAuthStore();
   const { opened, open, close } = useDisclosure();
 
@@ -409,7 +411,7 @@ function BookReview() {
           </Button>
         </Col>
       </Row>
-      <ReviewModal opened={opened} onClose={close} />
+      <ReviewModal opened={opened} onClose={close} productId={productId} />
     </>
   );
 }
@@ -424,15 +426,36 @@ const ratings = [
 
 function ReviewModal({
   opened,
-  onClose
+  onClose,
+  productId
 }: {
   opened: boolean;
   onClose: () => void;
+  productId: string;
 }) {
   const [selectedRating, setSelectedRating] = useState<number>(5);
+  const [content, setContent] = useState('');
+  const { withLoading } = useAppLoadingStore();
+
+  const reviewMutation = useCreateReviewMutation();
 
   const handleSelect = (index: number) => {
     setSelectedRating(index + 1);
+  };
+
+  const handleCreateReview = async () => {
+    await withLoading(
+      reviewMutation.mutateAsync(
+        { productId, rate: selectedRating, content },
+        {
+          onSuccess: () => notify.success('Đánh giá sách thành công'),
+          onError: (error) => {
+            notify.error('Đã có lỗi xảy ra');
+            logger.error(error);
+          }
+        }
+      )
+    );
   };
 
   return (
@@ -501,11 +524,18 @@ function ReviewModal({
         <div className='px-4'>
           <Textarea
             placeholder='Hãy chia sẻ cảm nhận của bạn về sản phẩm này nhé!'
+            onChange={(e) => setContent(e.target.value)}
             className='order-note focus-visible:ring-green-primary max-h-80 min-h-40 overflow-auto focus-visible:border-transparent focus-visible:ring-2 focus-visible:outline-none'
           />
         </div>
         <div className='flex justify-end p-4'>
-          <Button variant={'primary'}>Gửi đánh giá</Button>
+          <Button
+            variant={'primary'}
+            disabled={content.length === 0}
+            onClick={handleCreateReview}
+          >
+            Gửi đánh giá
+          </Button>
         </div>
       </div>
     </Modal>
