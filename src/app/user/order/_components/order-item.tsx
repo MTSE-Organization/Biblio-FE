@@ -1,32 +1,30 @@
 'use client';
 
+import CancelOrderButton from '@/app/user/order/_components/cancel-order-button';
+import CompletePaymentButton from '@/app/user/order/_components/complete-payment-button';
+import ConfirmReceivedOrderButton from '@/app/user/order/_components/confirm-received-order-button';
+import ContactShopButton from '@/app/user/order/_components/contact-shop-button';
+import RatingButton from '@/app/user/order/_components/rating-button';
+import ReOrderButton from '@/app/user/order/_components/re-order-button';
+import RefundButton from '@/app/user/order/_components/refund-button';
 import { Button } from '@/components/form';
 import { Badge } from '@/components/ui/badge';
 import {
   DATE_DAY_TIME_FORMAT,
-  ORDER_STATUS_CANCELED,
+  ORDER_STATUS_CANCELLED,
+  ORDER_STATUS_COMPLETE,
+  ORDER_STATUS_RECEIVED,
+  ORDER_STATUS_SHIPPING,
   ORDER_STATUS_WAITING,
-  ORDER_STATUS_WAITING_CONFIRMATION,
   orderStatuses,
   productVariantConditions,
-  productVariantFormats,
-  storageKeys
+  productVariantFormats
 } from '@/constants';
 import { useNavigate } from '@/hooks';
 import { cn } from '@/lib';
-import { logger } from '@/logger';
-import { useCancelOrderMutation } from '@/queries';
 import route from '@/routes';
-import { useAppLoadingStore } from '@/store/use-app-loading-store';
 import { OrderResType } from '@/types';
-import {
-  formatDate,
-  formatPrice,
-  notify,
-  renderImageUrl,
-  setData
-} from '@/utils';
-import { useQueryClient } from '@tanstack/react-query';
+import { formatDate, formatPrice, renderImageUrl } from '@/utils';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -37,36 +35,11 @@ export default function OrderItem({
   order: OrderResType;
   currentStatus: number;
 }) {
-  const { withLoading } = useAppLoadingStore();
-  const cancelOrderMutation = useCancelOrderMutation();
-  const queryClient = useQueryClient();
   const navigate = useNavigate();
 
   const orderStatus = orderStatuses.find(
     (status) => status.value === currentStatus
   );
-
-  const handleCancel = async () => {
-    await withLoading(
-      cancelOrderMutation.mutateAsync(order.id, {
-        onSuccess: (res) => {
-          if (res.result) {
-            notify.success('Hủy đơn hàng thành công');
-            queryClient.refetchQueries({ queryKey: ['order-list'] });
-          }
-        },
-        onError: (error) => {
-          logger.error('Error while canceling order', error);
-          notify.error('Có lỗi xảy ra');
-        }
-      })
-    );
-  };
-
-  const handlePayment = () => {
-    setData(storageKeys.ORDER_ID, order.id);
-    navigate(route.order.place);
-  };
 
   return (
     <div className='relative rounded rounded-lg border border-gray-200 bg-white p-4 shadow-[0px_0px_10px_2px] shadow-gray-200'>
@@ -76,35 +49,31 @@ export default function OrderItem({
         </div>
         <Badge
           onClick={() => navigate(`${route.user.order}/${order.id}`)}
-          className={cn(orderStatus?.badgeColor, 'cursor-pointer py-1 text-sm')}
+          className={cn(orderStatus?.color, 'cursor-pointer py-1 text-sm')}
         >
           {orderStatus?.label}
         </Badge>
       </div>
       {order.orderItems.map((orderItem) => (
-        <div key={orderItem.id}>
+        <div
+          onClick={() => navigate(`${route.user.order}/${order.id}`)}
+          key={orderItem.id}
+          className='cursor-pointer'
+        >
           <div className='mb-3 flex items-center border-b border-solid border-gray-200'>
             <div className='mb-4 flex h-20 w-full items-center'>
-              <Link
-                href={`${route.book}/${orderItem.productVariant.product.slug}.${orderItem.productVariant.product.id}`}
-                className='flex-shrink-0'
-              >
-                <Image
-                  src={renderImageUrl(orderItem.productVariant.imageUrl)}
-                  width={90}
-                  height={90}
-                  alt={'Sách'}
-                  className='rounded-lg object-contain'
-                />
-              </Link>
+              <Image
+                src={renderImageUrl(orderItem.productVariant.imageUrl)}
+                width={90}
+                height={90}
+                alt={'Sách'}
+                className='rounded-lg object-contain'
+              />
               <div className='ml-6 flex h-full w-full items-stretch justify-between'>
                 <div className='flex flex-col justify-between'>
-                  <Link
-                    href={`${route.book}/${orderItem.productVariant.product.slug}.${orderItem.productVariant.product.id}`}
-                    className='hover:text-green-primary block flex-1 flex-shrink-0 transition-all duration-200 ease-linear'
-                  >
+                  <span className='flex-1 shrink-0'>
                     {orderItem.productVariant.product.name}
-                  </Link>
+                  </span>
                   <p className='font-medium text-gray-400'>
                     Phân loại: &nbsp;
                     {
@@ -150,54 +119,40 @@ export default function OrderItem({
         </div>
       </div>
       <div className='mt-4 flex justify-end gap-2 text-right'>
-        <Button
-          onClick={() => navigate(`${route.user.order}/${order.id}`)}
-          variant={'primary'}
-        >
-          Xem chi tiết
-        </Button>
-        {currentStatus === ORDER_STATUS_WAITING && (
-          <>
-            <Button onClick={handlePayment} variant={'primary'}>
-              Thanh toán
-            </Button>
-            <Button
-              variant={'outline'}
-              onClick={handleCancel}
-              className='text-destructive border-destructive hover:text-destructive/80 w-20 hover:bg-transparent'
-            >
-              Hủy
-            </Button>
-          </>
+        {/* Rating */}
+        {orderStatus?.value === ORDER_STATUS_RECEIVED && <RatingButton />}
+
+        {/* Complete payment if just created other */}
+        {orderStatus?.value === ORDER_STATUS_WAITING && (
+          <CompletePaymentButton orderId={order.id} />
         )}
-        {currentStatus === ORDER_STATUS_WAITING_CONFIRMATION && (
-          <>
-            <Button
-              variant={'outline'}
-              onClick={handleCancel}
-              className='text-destructive border-destructive hover:text-destructive/80 w-20 hover:bg-transparent'
-            >
-              Hủy
-            </Button>
-          </>
+
+        {/* Confirm received order when status is shipping or complete */}
+        {/* Show and disabled when status is shipping */}
+        {(orderStatus?.value === ORDER_STATUS_SHIPPING ||
+          orderStatus?.value === ORDER_STATUS_COMPLETE) && (
+          <ConfirmReceivedOrderButton
+            disabled={orderStatus?.value === ORDER_STATUS_SHIPPING}
+            orderId={order.id}
+          />
         )}
-        {currentStatus === ORDER_STATUS_CANCELED && (
-          <>
-            <Button variant={'primary'}>Mua lại</Button>
-          </>
+
+        {/* Request refund */}
+        {orderStatus?.value === ORDER_STATUS_RECEIVED && <RefundButton />}
+
+        {/* Contact shop */}
+        <ContactShopButton />
+
+        {/* Cancel order when status is not shipping */}
+        {orderStatus?.value && orderStatus.value < ORDER_STATUS_SHIPPING && (
+          <CancelOrderButton orderId={order.id} />
         )}
-        {/* <Button
-              variant={'primary'}
-              className='rounded px-4 py-2 text-white'
-            >
-              Đã nhận được hàng
-            </Button>
-            <Button
-              variant={'outline'}
-              className='rounded border border-gray-200 px-4 py-2 text-black hover:bg-gray-100'
-            >
-              Liên hệ người bán
-            </Button> */}
+
+        {/* Re-order when status is cancelled or received */}
+        {(orderStatus?.value === ORDER_STATUS_CANCELLED ||
+          orderStatus?.value === ORDER_STATUS_RECEIVED) && (
+          <ReOrderButton orderItems={order.orderItems} />
+        )}
       </div>
     </div>
   );

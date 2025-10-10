@@ -14,41 +14,51 @@ import {
   AlertDialogTrigger
 } from '@/components/ui/alert-dialog';
 import { logger } from '@/logger';
-import { useCompleteOrderMutation } from '@/queries';
+import { useCancelOrderMutation } from '@/queries';
+import { useAppLoadingStore } from '@/store/use-app-loading-store';
 import { notify } from '@/utils';
 import { useQueryClient } from '@tanstack/react-query';
 import { Info } from 'lucide-react';
+import React from 'react';
 
-export default function ConfirmReceivedOrderButton({
+export default function CancelOrderButton({
   orderId,
   disabled = false
 }: {
   orderId: string;
   disabled?: boolean;
 }) {
-  const completeOrderMutation = useCompleteOrderMutation();
+  const { withLoading } = useAppLoadingStore();
+  const cancelOrderMutation = useCancelOrderMutation();
   const queryClient = useQueryClient();
 
-  const handleConfirmDelivered = async () => {
-    await completeOrderMutation.mutateAsync(orderId, {
-      onSuccess: (res) => {
-        if (res.result) {
-          notify.success('Xác nhận đã nhận được hàng thành công');
-          queryClient.invalidateQueries({ queryKey: ['order', orderId] });
+  const handleCancel = async () => {
+    await withLoading(
+      cancelOrderMutation.mutateAsync(orderId, {
+        onSuccess: (res) => {
+          if (res.result) {
+            notify.success('Hủy đơn hàng thành công');
+            queryClient.refetchQueries({ queryKey: ['order-list'] });
+          }
+        },
+        onError: (error) => {
+          logger.error('Error while canceling order', error);
+          notify.error('Có lỗi xảy ra');
         }
-      },
-      onError: (error) => {
-        logger.error(`Error while completing order:`, error);
-        notify.error('Có lỗi xảy ra');
-      }
-    });
+      })
+    );
   };
+
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
         <span>
-          <Button disabled={disabled} variant={'primary'}>
-            Đã nhận được hàng
+          <Button
+            disabled={disabled}
+            variant={'outline'}
+            className='text-destructive border-destructive hover:opacity-80'
+          >
+            Hủy đơn hàng
           </Button>
         </span>
       </AlertDialogTrigger>
@@ -56,13 +66,9 @@ export default function ConfirmReceivedOrderButton({
         <AlertDialogHeader>
           <AlertDialogTitle className='flex items-center gap-2 text-sm font-normal'>
             <Info className='size-8 fill-orange-500 stroke-white' />
-            Bạn có chắc chắn đã nhận được hàng?
+            Bạn có chắc chắn muốn hủy đơn hàng?
           </AlertDialogTitle>
-          <AlertDialogDescription className='text-center text-justify'>
-            Biblio sẽ thanh toán số tiền trên. Bạn vui lòng chỉ nhấn &apos;Xác
-            nhận&apos; khi đã nhận được sản phẩm và sản phẩm không có vấn đề
-            nào.
-          </AlertDialogDescription>
+          <AlertDialogDescription className='text-center text-justify'></AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel asChild>
@@ -77,8 +83,8 @@ export default function ConfirmReceivedOrderButton({
             className='bg-green-primary hover:bg-green-primary/80 cursor-pointer transition-all duration-200 ease-linear'
             asChild
           >
-            <Button variant={'primary'} onClick={handleConfirmDelivered}>
-              {completeOrderMutation.isPending ? <CircleLoading /> : 'Có'}
+            <Button variant={'outline'} onClick={handleCancel}>
+              {cancelOrderMutation.isPending ? <CircleLoading /> : 'Có'}
             </Button>
           </AlertDialogAction>
         </AlertDialogFooter>

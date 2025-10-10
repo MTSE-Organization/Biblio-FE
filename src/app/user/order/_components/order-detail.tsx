@@ -1,7 +1,13 @@
 'use client';
 
+import CancelOrderButton from '@/app/user/order/_components/cancel-order-button';
+import CompletePaymentButton from '@/app/user/order/_components/complete-payment-button';
 import ConfirmReceivedOrderButton from '@/app/user/order/_components/confirm-received-order-button';
+import ContactShopButton from '@/app/user/order/_components/contact-shop-button';
 import OrderDetailSkeleton from '@/app/user/order/_components/order-detail-skeleton';
+import RatingButton from '@/app/user/order/_components/rating-button';
+import ReOrderButton from '@/app/user/order/_components/re-order-button';
+import RefundButton from '@/app/user/order/_components/refund-button';
 import { Button } from '@/components/form';
 import { OrderNotFound } from '@/components/not-found';
 import { Badge } from '@/components/ui/badge';
@@ -11,8 +17,12 @@ import {
   COUPON_KIND_FREESHIP,
   DATE_TIME_FORMAT,
   ErrorCode,
+  ORDER_DETAIL_STATUS_CANCELLED,
+  ORDER_STATUS_CANCELLED,
   ORDER_STATUS_COMPLETE,
+  ORDER_STATUS_RECEIVED,
   ORDER_STATUS_SHIPPING,
+  ORDER_STATUS_WAITING,
   orderDetailStatuses,
   orderStatuses,
   paymentMethods,
@@ -84,69 +94,77 @@ export default function OrderDetail() {
           <ChevronLeft />
           Danh sách đơn hàng
         </Button>
-        <Badge className={cn(orderStatus?.badgeColor, 'py-1 text-sm')}>
+        <Badge className={cn(orderStatus?.color, 'py-1 text-sm')}>
           {orderStatus?.label}
         </Badge>
       </div>
 
       <Separator />
 
-      <div className='relative grid grid-cols-7 py-4'>
-        {orderDetailStatuses.map((item, index) => {
-          const isLast = index === orderDetailStatuses.length - 1;
-          const isActive = index <= currentIndex;
-          const isLineActive = index < currentIndex;
+      {order.currentStatus === ORDER_DETAIL_STATUS_CANCELLED ? (
+        <div className='py-8 pl-4'>
+          <span className='text-lg text-orange-600'>Đã hủy đơn hàng</span>
+          <br />
+          vào: {getStatusDate(order.currentStatus)}
+        </div>
+      ) : (
+        <div className='relative grid grid-cols-7 py-4'>
+          {orderDetailStatuses.map((item, index) => {
+            const isLast = index === orderDetailStatuses.length - 1;
+            const isActive = index <= currentIndex;
+            const isLineActive = index < currentIndex;
 
-          const borderDelay = index * 300;
-          const lineDelay = borderDelay + 100;
+            const borderDelay = index * 300;
+            const lineDelay = borderDelay + 100;
 
-          return (
-            <div
-              key={item.label}
-              className='relative flex flex-col items-center text-center select-none'
-            >
+            return (
               <div
-                style={{
-                  transitionDelay: `${borderDelay}ms`
-                }}
-                className={cn(
-                  'relative z-1 flex h-14 w-14 items-center justify-center rounded-full border-4 border-solid transition-all duration-500 ease-in-out',
-                  {
-                    'border-green-500 bg-green-50 text-green-600': isActive,
-                    'border-neutral-300 bg-white text-neutral-300': !isActive
-                  }
-                )}
+                key={item.label}
+                className='relative flex flex-col items-center text-center select-none'
               >
-                <item.icon className='size-7' />
-              </div>
-
-              {!isLast && (
-                <div className='absolute top-[28px] left-1/2 -z-0 h-[4px] w-full bg-neutral-300'>
-                  <div
-                    style={{
-                      transitionDelay: `${lineDelay}ms`
-                    }}
-                    className={cn(
-                      'h-full w-full origin-left transform bg-green-500 transition-transform duration-700 ease-in-out',
-                      {
-                        'scale-x-100': isLineActive,
-                        'scale-x-0': !isLineActive
-                      }
-                    )}
-                  />
+                <div
+                  style={{
+                    transitionDelay: `${borderDelay}ms`
+                  }}
+                  className={cn(
+                    'relative z-1 flex h-14 w-14 items-center justify-center rounded-full border-4 border-solid transition-all duration-500 ease-in-out',
+                    {
+                      'border-green-500 bg-green-50 text-green-600': isActive,
+                      'border-neutral-300 bg-white text-neutral-300': !isActive
+                    }
+                  )}
+                >
+                  {item.icon && <item.icon className='size-7' />}
                 </div>
-              )}
 
-              <h3 className='mt-4 mb-1 block text-center text-sm font-medium whitespace-nowrap text-slate-800'>
-                {item.label}
-              </h3>
-              <span className='h-[14px] text-xs text-gray-400'>
-                {getStatusDate(item.value)}
-              </span>
-            </div>
-          );
-        })}
-      </div>
+                {!isLast && (
+                  <div className='absolute top-[28px] left-1/2 -z-0 h-[4px] w-full bg-neutral-300'>
+                    <div
+                      style={{
+                        transitionDelay: `${lineDelay}ms`
+                      }}
+                      className={cn(
+                        'h-full w-full origin-left transform bg-green-500 transition-transform duration-700 ease-in-out',
+                        {
+                          'scale-x-100': isLineActive,
+                          'scale-x-0': !isLineActive
+                        }
+                      )}
+                    />
+                  </div>
+                )}
+
+                <h3 className='mt-4 mb-1 block text-center text-sm font-medium whitespace-nowrap text-slate-800'>
+                  {item.label}
+                </h3>
+                <span className='h-[14px] text-xs text-gray-400'>
+                  {getStatusDate(item.value)}
+                </span>
+              </div>
+            );
+          })}
+        </div>
+      )}
 
       <Separator />
 
@@ -251,12 +269,17 @@ export default function OrderDetail() {
       <Separator />
 
       <SummaryRow
+        title='Yêu cầu bởi'
+        value='Nguời mua'
+        hidden={currentIndex < ORDER_DETAIL_STATUS_CANCELLED}
+      />
+
+      <SummaryRow
         title='Phương thức thanh toán'
         value={
           paymentMethods.find((pmth) => pmth.value === order.paymentMethod)
-            ?.label ?? ''
+            ?.label ?? 'Chưa thanh toán'
         }
-        hidden={false}
       />
 
       <SummaryRow title='Tổng tiền' value={+total} hidden={false} />
@@ -303,14 +326,7 @@ export default function OrderDetail() {
         hidden={+discount === 0}
       />
 
-      <SummaryRow
-        title='Thành tiền'
-        value={+order.total}
-        bottomLine={
-          orderStatus?.value === ORDER_STATUS_SHIPPING ||
-          orderStatus?.value === ORDER_STATUS_COMPLETE
-        }
-      />
+      <SummaryRow title='Thành tiền' value={+order.total} />
 
       {(orderStatus?.value === ORDER_STATUS_SHIPPING ||
         orderStatus?.value === ORDER_STATUS_COMPLETE) && (
@@ -321,6 +337,43 @@ export default function OrderDetail() {
           />
         </div>
       )}
+
+      <div className='flex w-full justify-end gap-x-2 py-4'>
+        {/* Rating if order received */}
+        {orderStatus?.value === ORDER_STATUS_RECEIVED && <RatingButton />}
+
+        {/* Complete payment if just created other */}
+        {orderStatus?.value === ORDER_STATUS_WAITING && (
+          <CompletePaymentButton orderId={order.id} />
+        )}
+
+        {/* Cancel order when status is not shipping */}
+        {orderStatus?.value && orderStatus.value < ORDER_STATUS_SHIPPING && (
+          <CancelOrderButton orderId={order.id} />
+        )}
+
+        {/* Confirm received order when status is shipping or complete */}
+        {/* Show and disabled when status is shipping */}
+        {(orderStatus?.value === ORDER_STATUS_SHIPPING ||
+          orderStatus?.value === ORDER_STATUS_COMPLETE) && (
+          <ConfirmReceivedOrderButton
+            disabled={orderStatus?.value === ORDER_STATUS_SHIPPING}
+            orderId={order.id}
+          />
+        )}
+
+        {/* Request refund */}
+        {orderStatus?.value === ORDER_STATUS_RECEIVED && <RefundButton />}
+
+        {/* Contact shop */}
+        <ContactShopButton />
+
+        {/* Re-order when status is cancelled or received */}
+        {(orderStatus?.value === ORDER_STATUS_CANCELLED ||
+          orderStatus?.value === ORDER_STATUS_RECEIVED) && (
+          <ReOrderButton orderItems={order.orderItems} />
+        )}
+      </div>
     </div>
   );
 }
