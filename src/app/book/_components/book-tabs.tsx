@@ -24,13 +24,12 @@ import Link from 'next/link';
 import route from '@/routes';
 import { useAuthStore } from '@/store';
 import { StarRating } from '@/components/star-rating';
-import { Angry, Frown, Laugh, Meh, Pen, Smile, X } from 'lucide-react';
+import { Pen, X } from 'lucide-react';
 import useDisclosure from '@/hooks/use-disclosure';
 import { Modal } from '@/components/modal';
 import { Separator } from '@/components/ui/separator';
 import {
   angryIcon,
-  emptyNotification,
   happyIcon,
   neutralIcon,
   sadIcon,
@@ -486,7 +485,7 @@ function ReviewModal({
         <div className='px-4'>
           <Textarea
             placeholder='Hãy chia sẻ cảm nhận của bạn về sản phẩm này nhé!'
-            className='min-h-[20vh]'
+            className='order-note focus-visible:ring-green-primary max-h-80 min-h-40 overflow-auto focus-visible:border-transparent focus-visible:ring-2 focus-visible:outline-none'
           />
         </div>
         <div className='flex justify-end p-4'>
