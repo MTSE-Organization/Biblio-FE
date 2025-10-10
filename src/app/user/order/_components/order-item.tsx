@@ -7,7 +7,6 @@ import ContactShopButton from '@/app/user/order/_components/contact-shop-button'
 import RatingButton from '@/app/user/order/_components/rating-button';
 import ReOrderButton from '@/app/user/order/_components/re-order-button';
 import RefundButton from '@/app/user/order/_components/refund-button';
-import { Button } from '@/components/form';
 import { Badge } from '@/components/ui/badge';
 import {
   DATE_DAY_TIME_FORMAT,
@@ -26,7 +25,6 @@ import route from '@/routes';
 import { OrderResType } from '@/types';
 import { formatDate, formatPrice, renderImageUrl } from '@/utils';
 import Image from 'next/image';
-import Link from 'next/link';
 
 export default function OrderItem({
   order,
