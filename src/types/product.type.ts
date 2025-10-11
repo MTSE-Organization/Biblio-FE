@@ -26,6 +26,8 @@ export type ProductResType = {
   createdDate: string;
   modifiedDate: string;
   totalViews: number;
+  totalReviews: number;
+  averageReview: number;
   status: number;
 };
 
@@ -48,5 +50,7 @@ export type ProductAutoType = {
   quantity: number;
   discount: number;
   totalViews: number;
+  totalReviews: number;
+  averageReview: number;
   status: number;
 };

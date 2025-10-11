@@ -318,6 +318,11 @@ const apiConfig = defineApiConfig({
       baseUrl: `${AppConstants.apiUrl}v1/review/list`,
       headers: baseHeader,
       method: 'GET'
+    },
+    summary: {
+      baseUrl: `${AppConstants.apiUrl}v1/review/summary/:productId`,
+      headers: baseHeader,
+      method: 'GET'
     }
   }
 });

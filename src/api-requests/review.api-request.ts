@@ -4,7 +4,8 @@ import {
   ApiResponseList,
   ReviewBodyType,
   ReviewResType,
-  ReviewSearchType
+  ReviewSearchType,
+  ReviewSummaryResType
 } from '@/types';
 import { http } from '@/utils';
 
@@ -16,6 +17,10 @@ const reviewApiRequest = {
   getList: (params?: ReviewSearchType) =>
     http.get<ApiResponseList<ReviewResType>>(apiConfig.review.getList, {
       params
+    }),
+  summary: (productId: string) =>
+    http.get<ApiResponseList<ReviewSummaryResType>>(apiConfig.review.summary, {
+      pathParams: { productId }
     })
 };
 

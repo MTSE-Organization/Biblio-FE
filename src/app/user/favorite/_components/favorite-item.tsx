@@ -84,7 +84,7 @@ export default function FavoriteItem({
             {favorite?.product?.category.name}
           </Link>
           <div className='flex items-center justify-center'>
-            <StarRating value={20} />
+            <StarRating value={favorite?.product?.averageReview} />
           </div>
         </div>
         {favorite?.product?.discount === 0 && (

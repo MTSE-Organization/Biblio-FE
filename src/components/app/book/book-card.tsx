@@ -53,7 +53,7 @@ export default function BookCard({ book }: { book: ProductAutoType }) {
             {book.category.name}
           </Link>
           <div className='flex items-center justify-center'>
-            <StarRating value={20} />
+            <StarRating value={book.averageReview} />
           </div>
         </div>
         <Link

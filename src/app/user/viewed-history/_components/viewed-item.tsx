@@ -84,7 +84,7 @@ export default function ViewedItem({
             {viewedProduct?.product?.category.name}
           </Link>
           <div className='flex items-center justify-center'>
-            <StarRating value={20} />
+            <StarRating value={viewedProduct?.product?.averageReview} />
           </div>
         </div>
         {viewedProduct?.product?.discount === 0 && (
