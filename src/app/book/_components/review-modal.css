@@ -1,3 +1,5 @@
+@reference "tailwindcss";
+
 .emoji-wrapper {
   @apply relative h-28 w-28 overflow-hidden;
 }
