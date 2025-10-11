@@ -24,3 +24,11 @@ export type AccountResType = {
   modifiedDate: string;
   status: number;
 };
+
+export type AccountAutoType = {
+  id: string;
+  fullName: string;
+  avatarPath: string;
+  kind: number;
+  isSuperAdmin: boolean;
+};
