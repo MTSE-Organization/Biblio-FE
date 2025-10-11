@@ -225,9 +225,9 @@ export default function BookDetailInfo({ book }: { book?: ProductResType }) {
       </div>
       <div className='mt-5 flex items-center gap-4'>
         <div className='flex items-center gap-1'>
-          <StarRating value={3.5} />
+          <StarRating value={book?.averageReview || 0} />
         </div>
-        <p>(2 Reviews)</p>
+        <p>({book?.totalReviews} đánh giá)</p>
         <Separator orientation='vertical' />
         <div className='flex items-center gap-1 text-gray-600'>
           <Eye />

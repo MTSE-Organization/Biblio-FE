@@ -37,7 +37,10 @@ import {
 } from '@/assets';
 import { Textarea } from '@/components/ui/textarea';
 import './review-modal.css';
-import { useCreateReviewMutation } from '@/queries/review.query';
+import {
+  useCreateReviewMutation,
+  useReviewSummaryQuery
+} from '@/queries/review.query';
 import { useAppLoadingStore } from '@/store/use-app-loading-store';
 import ReviewList from './review-list';
 import { useQueryClient } from '@tanstack/react-query';
@@ -354,10 +357,34 @@ function PublisherInfo({
 function BookReview({ productId }: { productId: string }) {
   const { profile } = useAuthStore();
   const { opened, open, close } = useDisclosure();
+  const reviewSummaryQuery = useReviewSummaryQuery({
+    productId,
+    enabled: !!productId
+  });
+
+  const reviewSummary = reviewSummaryQuery?.data?.data?.content ?? [];
 
   const handleOpenReviewModal = () => {
     open();
   };
+
+  const totalReviews = reviewSummary?.reduce((sum, i) => sum + i.total, 0) ?? 0;
+
+  const getRatePercent = (rate: number) => {
+    if (!reviewSummary || totalReviews === 0) return 0;
+
+    const item = reviewSummary.find((r) => r.rate === rate);
+    return item ? Math.round((item.total / totalReviews) * 100) : 0;
+  };
+
+  const averageRate =
+    totalReviews > 0
+      ? Math.round(
+          (reviewSummary.reduce((sum, i) => sum + i.rate * i.total, 0) /
+            totalReviews) *
+            10
+        ) / 10
+      : 0;
 
   return (
     <>
@@ -365,10 +392,10 @@ function BookReview({ productId }: { productId: string }) {
         <Col span={10} className='flex-row items-center gap-x-5'>
           <div className='flex flex-col items-center justify-center gap-y-2'>
             <p className='text-xl'>
-              <span className='text-4xl'>5</span>/5
+              <span className='text-4xl'>{averageRate}</span>/5
             </p>
-            <StarRating showValue={false} value={5} />
-            <div>2 đánh giá</div>
+            <StarRating showValue={false} value={averageRate} />
+            <div>{totalReviews} đánh giá</div>
           </div>
           <div className='flex-1'>
             {[...Array(5)].map((item, index) => (
@@ -382,10 +409,10 @@ function BookReview({ productId }: { productId: string }) {
                 <div className='relative h-1.5 w-4/5 overflow-hidden rounded-lg bg-gray-200'>
                   <div
                     className='h-full rounded-lg bg-yellow-400'
-                    style={{ width: `${36}%` }}
+                    style={{ width: `${getRatePercent(5 - index)}%` }}
                   />
                 </div>
-                <span>36%</span>
+                <span className='w-2'>{getRatePercent(5 - index)}%</span>
               </div>
             ))}
           </div>

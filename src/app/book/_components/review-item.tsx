@@ -22,7 +22,7 @@ export default function ReviewItem({ review }: { review: ReviewResType }) {
             {formatDate(review?.createdDate, DATE_TIME_FORMAT)}
           </span>
         </div>
-        <StarRating value={5} size={15} showValue={false} />
+        <StarRating value={review?.rate} size={15} showValue={false} />
         <p>{review?.content}</p>
       </div>
     </div>

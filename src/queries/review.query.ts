@@ -22,3 +22,17 @@ export const useReviewListQuery = ({
     enabled
   });
 };
+
+export const useReviewSummaryQuery = ({
+  productId,
+  enabled
+}: {
+  productId: string;
+  enabled?: boolean;
+}) => {
+  return useQuery({
+    queryKey: ['review-summary', productId],
+    queryFn: () => reviewApiRequest.summary(productId),
+    enabled
+  });
+};

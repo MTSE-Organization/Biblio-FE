@@ -1,5 +1,6 @@
 import { useReviewListQuery } from '@/queries/review.query';
 import ReviewItem from './review-item';
+import { NoData } from '@/components/no-data';
 
 export default function ReviewList({ productId }: { productId: string }) {
   const reviewListQuery = useReviewListQuery({
@@ -11,9 +12,11 @@ export default function ReviewList({ productId }: { productId: string }) {
 
   return (
     <div className='flex w-full flex-col'>
-      {reviews?.map((review, index) => (
-        <ReviewItem key={review.id} review={review} />
-      ))}
+      {reviews?.length ? (
+        reviews.map((review) => <ReviewItem key={review.id} review={review} />)
+      ) : (
+        <NoData content='Không có review' />
+      )}
     </div>
   );
 }

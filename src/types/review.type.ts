@@ -21,3 +21,8 @@ export type ReviewResType = {
 export type ReviewSearchType = {
   productId?: string;
 } & BaseSearchType;
+
+export type ReviewSummaryResType = {
+  rate: number;
+  total: number;
+};
