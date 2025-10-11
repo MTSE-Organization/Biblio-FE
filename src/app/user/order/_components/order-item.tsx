@@ -4,9 +4,9 @@ import CancelOrderButton from '@/app/user/order/_components/cancel-order-button'
 import CompletePaymentButton from '@/app/user/order/_components/complete-payment-button';
 import ConfirmReceivedOrderButton from '@/app/user/order/_components/confirm-received-order-button';
 import ContactShopButton from '@/app/user/order/_components/contact-shop-button';
-import RatingButton from '@/app/user/order/_components/rating-button';
 import ReOrderButton from '@/app/user/order/_components/re-order-button';
 import RefundButton from '@/app/user/order/_components/refund-button';
+import ReviewButton from '@/app/user/order/_components/review-button';
 import { Badge } from '@/components/ui/badge';
 import {
   DATE_DAY_TIME_FORMAT,
@@ -89,7 +89,7 @@ export default function OrderItem({
                   </p>
                   <p className='text-zinc-800'>x{orderItem.quantity}</p>
                 </div>
-                <div className='flex flex-col items-end justify-center'>
+                <div className='flex flex-col items-end justify-center gap-2'>
                   {orderItem.discount === 0 ? (
                     <p className='text-zinc-800'>
                       {formatPrice(orderItem.total)}
@@ -104,6 +104,11 @@ export default function OrderItem({
                       </p>
                     </div>
                   )}
+                  {currentStatus === ORDER_STATUS_RECEIVED && (
+                    <ReviewButton
+                      productId={orderItem.productVariant.product.id}
+                    />
+                  )}
                 </div>
               </div>
             </div>
@@ -117,9 +122,6 @@ export default function OrderItem({
         </div>
       </div>
       <div className='mt-4 flex justify-end gap-2 text-right'>
-        {/* Rating */}
-        {orderStatus?.value === ORDER_STATUS_RECEIVED && <RatingButton />}
-
         {/* Complete payment if just created other */}
         {orderStatus?.value === ORDER_STATUS_WAITING && (
           <CompletePaymentButton orderId={order.id} />
