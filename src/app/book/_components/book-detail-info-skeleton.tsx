@@ -18,8 +18,10 @@ export default function BookDetailInfoSkeleton() {
       <List className='mt-[15px]'>
         {[...Array(8)].map((_, i) => (
           <ListItem key={i} className='flex h-8 py-[5px] text-[#777]'>
-            <label className='skeleton mr-2.5 flex min-w-25 justify-between font-bold text-[#2b2b2d]'></label>{' '}
-            <label className='skeleton mr-2.5 flex min-w-25 justify-between font-bold text-[#2b2b2d]'></label>{' '}
+            <label className='skeleton mr-2.5 flex min-w-25 justify-between font-bold text-[#2b2b2d]'></label>
+            &nbsp;
+            <label className='skeleton mr-2.5 flex min-w-25 justify-between font-bold text-[#2b2b2d]'></label>
+            &nbsp;
           </ListItem>
         ))}
       </List>

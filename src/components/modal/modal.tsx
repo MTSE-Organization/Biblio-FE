@@ -44,6 +44,7 @@ export default function Modal({
     <AnimatePresence>
       {open && (
         <motion.div
+          onClick={(e) => e.stopPropagation()}
           className={cn(
             'fixed inset-0 top-0 z-10 flex items-center justify-center',
             className
@@ -69,6 +70,7 @@ export default function Modal({
             animate={variants.animate}
             exit={variants.exit}
             transition={{ duration: 0.15, ease: 'linear' }}
+            onClick={(e) => e.stopPropagation()}
           >
             {children}
           </motion.div>

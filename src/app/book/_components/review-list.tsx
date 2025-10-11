@@ -1,6 +1,8 @@
 import { useReviewListQuery } from '@/queries/review.query';
 import ReviewItem from './review-item';
 import { NoData } from '@/components/no-data';
+import { Col } from '@/components/form';
+import ReviewItemSkeleton from '@/app/book/_components/review-item-skeleton';
 
 export default function ReviewList({ productId }: { productId: string }) {
   const reviewListQuery = useReviewListQuery({
@@ -9,14 +11,17 @@ export default function ReviewList({ productId }: { productId: string }) {
   });
 
   const reviews = reviewListQuery?.data?.data?.content;
+  const loading = reviewListQuery.isLoading || reviewListQuery.isFetching;
 
   return (
-    <div className='flex w-full flex-col'>
-      {reviews?.length ? (
+    <Col gutter={0}>
+      {loading ? (
+        [...Array(8)].map((_, index) => <ReviewItemSkeleton key={index} />)
+      ) : reviews?.length ? (
         reviews.map((review) => <ReviewItem key={review.id} review={review} />)
       ) : (
-        <NoData content='Không có review' />
+        <NoData content='Chưa có đánh giá' className='min-h-[30vh]' />
       )}
-    </div>
+    </Col>
   );
 }
