@@ -39,6 +39,8 @@ import { Textarea } from '@/components/ui/textarea';
 import './review-modal.css';
 import { useCreateReviewMutation } from '@/queries/review.query';
 import { useAppLoadingStore } from '@/store/use-app-loading-store';
+import ReviewList from './review-list';
+import { useQueryClient } from '@tanstack/react-query';
 
 const BookTabs = ({ book }: { book?: ProductResType }) => {
   const [activeTab, setActiveTab] = useState('review');
@@ -411,6 +413,9 @@ function BookReview({ productId }: { productId: string }) {
           </Button>
         </Col>
       </Row>
+      <Row>
+        <ReviewList productId={productId} />
+      </Row>
       <ReviewModal opened={opened} onClose={close} productId={productId} />
     </>
   );
@@ -436,6 +441,7 @@ function ReviewModal({
   const [selectedRating, setSelectedRating] = useState<number>(5);
   const [content, setContent] = useState('');
   const { withLoading } = useAppLoadingStore();
+  const queryClient = useQueryClient();
 
   const reviewMutation = useCreateReviewMutation();
 
@@ -450,6 +456,9 @@ function ReviewModal({
         {
           onSuccess: () => {
             notify.success('Đánh giá sách thành công');
+            queryClient.invalidateQueries({
+              queryKey: ['review-list', { productId }]
+            });
             onClose();
           },
           onError: (error) => {

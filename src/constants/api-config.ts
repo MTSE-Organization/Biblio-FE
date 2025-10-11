@@ -313,6 +313,11 @@ const apiConfig = defineApiConfig({
       baseUrl: `${AppConstants.apiUrl}v1/review/create`,
       headers: baseHeader,
       method: 'POST'
+    },
+    getList: {
+      baseUrl: `${AppConstants.apiUrl}v1/review/list`,
+      headers: baseHeader,
+      method: 'GET'
     }
   }
 });
