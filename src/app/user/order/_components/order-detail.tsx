@@ -1,13 +1,12 @@
 'use client';
-
 import CancelOrderButton from '@/app/user/order/_components/cancel-order-button';
 import CompletePaymentButton from '@/app/user/order/_components/complete-payment-button';
 import ConfirmReceivedOrderButton from '@/app/user/order/_components/confirm-received-order-button';
 import ContactShopButton from '@/app/user/order/_components/contact-shop-button';
 import OrderDetailSkeleton from '@/app/user/order/_components/order-detail-skeleton';
-import RatingButton from '@/app/user/order/_components/rating-button';
 import ReOrderButton from '@/app/user/order/_components/re-order-button';
 import RefundButton from '@/app/user/order/_components/refund-button';
+import ReviewButton from '@/app/user/order/_components/review-button';
 import { Button } from '@/components/form';
 import { OrderNotFound } from '@/components/not-found';
 import { Badge } from '@/components/ui/badge';
@@ -236,7 +235,7 @@ export default function OrderDetail() {
                     <p className='text-zinc-800'>x{orderItem.quantity}</p>
                   </>
                 </div>
-                <div className='flex flex-col items-end justify-center'>
+                <div className='flex flex-col items-end justify-center gap-4'>
                   {orderItem.discount === 0 ? (
                     <p className='text-zinc-800'>
                       {formatPrice(orderItem.total)}
@@ -258,20 +257,23 @@ export default function OrderDetail() {
                       )}
                     </div>
                   )}
+                  {order.currentStatus === ORDER_STATUS_RECEIVED && (
+                    <ReviewButton
+                      productId={orderItem.productVariant.product.id}
+                    />
+                  )}
                 </div>
               </div>
             </div>
           </div>
-          {orderItems.length > 1 && <Separator />}
+          <Separator />
         </div>
       ))}
-
-      <Separator />
 
       <SummaryRow
         title='Yêu cầu bởi'
         value='Nguời mua'
-        hidden={currentIndex < ORDER_DETAIL_STATUS_CANCELLED}
+        hidden={order.currentStatus < ORDER_DETAIL_STATUS_CANCELLED}
       />
 
       <SummaryRow
@@ -339,17 +341,9 @@ export default function OrderDetail() {
       )}
 
       <div className='flex w-full justify-end gap-x-2 py-4'>
-        {/* Rating if order received */}
-        {orderStatus?.value === ORDER_STATUS_RECEIVED && <RatingButton />}
-
         {/* Complete payment if just created other */}
         {orderStatus?.value === ORDER_STATUS_WAITING && (
           <CompletePaymentButton orderId={order.id} />
-        )}
-
-        {/* Cancel order when status is not shipping */}
-        {orderStatus?.value && orderStatus.value < ORDER_STATUS_SHIPPING && (
-          <CancelOrderButton orderId={order.id} />
         )}
 
         {/* Confirm received order when status is shipping or complete */}
@@ -367,6 +361,11 @@ export default function OrderDetail() {
 
         {/* Contact shop */}
         <ContactShopButton />
+
+        {/* Cancel order when status is not shipping */}
+        {orderStatus?.value && orderStatus.value < ORDER_STATUS_SHIPPING && (
+          <CancelOrderButton orderId={order.id} />
+        )}
 
         {/* Re-order when status is cancelled or received */}
         {(orderStatus?.value === ORDER_STATUS_CANCELLED ||

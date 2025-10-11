@@ -7,7 +7,7 @@ import Image from 'next/image';
 
 export default function ReviewItem({ review }: { review: ReviewResType }) {
   return (
-    <div className='flex w-full items-start gap-6 border-b py-6 first:border-t last:border-b-0 last:pb-0'>
+    <div className='flex w-full items-start gap-6 border-b py-4 first:border-t last:border-b-0 last:pb-0'>
       <Image
         src={renderImageUrl(review?.account?.avatarPath) ?? defaultAvatar}
         alt='Avatar'
@@ -23,7 +23,7 @@ export default function ReviewItem({ review }: { review: ReviewResType }) {
           </span>
         </div>
         <StarRating value={review?.rate} size={15} showValue={false} />
-        <p>{review?.content}</p>
+        <p className='mt-2'>{review?.content}</p>
       </div>
     </div>
   );
