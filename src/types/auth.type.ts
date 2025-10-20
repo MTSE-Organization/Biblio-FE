@@ -5,7 +5,7 @@ import {
   otpSchema,
   registerSchema
 } from '@/schemaValidations';
-import { ProfileType } from '@/types/account.type';
+import { ProfileResType } from '@/types/account.type';
 import { Socket } from 'socket.io-client';
 import z from 'zod';
 
@@ -17,11 +17,11 @@ export type ForgotPasswordBodyType = z.infer<typeof forgotPasswordStep1Schema> &
 
 export type AuthStoreType = {
   isAuthenticated: boolean;
-  profile: ProfileType | null;
+  profile: ProfileResType | null;
   loading: boolean;
   socket: Socket | null;
   setAuthenticated: (isAuthenticated: boolean) => void;
-  setProfile: (profile: ProfileType | null) => void;
+  setProfile: (profile: ProfileResType | null) => void;
   setLoading: (loading: boolean) => void;
   connectSocket: (token: string) => void;
   disconnectSocket: () => void;

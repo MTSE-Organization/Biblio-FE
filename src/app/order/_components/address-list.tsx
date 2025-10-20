@@ -14,8 +14,8 @@ export default function AddressList() {
   const addModal = useDisclosure();
   const { addressId, setAddressId } = useOrderStore();
 
-  const { data } = useAddressListQuery();
-  const addressList = data?.data.content ?? [];
+  const addressListQuery = useAddressListQuery();
+  const addressList = addressListQuery?.data?.data.content ?? [];
 
   const defaultAddress =
     addressList.find((a) => a.id === addressId) || addressList[0];
