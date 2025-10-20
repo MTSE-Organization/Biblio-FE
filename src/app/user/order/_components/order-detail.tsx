@@ -330,16 +330,6 @@ export default function OrderDetail() {
 
       <SummaryRow title='Thành tiền' value={+order.total} />
 
-      {(orderStatus?.value === ORDER_STATUS_SHIPPING ||
-        orderStatus?.value === ORDER_STATUS_COMPLETE) && (
-        <div className='flex w-full justify-end py-4'>
-          <ConfirmReceivedOrderButton
-            disabled={orderStatus?.value === ORDER_STATUS_SHIPPING}
-            orderId={order.id}
-          />
-        </div>
-      )}
-
       <div className='flex w-full justify-end gap-x-2 py-4'>
         {/* Complete payment if just created other */}
         {orderStatus?.value === ORDER_STATUS_WAITING && (

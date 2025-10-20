@@ -21,10 +21,11 @@ import { formatDate, renderImageUrl } from '@/utils';
 import { logger } from '@/logger';
 import { NoData } from '@/components/no-data';
 import { List, ListItem } from '@/components/list';
-import { StarRating } from '@/components/star-rating';
 import './review-modal.css';
 import { useReviewSummaryQuery } from '@/queries/review.query';
 import ReviewList from './review-list';
+import ReviewSummarySkeleton from '@/app/book/_components/review-summary-skeleton';
+import ReviewSummary from '@/app/book/_components/review-summary';
 
 const BookTabs = ({ book }: { book?: ProductResType }) => {
   const [activeTab, setActiveTab] = useState('review');
@@ -373,33 +374,20 @@ function BookReview({ productId }: { productId: string }) {
   return (
     <>
       <Row className='mt-4 justify-center'>
-        <Col span={10} className='flex-row items-center gap-x-5'>
-          <div className='flex flex-col items-center justify-center gap-y-2'>
-            <p className='text-xl'>
-              <span className='text-4xl'>{averageRate}</span>/5
-            </p>
-            <StarRating showValue={false} value={averageRate} />
-            <div>{totalReviews} đánh giá</div>
-          </div>
-          <div className='flex-1'>
-            {[...Array(5)].map((item, index) => (
-              <div
-                key={index}
-                className='flex items-center justify-between gap-x-2 not-last:mb-1'
-              >
-                <span className='w-10 text-right whitespace-nowrap'>
-                  {5 - index} sao
-                </span>
-                <div className='relative h-1.5 w-4/5 overflow-hidden rounded-lg bg-gray-200'>
-                  <div
-                    className='h-full rounded-lg bg-yellow-400'
-                    style={{ width: `${getRatePercent(5 - index)}%` }}
-                  />
-                </div>
-                <span className='w-2'>{getRatePercent(5 - index)}%</span>
-              </div>
-            ))}
-          </div>
+        <Col
+          span={10}
+          gutter={0}
+          className='mb-4 flex-row items-center gap-x-5'
+        >
+          {reviewSummaryQuery.isLoading || reviewSummaryQuery.isFetching ? (
+            <ReviewSummarySkeleton />
+          ) : (
+            <ReviewSummary
+              averageRate={averageRate}
+              totalReviews={totalReviews}
+              getRatePercent={getRatePercent}
+            />
+          )}
         </Col>
       </Row>
       <Row className='mb-0'>
