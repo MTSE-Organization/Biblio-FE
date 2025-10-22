@@ -1,11 +1,28 @@
 import { orderApiRequest } from '@/api-requests';
 import { CreateOrderBodyType, OrderBodyType, OrderSearchType } from '@/types';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useInfiniteQuery, useMutation, useQuery } from '@tanstack/react-query';
 
-export const useOrderListQuery = (params?: OrderSearchType) => {
-  return useQuery({
+export const useInfiniteOrderListQuery = ({
+  enabled = false,
+  params
+}: {
+  params?: OrderSearchType;
+  enabled: boolean;
+}) => {
+  return useInfiniteQuery({
     queryKey: ['order-list', params],
-    queryFn: () => orderApiRequest.getList(params)
+    queryFn: ({ pageParam = 0 }) =>
+      orderApiRequest.getList({ ...params, page: pageParam }),
+    initialPageParam: 0,
+    getNextPageParam: (lastPage, allPages) => {
+      const currentPage = allPages.length - 1;
+      const totalPages = lastPage.data.totalPages;
+      if (currentPage + 1 < totalPages) {
+        return currentPage + 1;
+      }
+      return undefined;
+    },
+    enabled
   });
 };
 

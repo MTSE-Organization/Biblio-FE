@@ -6,6 +6,8 @@ import { CircleLoading } from '@/components/loading';
 import {
   COUPON_KIND_DISCOUNT,
   COUPON_KIND_FREESHIP,
+  PAYMENT_COD,
+  PAYMENT_VNPAY,
   storageKeys
 } from '@/constants';
 import { logger } from '@/logger';
@@ -25,7 +27,7 @@ export default function CompleteCheckout({ order }: { order?: OrderResType }) {
   const { selectedDiscountCoupon, selectedFreeShipCoupon, resetStore } =
     useCartStore();
   const [shippingFee, setShippingFee] = useState<number>(0);
-  const { addressId, note, paymentMethod } = useOrderStore();
+  const { addressId, note, paymentMethod, loading } = useOrderStore();
   const placeOrderMutation = usePlaceOrderMutation();
   const queryClient = useQueryClient();
   const orderId = getData(storageKeys.ORDER_ID) as string;
@@ -50,7 +52,53 @@ export default function CompleteCheckout({ order }: { order?: OrderResType }) {
     getShippingFee();
   }, [orderId, addressId]);
 
-  if (!order) return null;
+  if (!order || loading)
+    return (
+      <div className='rounded-md border px-6 py-4'>
+        <p className='text-green-primary text-center text-base font-semibold'>
+          Tóm tắt đơn hàng
+        </p>
+        <List className='mt-[15px]'>
+          <ListItem className='flex justify-between py-[5px] text-[#777]'>
+            <label className='mr-2.5 flex min-w-44 justify-between font-medium text-[#2b2b2d]'>
+              Tổng tiền hàng
+            </label>
+            <span className='skeleton h-4 w-20'></span>
+          </ListItem>
+          <ListItem className='flex justify-between py-[5px] text-[#777]'>
+            <label className='mr-2.5 flex min-w-44 justify-between font-medium text-[#2b2b2d]'>
+              Phí vận chuyển
+            </label>
+            <span className='skeleton h-4 w-20'></span>
+          </ListItem>
+          <ListItem className='flex justify-between py-[5px] text-[#777]'>
+            <label className='mr-2.5 flex min-w-44 justify-between font-medium text-[#2b2b2d]'>
+              Giảm phí vận chuyển
+            </label>
+            <span className='skeleton h-4 w-20'></span>
+          </ListItem>
+          <ListItem className='flex justify-between py-[5px] text-[#777]'>
+            <label className='mr-2.5 flex min-w-44 justify-between font-medium text-[#2b2b2d]'>
+              Giảm giá sách
+            </label>
+            <span className='skeleton h-4 w-20'></span>
+          </ListItem>
+          <ListItem>
+            <hr className='my-2 border-t border-gray-300' />
+          </ListItem>
+          <ListItem className='text-green-primary flex items-center justify-between py-[5px] font-semibold'>
+            <label className='mr-2.5 flex min-w-44 justify-between font-medium text-[#2b2b2d]'>
+              Tổng thanh toán
+            </label>
+            <span className='skeleton h-4 w-20'></span>
+          </ListItem>
+        </List>
+        <Button
+          variant={'primary'}
+          className='skeleton mt-3 mb-2.5 w-50 w-full'
+        ></Button>
+      </div>
+    );
 
   const total = order.orderItems
     .reduce(
@@ -76,11 +124,18 @@ export default function CompleteCheckout({ order }: { order?: OrderResType }) {
       placeOrderMutation.mutateAsync(payload, {
         onSuccess: (res) => {
           if (res.result) {
-            notify.success('Thanh toán thành công');
-            queryClient.refetchQueries({ queryKey: ['order', orderId] });
-            resetStore();
-            router.replace(`${route.user.order}/${orderId}`);
-            removeData(storageKeys.ORDER_ID);
+            if (paymentMethod === PAYMENT_COD) {
+              notify.success('Thanh toán thành công');
+              queryClient.refetchQueries({ queryKey: ['order', orderId] });
+              resetStore();
+              router.replace(`${route.user.order}/${orderId}`);
+              removeData(storageKeys.ORDER_ID);
+            } else if (paymentMethod === PAYMENT_VNPAY) {
+              const vnPayUrl = res.data?.paymentUrl;
+              if (vnPayUrl) {
+                router.push(vnPayUrl);
+              }
+            }
           }
         },
         onError: (error) => {

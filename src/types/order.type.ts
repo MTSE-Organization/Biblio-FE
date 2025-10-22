@@ -22,9 +22,11 @@ export type OrderResType = {
 };
 
 export type OrderStoreType = {
+  loading: boolean;
   addressId: string;
   paymentMethod: number;
   note: string;
+  setLoading: (loading: boolean) => void;
   setAddressId: (addressId: string) => void;
   setPaymentMethod: (paymentMethod: number) => void;
   setNote: (note: string) => void;

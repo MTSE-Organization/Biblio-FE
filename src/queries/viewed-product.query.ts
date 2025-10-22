@@ -2,7 +2,7 @@
 
 import { viewedProductApiRequest } from '@/api-requests';
 import { BaseSearchType } from '@/types';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useInfiniteQuery, useMutation } from '@tanstack/react-query';
 
 export const useViewedProductMutation = () => {
   return useMutation({
@@ -19,16 +19,26 @@ export const useDeleteViewedProductMutation = () => {
   });
 };
 
-export const useViewedProductListQuery = ({
+export const useInfiniteViewedProductListQuery = ({
   params,
   enabled
 }: {
   params?: BaseSearchType;
   enabled?: boolean;
 } = {}) => {
-  return useQuery({
-    queryKey: ['viewed-product-list', params],
-    queryFn: () => viewedProductApiRequest.getList(params),
+  return useInfiniteQuery({
+    queryKey: ['order-list', params],
+    queryFn: ({ pageParam = 0 }) =>
+      viewedProductApiRequest.getList({ ...params, page: pageParam }),
+    initialPageParam: 0,
+    getNextPageParam: (lastPage, allPages) => {
+      const currentPage = allPages.length - 1;
+      const totalPages = lastPage.data.totalPages;
+      if (currentPage + 1 < totalPages) {
+        return currentPage + 1;
+      }
+      return undefined;
+    },
     enabled
   });
 };

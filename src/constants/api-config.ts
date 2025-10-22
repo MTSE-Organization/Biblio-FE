@@ -324,6 +324,13 @@ const apiConfig = defineApiConfig({
       headers: baseHeader,
       method: 'GET'
     }
+  },
+  payment: {
+    verifyReturn: {
+      baseUrl: `${AppConstants.apiUrl}v1/payment/verify-return-url`,
+      headers: baseHeader,
+      method: 'GET'
+    }
   }
 });
 

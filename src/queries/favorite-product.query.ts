@@ -1,6 +1,6 @@
 import { favoriteApiRequest } from '@/api-requests';
 import { FavoriteProductSearchType } from '@/types';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useInfiniteQuery, useMutation, useQuery } from '@tanstack/react-query';
 
 export const useFavoriteProductListQuery = ({
   params,
@@ -12,6 +12,30 @@ export const useFavoriteProductListQuery = ({
   return useQuery({
     queryKey: ['favorite-product-list', params],
     queryFn: () => favoriteApiRequest.getList(params),
+    enabled
+  });
+};
+
+export const useInfiniteFavoriteProductListQuery = ({
+  params,
+  enabled
+}: {
+  params?: FavoriteProductSearchType;
+  enabled?: boolean;
+} = {}) => {
+  return useInfiniteQuery({
+    queryKey: ['favorite-product-list', params],
+    queryFn: ({ pageParam = 0 }) =>
+      favoriteApiRequest.getList({ ...params, page: pageParam }),
+    initialPageParam: 0,
+    getNextPageParam: (lastPage, allPages) => {
+      const currentPage = allPages.length - 1;
+      const totalPages = lastPage.data.totalPages;
+      if (currentPage + 1 < totalPages) {
+        return currentPage + 1;
+      }
+      return undefined;
+    },
     enabled
   });
 };

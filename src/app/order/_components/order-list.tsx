@@ -1,11 +1,12 @@
 'use client';
 
 import OrderItem from '@/app/order/_components/order-item';
+import OrderListSkeleton from '@/app/order/_components/order-list-skeleton';
 import { Col, Row } from '@/components/form';
 import { OrderResType } from '@/types';
 
 export default function OrderList({ order }: { order?: OrderResType }) {
-  if (!order) return null;
+  if (!order) return <OrderListSkeleton />;
 
   return (
     <Row className='mb-0 gap-x-4'>
