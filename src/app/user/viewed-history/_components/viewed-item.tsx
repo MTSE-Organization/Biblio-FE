@@ -12,7 +12,6 @@ import { useQueryClient } from '@tanstack/react-query';
 import Image from 'next/image';
 import Link from 'next/link';
 import { RiDeleteBin6Fill } from 'react-icons/ri';
-import { motion } from 'framer-motion';
 
 export default function ViewedItem({
   viewedProduct,
@@ -44,16 +43,7 @@ export default function ViewedItem({
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{
-        duration: 0.25,
-        delay: index * 0.1,
-        ease: 'linear'
-      }}
-      className='relative flex gap-5 rounded-lg border border-gray-200 bg-white p-4 shadow-[0px_0px_10px_2px] shadow-gray-200 not-last:mb-4'
-    >
+    <div className='relative flex gap-5 rounded-lg border border-gray-200 bg-white p-4 shadow-[0px_0px_10px_2px] shadow-gray-200'>
       <div className='flex-shrink-0'>
         <Image
           src={
@@ -64,7 +54,7 @@ export default function ViewedItem({
           width={100}
           height={100}
           alt='Sản phẩm'
-          className='rounded-lg object-contain'
+          className='h-25 w-25 rounded-lg object-contain'
         />
       </div>
       <div>
@@ -120,6 +110,6 @@ export default function ViewedItem({
         />
         <span>Xóa</span>
       </div>
-    </motion.div>
+    </div>
   );
 }

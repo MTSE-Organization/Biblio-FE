@@ -12,7 +12,6 @@ import { useQueryClient } from '@tanstack/react-query';
 import { Heart } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
 
 export default function FavoriteItem({
   favorite,
@@ -44,16 +43,7 @@ export default function FavoriteItem({
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{
-        duration: 0.25,
-        delay: index * 0.1,
-        ease: 'linear'
-      }}
-      className='not-last:mb-4relative relative flex gap-5 rounded-lg border border-gray-200 bg-white p-4 shadow-[0px_0px_10px_2px] shadow-gray-200 not-last:mb-4'
-    >
+    <div className='not-last:mb-4relative relative flex gap-5 rounded-lg border border-gray-200 bg-white p-4 shadow-[0px_0px_10px_2px] shadow-gray-200 not-last:mb-4'>
       <div className='flex-shrink-0'>
         <Image
           src={
@@ -117,6 +107,6 @@ export default function FavoriteItem({
         <Heart className='scale-100 fill-red-500 text-red-500 transition-all duration-300' />
         <span>Yêu thích</span>
       </div>
-    </motion.div>
+    </div>
   );
 }

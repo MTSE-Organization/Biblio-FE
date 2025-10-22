@@ -31,7 +31,7 @@ const orderApiRequest = {
       }
     }),
   place: (body: OrderBodyType) =>
-    http.post<ApiResponse<any>>(apiConfig.order.place, {
+    http.post<ApiResponse<{ paymentUrl: string }>>(apiConfig.order.place, {
       body
     }),
   complete: (id: string) =>

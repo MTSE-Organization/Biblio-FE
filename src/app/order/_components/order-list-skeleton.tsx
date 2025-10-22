@@ -1,14 +1,8 @@
-import { Badge } from '@/components/ui/badge';
-import { cn } from '@/lib';
-
-export default function OrderItemSkeleton() {
+export default function OrderListSkeleton() {
   return (
     <div className='relative mb-5 rounded-lg border border-gray-200 bg-white p-4 shadow-[0_0_10px_2px_rgba(0,0,0,0.05)]'>
       <div className='mb-4 flex items-center justify-between border-b border-gray-200 pb-4'>
         <div className='h-4 w-32 animate-pulse rounded bg-gray-200'></div>
-        <Badge className={cn('bg-transparent py-1 text-sm')}>
-          <div className='h-4 w-20 animate-pulse rounded bg-gray-200'></div>
-        </Badge>
       </div>
 
       {[...Array(4)].map((_, index) => (

@@ -1,12 +1,15 @@
 import './globals.css';
 import { Be_Vietnam_Pro } from 'next/font/google';
-import { ThemeProvider } from '@/components/theme-provider';
 import NextTopLoader from 'nextjs-toploader';
 import type { Metadata } from 'next';
 import { Suspense } from 'react';
-import ToastPortal from '@/components/toast-portal';
-import { AppProvider, QueryProvider } from '@/components/providers';
+import {
+  AppProvider,
+  QueryProvider,
+  ThemeProvider
+} from '@/components/providers';
 import { BodyLoad } from '@/components/app/body-load';
+import { ToastContainer } from 'react-toastify';
 
 const beVietnamPro = Be_Vietnam_Pro({
   subsets: ['latin', 'vietnamese'],
@@ -34,20 +37,20 @@ export default async function RootLayout({
         className={`${beVietnamPro.variable} ${beVietnamPro.className} text-foreground antialiased transition-all duration-200 ease-linear`}
       >
         <BodyLoad />
-        <QueryProvider>
-          <AppProvider>
-            <ThemeProvider
-              attribute='class'
-              defaultTheme='light'
-              disableTransitionOnChange
-            >
+        <ThemeProvider
+          attribute='class'
+          defaultTheme='light'
+          disableTransitionOnChange
+        >
+          <QueryProvider>
+            <AppProvider>
               {/* <WebVitals /> */}
               <NextTopLoader color='#64b496' showSpinner={false} />
               <Suspense>{children}</Suspense>
-            </ThemeProvider>
-            <ToastPortal />
-          </AppProvider>
-        </QueryProvider>
+            </AppProvider>
+          </QueryProvider>
+        </ThemeProvider>
+        <ToastContainer />
       </body>
     </html>
   );

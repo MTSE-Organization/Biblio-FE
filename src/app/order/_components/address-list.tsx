@@ -12,7 +12,7 @@ import { useEffect } from 'react';
 export default function AddressList() {
   const changeModal = useDisclosure();
   const addModal = useDisclosure();
-  const { addressId, setAddressId } = useOrderStore();
+  const { addressId, setAddressId, setLoading } = useOrderStore();
 
   const addressListQuery = useAddressListQuery();
   const addressList = addressListQuery?.data?.data.content ?? [];
@@ -22,42 +22,73 @@ export default function AddressList() {
 
   useEffect(() => {
     if (defaultAddress) setAddressId(defaultAddress.id);
-  }, [defaultAddress]);
+  }, [defaultAddress, setAddressId]);
+
+  useEffect(() => {
+    setLoading(addressListQuery.isLoading || addressListQuery.isFetching);
+  }, [addressListQuery.isFetching, addressListQuery.isLoading, setLoading]);
 
   return (
     <>
-      <div className='flex w-full flex-col rounded-md bg-white px-6 py-4 shadow-[0_0_10px_2px_rgba(0,0,0,0.1)]'>
-        <h2 className='text-green-primary mb-3 font-medium'>
-          <MapPin /> Địa chỉ nhận hàng
-        </h2>
-        <div className='flex items-center justify-between'>
-          {defaultAddress ? (
-            <div className='flex flex-wrap gap-3 text-sm'>
-              <span className='font-bold'>Lê Tấn Trụ | 099999999</span>
-              <p className='text-gray-700'>
-                {defaultAddress.detail}, {defaultAddress.hamlet}, &nbsp;
-                {defaultAddress.ward}, {defaultAddress.district}, &nbsp;
-                {defaultAddress.city}
-              </p>
-            </div>
-          ) : (
-            <p className='text-gray-500'>Chưa có địa chỉ nào</p>
-          )}
+      {addressListQuery.isLoading || addressListQuery.isFetching ? (
+        <>
+          <div className='flex w-full flex-col rounded-md bg-white px-6 py-4 shadow-[0_0_10px_2px_rgba(0,0,0,0.1)]'>
+            <h2 className='text-green-primary flex items-center gap-x-1 font-medium'>
+              <div className='skeleton size-4' />
+              <span className='skeleton h-4 w-40'></span>
+            </h2>
+            <div className='flex items-center justify-between'>
+              <div className='flex flex-1 flex-wrap gap-3 text-sm'>
+                <span className='skeleton h-4 w-50 font-bold'></span>
+                <div className='skeleton mr-5 block h-4 flex-1 text-gray-700'></div>
+              </div>
 
-          <Button
-            variant='primary'
-            onClick={addressList.length > 0 ? changeModal.open : addModal.open}
-          >
-            {addressList.length > 0 ? (
-              'Thay đổi'
+              <Button
+                variant='primary'
+                onClick={
+                  addressList.length > 0 ? changeModal.open : addModal.open
+                }
+                className='skeleton w-20'
+              ></Button>
+            </div>
+          </div>
+        </>
+      ) : (
+        <div className='flex w-full flex-col rounded-md bg-white px-6 py-4 shadow-[0_0_10px_2px_rgba(0,0,0,0.1)]'>
+          <h2 className='text-green-primary flex items-center gap-x-1 font-medium'>
+            <MapPin className='size-5' /> Địa chỉ nhận hàng
+          </h2>
+          <div className='flex items-center justify-between'>
+            {defaultAddress ? (
+              <div className='flex flex-wrap gap-3 text-sm'>
+                <span className='font-bold'>Lê Tấn Trụ | 099999999</span>
+                <p className='mr-5 text-gray-700'>
+                  {defaultAddress.detail}, {defaultAddress.hamlet}, &nbsp;
+                  {defaultAddress.ward}, {defaultAddress.district}, &nbsp;
+                  {defaultAddress.city}
+                </p>
+              </div>
             ) : (
-              <>
-                <Plus /> Thêm địa chỉ
-              </>
+              <p className='text-gray-500'>Chưa có địa chỉ nào</p>
             )}
-          </Button>
+
+            <Button
+              variant='primary'
+              onClick={
+                addressList.length > 0 ? changeModal.open : addModal.open
+              }
+            >
+              {addressList.length > 0 ? (
+                'Thay đổi'
+              ) : (
+                <>
+                  <Plus /> Thêm địa chỉ
+                </>
+              )}
+            </Button>
+          </div>
         </div>
-      </div>
+      )}
 
       <ChangeAddressModal
         open={changeModal.opened}

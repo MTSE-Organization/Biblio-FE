@@ -7,16 +7,25 @@ import OrderNote from '@/app/order/_components/order-note';
 import PaymentMethod from '@/app/order/_components/payment-method';
 import { Col, Row } from '@/components/form';
 import { PlaceOrderNotFound } from '@/components/not-found';
-import { storageKeys } from '@/constants';
+import { ErrorCode, storageKeys } from '@/constants';
 import { useOrderQuery } from '@/queries';
+import { useOrderStore } from '@/store';
 import { getData } from '@/utils';
+import { useEffect } from 'react';
 
 export default function Checkout() {
   const orderId = getData(storageKeys.ORDER_ID);
   const orderQuery = useOrderQuery(orderId as string);
+  const { setLoading } = useOrderStore();
   const order = orderQuery.data?.data;
+  const code = orderQuery.data?.code;
 
-  if (!orderId) return <PlaceOrderNotFound />;
+  useEffect(
+    () => setLoading(orderQuery.isLoading || orderQuery.isFetching),
+    [orderQuery.isFetching, orderQuery.isLoading]
+  );
+
+  if (code === ErrorCode.ORDER_ERROR_NOT_FOUND) return <PlaceOrderNotFound />;
 
   return (
     <div className='flex flex-col gap-5'>
@@ -37,7 +46,7 @@ export default function Checkout() {
             <Col span={16}>
               <OrderNote />
             </Col>
-            <Col span={8}>
+            <Col span={8} gutter={0}>
               <CompleteCheckout order={order} />
             </Col>
           </Row>

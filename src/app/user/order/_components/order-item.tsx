@@ -144,9 +144,9 @@ export default function OrderItem({
         <ContactShopButton />
 
         {/* Cancel order when status is not shipping */}
-        {orderStatus?.value && orderStatus.value < ORDER_STATUS_SHIPPING && (
+        {orderStatus?.value && orderStatus.value < ORDER_STATUS_SHIPPING ? (
           <CancelOrderButton orderId={order.id} />
-        )}
+        ) : null}
 
         {/* Re-order when status is cancelled or received */}
         {(orderStatus?.value === ORDER_STATUS_CANCELLED ||
