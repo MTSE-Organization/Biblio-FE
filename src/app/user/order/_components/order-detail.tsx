@@ -1,4 +1,5 @@
 'use client';
+
 import CancelOrderButton from '@/app/user/order/_components/cancel-order-button';
 import CompletePaymentButton from '@/app/user/order/_components/complete-payment-button';
 import ConfirmReceivedOrderButton from '@/app/user/order/_components/confirm-received-order-button';
@@ -30,21 +31,46 @@ import {
 } from '@/constants';
 import { cn } from '@/lib';
 import { useOrderQuery } from '@/queries';
+import { useCheckReviewMutation } from '@/queries/review.query';
 import route from '@/routes';
 import { formatDate, formatPrice, renderImageUrl } from '@/utils';
 import { ChevronLeft, MapPin, Send } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 export default function OrderDetail() {
   const router = useRouter();
   const { id } = useParams<{ id: string }>();
   const orderQuery = useOrderQuery(id);
+  const checkReviewMutation = useCheckReviewMutation();
+
+  const [reviewedMap, setReviewedMap] = useState<Record<string, boolean>>({});
+
   const order = orderQuery.data?.data;
   const orderStatusList = order?.orderStatuses || [];
   const orderItems = order?.orderItems || [];
   const code = orderQuery.data?.code;
+
+  useEffect(() => {
+    if (!order) return;
+
+    const fetchReviews = async () => {
+      const map: Record<string, boolean> = {};
+      for (const item of order.orderItems) {
+        const res = await checkReviewMutation.mutateAsync({
+          orderId: order.id,
+          productId: item.productVariant.product.id,
+          productVariantId: item.productVariant.id
+        });
+        map[item.productVariant.product.id] = !!res.data?.isReviewed;
+      }
+      setReviewedMap(map);
+    };
+
+    fetchReviews();
+  }, [order]);
 
   if (code === ErrorCode.ORDER_ERROR_NOT_FOUND) return <OrderNotFound />;
   if (orderQuery.isLoading) return <OrderDetailSkeleton />;
@@ -257,11 +283,20 @@ export default function OrderDetail() {
                       )}
                     </div>
                   )}
-                  {order.currentStatus === ORDER_STATUS_RECEIVED && (
-                    <ReviewButton
-                      productId={orderItem.productVariant.product.id}
-                    />
-                  )}
+                  {order.currentStatus === ORDER_STATUS_RECEIVED &&
+                    !reviewedMap[orderItem.productVariant.product.id] && (
+                      <ReviewButton
+                        productId={orderItem.productVariant.product.id}
+                        productVariantId={orderItem.productVariant.id}
+                        orderId={order.id}
+                        onSuccess={() => {
+                          setReviewedMap((prev) => ({
+                            ...prev,
+                            [orderItem.productVariant.product.id]: true
+                          }));
+                        }}
+                      />
+                    )}
                 </div>
               </div>
             </div>

@@ -1,5 +1,5 @@
 import { reviewApiRequest } from '@/api-requests';
-import { ReviewBodyType, ReviewSearchType } from '@/types';
+import { CheckReviewBody, ReviewBodyType, ReviewSearchType } from '@/types';
 import { useMutation, useQuery } from '@tanstack/react-query';
 
 export const useCreateReviewMutation = () => {
@@ -34,5 +34,12 @@ export const useReviewSummaryQuery = ({
     queryKey: ['review-summary', productId],
     queryFn: () => reviewApiRequest.summary(productId),
     enabled
+  });
+};
+
+export const useCheckReviewMutation = () => {
+  return useMutation({
+    mutationKey: [`check-review`],
+    mutationFn: (body: CheckReviewBody) => reviewApiRequest.checkReview(body)
   });
 };
