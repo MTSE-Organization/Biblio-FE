@@ -111,6 +111,11 @@ const apiConfig = defineApiConfig({
       baseUrl: `${AppConstants.apiUrl}v1/product/top-views`,
       headers: baseHeader,
       method: 'GET'
+    },
+    search: {
+      baseUrl: `${AppConstants.apiUrl}v1/product/search`,
+      headers: baseHeader,
+      method: 'GET'
     }
   },
   category: {
@@ -121,6 +126,11 @@ const apiConfig = defineApiConfig({
     },
     getById: {
       baseUrl: `${AppConstants.apiUrl}v1/category/get/:id`,
+      headers: baseHeader,
+      method: 'GET'
+    },
+    autoComplete: {
+      baseUrl: `${AppConstants.apiUrl}v1/category/auto-complete`,
       headers: baseHeader,
       method: 'GET'
     }
@@ -277,6 +287,11 @@ const apiConfig = defineApiConfig({
       baseUrl: `${AppConstants.apiUrl}v1/order/place`,
       headers: baseHeader,
       method: 'POST'
+    },
+    refund: {
+      baseUrl: `${AppConstants.apiUrl}v1/order/refund`,
+      headers: baseHeader,
+      method: 'PUT'
     }
   },
   coupon: {
@@ -323,6 +338,11 @@ const apiConfig = defineApiConfig({
       baseUrl: `${AppConstants.apiUrl}v1/review/summary/:productId`,
       headers: baseHeader,
       method: 'GET'
+    },
+    checkReview: {
+      baseUrl: `${AppConstants.apiUrl}v1/review/check-review`,
+      headers: baseHeader,
+      method: 'POST'
     }
   },
   payment: {
@@ -330,6 +350,38 @@ const apiConfig = defineApiConfig({
       baseUrl: `${AppConstants.apiUrl}v1/payment/verify-return-url`,
       headers: baseHeader,
       method: 'GET'
+    }
+  },
+  notification: {
+    getList: {
+      baseUrl: `${AppConstants.apiUrl}v1/notification/list`,
+      method: 'GET',
+      headers: baseHeader
+    },
+    countUnread: {
+      baseUrl: `${AppConstants.apiUrl}v1/notification/count-unread`,
+      method: 'GET',
+      headers: baseHeader
+    },
+    markRead: {
+      baseUrl: `${AppConstants.apiUrl}v1/notification/mark-read/:id`,
+      method: 'PUT',
+      headers: baseHeader
+    },
+    readAll: {
+      baseUrl: `${AppConstants.apiUrl}v1/notification/read-all`,
+      method: 'PUT',
+      headers: baseHeader
+    },
+    deleteAll: {
+      baseUrl: `${AppConstants.apiUrl}v1/notification/delete-all`,
+      method: 'DELETE',
+      headers: baseHeader
+    },
+    delete: {
+      baseUrl: `${AppConstants.apiUrl}v1/notification/delete/:id`,
+      method: 'DELETE',
+      headers: baseHeader
     }
   }
 });

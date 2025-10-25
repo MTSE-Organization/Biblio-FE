@@ -1,3 +1,4 @@
+import { ageValues, languageValues } from '@/constants';
 import z from 'zod';
 
 export const baseSearchSchema = z.object({
@@ -7,4 +8,18 @@ export const baseSearchSchema = z.object({
 
 export const headerSearchSchema = z.object({
   name: z.string()
+});
+
+export const searchSchema = z.object({
+  keyword: z.string().trim().optional(),
+  minPrice: z.coerce.number().min(0).max(5000000).optional(),
+  maxPrice: z.coerce.number().min(0).max(5000000).optional(),
+  categoryId: z.string().optional(),
+  language: z.enum(languageValues as [string, ...string[]]).optional(),
+  ageRating: z
+    .enum(ageValues.map(String) as [string, ...string[]])
+    .transform(Number)
+    .optional(),
+  sortBy: z.string().optional(),
+  sortOrder: z.enum(['asc', 'desc']).optional()
 });

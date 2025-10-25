@@ -13,6 +13,7 @@ import {
   ORDER_STATUS_CANCELLED,
   ORDER_STATUS_COMPLETE,
   ORDER_STATUS_RECEIVED,
+  ORDER_STATUS_REFUNDED,
   ORDER_STATUS_SHIPPING,
   ORDER_STATUS_WAITING,
   orderStatuses,
@@ -21,10 +22,12 @@ import {
 } from '@/constants';
 import { useNavigate } from '@/hooks';
 import { cn } from '@/lib';
+import { useCheckReviewMutation } from '@/queries/review.query';
 import route from '@/routes';
 import { OrderResType } from '@/types';
 import { formatDate, formatPrice, renderImageUrl } from '@/utils';
 import Image from 'next/image';
+import { useEffect, useState } from 'react';
 
 export default function OrderItem({
   order,
@@ -34,10 +37,32 @@ export default function OrderItem({
   currentStatus: number;
 }) {
   const navigate = useNavigate();
+  const checkReviewMutation = useCheckReviewMutation();
+
+  const [reviewedMap, setReviewedMap] = useState<Record<string, boolean>>({});
 
   const orderStatus = orderStatuses.find(
     (status) => status.value === currentStatus
   );
+
+  useEffect(() => {
+    if (!order) return;
+
+    const fetchReviews = async () => {
+      const map: Record<string, boolean> = {};
+      for (const item of order.orderItems) {
+        const res = await checkReviewMutation.mutateAsync({
+          orderId: order.id,
+          productId: item.productVariant.product.id,
+          productVariantId: item.productVariant.id
+        });
+        map[item.productVariant.product.id] = !!res.data?.isReviewed;
+      }
+      setReviewedMap(map);
+    };
+
+    fetchReviews();
+  }, [order]);
 
   return (
     <div className='relative rounded rounded-lg border border-gray-200 bg-white p-4 shadow-[0px_0px_10px_2px] shadow-gray-200'>
@@ -67,7 +92,7 @@ export default function OrderItem({
                 alt={'Sách'}
                 className='rounded-lg object-contain'
               />
-              <div className='ml-6 flex h-full w-full items-stretch justify-between'>
+              <div className='ml-2 flex h-full w-full items-stretch justify-between'>
                 <div className='flex flex-col justify-between'>
                   <span className='flex-1 shrink-0'>
                     {orderItem.productVariant.product.name}
@@ -104,11 +129,20 @@ export default function OrderItem({
                       </p>
                     </div>
                   )}
-                  {currentStatus === ORDER_STATUS_RECEIVED && (
-                    <ReviewButton
-                      productId={orderItem.productVariant.product.id}
-                    />
-                  )}
+                  {currentStatus === ORDER_STATUS_RECEIVED &&
+                    !reviewedMap[orderItem.productVariant.product.id] && (
+                      <ReviewButton
+                        productId={orderItem.productVariant.product.id}
+                        productVariantId={orderItem.productVariant.id}
+                        orderId={order.id}
+                        onSuccess={() => {
+                          setReviewedMap((prev) => ({
+                            ...prev,
+                            [orderItem.productVariant.product.id]: true
+                          }));
+                        }}
+                      />
+                    )}
                 </div>
               </div>
             </div>
@@ -138,7 +172,9 @@ export default function OrderItem({
         )}
 
         {/* Request refund */}
-        {orderStatus?.value === ORDER_STATUS_RECEIVED && <RefundButton />}
+        {orderStatus?.value === ORDER_STATUS_RECEIVED && (
+          <RefundButton orderId={order.id} />
+        )}
 
         {/* Contact shop */}
         <ContactShopButton />
@@ -150,7 +186,8 @@ export default function OrderItem({
 
         {/* Re-order when status is cancelled or received */}
         {(orderStatus?.value === ORDER_STATUS_CANCELLED ||
-          orderStatus?.value === ORDER_STATUS_RECEIVED) && (
+          orderStatus?.value === ORDER_STATUS_RECEIVED ||
+          orderStatus?.value === ORDER_STATUS_REFUNDED) && (
           <ReOrderButton orderItems={order.orderItems} />
         )}
       </div>

@@ -1,5 +1,5 @@
 import { productApiRequest } from '@/api-requests';
-import { ProductSearchType } from '@/types';
+import { ProductSearchType, SearchType } from '@/types';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 
 export const useProductListQuery = ({
@@ -113,6 +113,20 @@ export const useInfiniteProductQuery = ({
       }
       return undefined;
     },
+    enabled
+  });
+};
+
+export const useSearchProductQuery = ({
+  enabled = false,
+  params
+}: {
+  params?: SearchType;
+  enabled: boolean;
+}) => {
+  return useQuery({
+    queryKey: ['search-product', params],
+    queryFn: () => productApiRequest.search(params),
     enabled
   });
 };

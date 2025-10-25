@@ -2,6 +2,7 @@ import { apiConfig } from '@/constants';
 import {
   ApiResponse,
   ApiResponseList,
+  CategoryAutoType,
   CategoryResType,
   CategorySearchType
 } from '@/types';
@@ -17,7 +18,14 @@ const categoryApiRequest = {
       pathParams: {
         id
       }
-    })
+    }),
+  autoComplete: (params?: CategorySearchType) =>
+    http.get<ApiResponseList<CategoryAutoType>>(
+      apiConfig.category.autoComplete,
+      {
+        params
+      }
+    )
 };
 
 export default categoryApiRequest;

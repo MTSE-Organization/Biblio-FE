@@ -7,14 +7,20 @@ import { logger } from '@/logger';
 import { headerSearchSchema } from '@/schemaValidations';
 import { HeaderSearchType } from '@/types';
 import { Search } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
-export default function SearchForm() {
-  const defaultValues: HeaderSearchType = {
-    name: ''
-  };
-
+export default function SearchForm({ initialKeyword = '' }) {
+  const router = useRouter();
+  const defaultValues: HeaderSearchType = { name: initialKeyword };
   const onSubmit = (values: HeaderSearchType) => {
     logger.info(values);
+    const keyword = values.name.trim();
+
+    if (keyword) {
+      router.push(`/search?keyword=${encodeURIComponent(keyword)}`);
+    } else {
+      router.push(`/search`);
+    }
   };
 
   return (

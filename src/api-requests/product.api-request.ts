@@ -4,7 +4,9 @@ import {
   ApiResponseList,
   ProductAutoType,
   ProductResType,
-  ProductSearchType
+  ProductSearchType,
+  SearchResType,
+  SearchType
 } from '@/types';
 import { http } from '@/utils';
 
@@ -35,7 +37,11 @@ const productApiRequest = {
       }
     ),
   getTopViewList: () =>
-    http.get<ApiResponseList<ProductAutoType>>(apiConfig.product.getTopView)
+    http.get<ApiResponseList<ProductAutoType>>(apiConfig.product.getTopView),
+  search: (params?: SearchType) =>
+    http.get<ApiResponseList<ProductAutoType>>(apiConfig.product.search, {
+      params
+    })
 };
 
 export default productApiRequest;

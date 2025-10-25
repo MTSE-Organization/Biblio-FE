@@ -2,11 +2,21 @@
 
 import { product } from '@/assets';
 import { Button } from '@/components/form';
-import { productVariantConditions, productVariantFormats } from '@/constants';
+import {
+  productVariantConditions,
+  productVariantFormats,
+  storageKeys
+} from '@/constants';
 import route from '@/routes';
 import { useCartStore } from '@/store';
 import { CartItemResType } from '@/types';
-import { formatPrice, renderImageUrl } from '@/utils';
+import {
+  formatPrice,
+  getData,
+  removeData,
+  renderImageUrl,
+  setData
+} from '@/utils';
 import { debounce } from 'lodash';
 import { Minus, Plus } from 'lucide-react';
 import Image from 'next/image';
@@ -41,7 +51,15 @@ function CartItem({
 }) {
   const { selectedCartItems, setSelectedCartItems } = useCartStore();
   const [quantity, setQuantity] = useState<number>(1);
-  const isChecked = selectedCartItems.includes(cartItem.id);
+  const reorderProductVariantId = getData(storageKeys.REORDER_PRODUCT);
+
+  const isChecked =
+    selectedCartItems.includes(cartItem.id) ||
+    (reorderProductVariantId
+      ? cartItem.productVariant.id ===
+        (JSON.parse(reorderProductVariantId) as { productVariantId: string })
+          .productVariantId
+      : false);
 
   useEffect(() => {
     setQuantity(cartItem?.quantity ?? 1);
@@ -89,12 +107,52 @@ function CartItem({
       : [...selectedCartItems, cartItem.id];
 
     setSelectedCartItems(newSelected);
-  }, [isChecked, selectedCartItems, cartItem.id, setSelectedCartItems]);
+
+    const selectedCartItemsFromLocalStorage = getData(
+      storageKeys.SELECTED_CART_ITEMS
+    );
+    if (!selectedCartItemsFromLocalStorage) return;
+    const cartItems = JSON.parse(selectedCartItemsFromLocalStorage) as string[];
+
+    const newCartItems = isChecked
+      ? cartItems.filter((id) => id !== cartItem.id)
+      : [...cartItems, cartItem.id];
+
+    setData(storageKeys.SELECTED_CART_ITEMS, JSON.stringify(newCartItems));
+
+    const reorderData = getData(storageKeys.REORDER_PRODUCT);
+    if (reorderData) {
+      const { productVariantId } = JSON.parse(reorderData) as {
+        productVariantId: string;
+      };
+      if (cartItem.productVariant.id === productVariantId && isChecked) {
+        removeData(storageKeys.REORDER_PRODUCT);
+      }
+    }
+  }, [
+    isChecked,
+    selectedCartItems,
+    cartItem.id,
+    setSelectedCartItems,
+    cartItem.productVariant.id
+  ]);
 
   const { final, original, discount } = useMemo(
     () => calcDiscountedPrice(cartItem),
     [cartItem]
   );
+
+  useEffect(() => {
+    const selectedCartItemsFromLocalStorage = getData(
+      storageKeys.SELECTED_CART_ITEMS
+    );
+    if (!selectedCartItemsFromLocalStorage) return;
+    const cartItems = JSON.parse(
+      selectedCartItemsFromLocalStorage
+    ) as unknown as string[];
+
+    setSelectedCartItems(cartItems);
+  }, [setSelectedCartItems]);
 
   return (
     <div className='flex items-center pl-6'>
@@ -129,11 +187,11 @@ function CartItem({
 
       <div className='flex flex-1 p-4 font-semibold'>
         <Link
-          className='shrink-0'
+          className='h-full shrink-0'
           href={`${route.book}/${cartItem.productVariant.product.slug}.${cartItem.productVariant.product.id}`}
         >
           <Image
-            className='h-25 w-20 rounded-sm object-cover'
+            className='h-25 w-20 object-cover'
             src={
               cartItem.productVariant.imageUrl
                 ? renderImageUrl(cartItem.productVariant.imageUrl)

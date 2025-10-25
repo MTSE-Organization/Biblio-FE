@@ -28,11 +28,13 @@ export default function FavoriteItem({
     if (!favorite?.id) return;
     await withLoading(
       deleteFavoriteProductMutation.mutateAsync(favorite?.id, {
-        onSuccess: () => {
-          notify.success('Xóa sách khỏi yêu thích thành công');
-          queryClient.invalidateQueries({
-            queryKey: ['favorite-product-list']
-          });
+        onSuccess: (res) => {
+          if (res.result) {
+            notify.success('Xóa sách khỏi yêu thích thành công');
+            queryClient.invalidateQueries({
+              queryKey: ['favorite-product-list']
+            });
+          }
         },
         onError: (error) => {
           notify.error('Đã có lỗi xảy ra');
@@ -43,7 +45,7 @@ export default function FavoriteItem({
   };
 
   return (
-    <div className='not-last:mb-4relative relative flex gap-5 rounded-lg border border-gray-200 bg-white p-4 shadow-[0px_0px_10px_2px] shadow-gray-200 not-last:mb-4'>
+    <div className='relative flex gap-5 rounded-lg border border-gray-200 bg-white p-4 shadow-[0px_0px_10px_2px] shadow-gray-200'>
       <div className='flex-shrink-0'>
         <Image
           src={
