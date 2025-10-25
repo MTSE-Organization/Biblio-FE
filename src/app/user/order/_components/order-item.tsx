@@ -91,7 +91,7 @@ export default function OrderItem({
                 alt={'Sách'}
                 className='rounded-lg object-contain'
               />
-              <div className='ml-6 flex h-full w-full items-stretch justify-between'>
+              <div className='ml-2 flex h-full w-full items-stretch justify-between'>
                 <div className='flex flex-col justify-between'>
                   <span className='flex-1 shrink-0'>
                     {orderItem.productVariant.product.name}

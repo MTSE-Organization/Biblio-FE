@@ -28,11 +28,13 @@ export default function FavoriteItem({
     if (!favorite?.id) return;
     await withLoading(
       deleteFavoriteProductMutation.mutateAsync(favorite?.id, {
-        onSuccess: () => {
-          notify.success('Xóa sách khỏi yêu thích thành công');
-          queryClient.invalidateQueries({
-            queryKey: ['favorite-product-list']
-          });
+        onSuccess: (res) => {
+          if (res.result) {
+            notify.success('Xóa sách khỏi yêu thích thành công');
+            queryClient.invalidateQueries({
+              queryKey: ['favorite-product-list']
+            });
+          }
         },
         onError: (error) => {
           notify.error('Đã có lỗi xảy ra');

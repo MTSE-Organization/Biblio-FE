@@ -24,7 +24,7 @@ export const useInfiniteFavoriteProductListQuery = ({
   enabled?: boolean;
 } = {}) => {
   return useInfiniteQuery({
-    queryKey: ['favorite-product-list', params],
+    queryKey: ['favorite-product-list'],
     queryFn: ({ pageParam = 0 }) =>
       favoriteApiRequest.getList({ ...params, page: pageParam }),
     initialPageParam: 0,
