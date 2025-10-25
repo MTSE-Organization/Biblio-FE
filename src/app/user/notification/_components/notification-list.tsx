@@ -30,8 +30,10 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Separator } from '@/components/ui/separator';
 import { CheckCheck, Info, Trash } from 'lucide-react';
+import { useAppLoadingStore } from '@/store/use-app-loading-store';
 
 export default function NotificationList() {
+  const { withLoading } = useAppLoadingStore();
   const loadMoreRef = useRef<HTMLDivElement | null>(null);
   const { socket } = useAuthStore();
   const queryClient = useQueryClient();
@@ -62,7 +64,7 @@ export default function NotificationList() {
 
   const handleReadAllNotification = async () => {
     if (unreadCount) {
-      await readAllNotificationMutation.mutateAsync();
+      await withLoading(readAllNotificationMutation.mutateAsync());
       queryClient.invalidateQueries({ queryKey: ['notification-list'] });
       queryClient.invalidateQueries({
         queryKey: ['count-unread-notification']
@@ -71,31 +73,35 @@ export default function NotificationList() {
   };
 
   const handleDeleteAllNotification = async () => {
-    await deleteAllNotificationMutation.mutateAsync(undefined, {
-      onSuccess: (res) => {
-        if (res.result) {
-          notify.success('Xóa tất cả thông báo thành công');
-          queryClient.invalidateQueries({ queryKey: ['notification-list'] });
-          queryClient.invalidateQueries({
-            queryKey: ['count-unread-notification']
-          });
+    await withLoading(
+      deleteAllNotificationMutation.mutateAsync(undefined, {
+        onSuccess: (res) => {
+          if (res.result) {
+            notify.success('Xóa tất cả thông báo thành công');
+            queryClient.invalidateQueries({ queryKey: ['notification-list'] });
+            queryClient.invalidateQueries({
+              queryKey: ['count-unread-notification']
+            });
+          }
         }
-      }
-    });
+      })
+    );
   };
 
   const handleDeleteClick = async (id: string) => {
-    await deleteNotificationMutation.mutateAsync(id, {
-      onSuccess: (res) => {
-        if (res.result) {
-          notify.success('Xóa thông báo thành công');
-          queryClient.invalidateQueries({ queryKey: ['notification-list'] });
-          queryClient.invalidateQueries({
-            queryKey: ['count-unread-notification']
-          });
+    await withLoading(
+      deleteNotificationMutation.mutateAsync(id, {
+        onSuccess: (res) => {
+          if (res.result) {
+            notify.success('Xóa thông báo thành công');
+            queryClient.invalidateQueries({ queryKey: ['notification-list'] });
+            queryClient.invalidateQueries({
+              queryKey: ['count-unread-notification']
+            });
+          }
         }
-      }
-    });
+      })
+    );
   };
 
   useEffect(() => {

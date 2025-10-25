@@ -16,6 +16,8 @@ const defaultOptions: ToastOptions = {
     [&>button>svg]:fill-black!
     whitespace-nowrap
     pr-10!
+    w-fit!
+    max-w-120!
   `
 };
 

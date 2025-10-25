@@ -13,6 +13,7 @@ import {
   ORDER_STATUS_CANCELLED,
   ORDER_STATUS_COMPLETE,
   ORDER_STATUS_RECEIVED,
+  ORDER_STATUS_REFUNDED,
   ORDER_STATUS_SHIPPING,
   ORDER_STATUS_WAITING,
   orderStatuses,
@@ -171,7 +172,9 @@ export default function OrderItem({
         )}
 
         {/* Request refund */}
-        {orderStatus?.value === ORDER_STATUS_RECEIVED && <RefundButton />}
+        {orderStatus?.value === ORDER_STATUS_RECEIVED && (
+          <RefundButton orderId={order.id} />
+        )}
 
         {/* Contact shop */}
         <ContactShopButton />
@@ -183,7 +186,8 @@ export default function OrderItem({
 
         {/* Re-order when status is cancelled or received */}
         {(orderStatus?.value === ORDER_STATUS_CANCELLED ||
-          orderStatus?.value === ORDER_STATUS_RECEIVED) && (
+          orderStatus?.value === ORDER_STATUS_RECEIVED ||
+          orderStatus?.value === ORDER_STATUS_REFUNDED) && (
           <ReOrderButton orderItems={order.orderItems} />
         )}
       </div>

@@ -19,6 +19,7 @@ export type OrderResType = {
   total: string;
   createdDate: string;
   modifiedDate: string;
+  refundReason: string;
 };
 
 export type OrderStoreType = {
@@ -49,4 +50,9 @@ export type OrderSearchType = {
 export type CreateOrderBodyType = {
   productVariantId: string;
   quantity: number;
+};
+
+export type RefundOrderBodyType = {
+  id: string;
+  refundReason: string;
 };

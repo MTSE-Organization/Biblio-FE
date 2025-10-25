@@ -1,5 +1,10 @@
 import { orderApiRequest } from '@/api-requests';
-import { CreateOrderBodyType, OrderBodyType, OrderSearchType } from '@/types';
+import {
+  CreateOrderBodyType,
+  OrderBodyType,
+  OrderSearchType,
+  RefundOrderBodyType
+} from '@/types';
 import { useInfiniteQuery, useMutation, useQuery } from '@tanstack/react-query';
 
 export const useInfiniteOrderListQuery = ({
@@ -59,5 +64,12 @@ export const useCompleteOrderMutation = () => {
   return useMutation({
     mutationKey: ['complete-order'],
     mutationFn: (id: string) => orderApiRequest.complete(id)
+  });
+};
+
+export const useRefundOrderMutation = () => {
+  return useMutation({
+    mutationKey: ['refund-order'],
+    mutationFn: (body: RefundOrderBodyType) => orderApiRequest.refund(body)
   });
 };

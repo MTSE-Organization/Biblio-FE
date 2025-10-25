@@ -452,7 +452,7 @@ export const orderStatuses = [
     color: 'bg-red-100 text-red-800'
   },
   {
-    label: 'Yêu cầu hoàn tiền',
+    label: 'Yêu cầu trả hàng',
     value: ORDER_STATUS_REQUEST_REFUND,
     color: 'bg-orange-100 text-orange-800'
   },
