@@ -29,3 +29,17 @@ export const useCategoryQuery = ({
     enabled
   });
 };
+
+export const useCategoryAutoCompleteQuery = ({
+  params,
+  enabled = true
+}: {
+  params?: CategorySearchType;
+  enabled?: boolean;
+} = {}) => {
+  return useQuery({
+    queryKey: ['category-auto-complete', params],
+    queryFn: () => categoryApiRequest.autoComplete(params),
+    enabled
+  });
+};

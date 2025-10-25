@@ -1,3 +1,5 @@
+'use client';
+
 import { logo } from '@/assets';
 import Navbar from '@/components/app/header/navbar';
 import SearchForm from '@/components/app/header/search-form';
@@ -5,8 +7,11 @@ import { Container } from '@/components/layout';
 import route from '@/routes';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 
 export default function Header() {
+  const searchParams = useSearchParams();
+  const keyword = searchParams.get('keyword') || '';
   return (
     <header className='relative z-9 border-b border-solid border-gray-100 bg-white shadow-[0px_0px_8px_2px] shadow-gray-200'>
       <Container className='mx-auto max-w-[1320px]'>
@@ -20,7 +25,7 @@ export default function Header() {
               className='h-full'
             />
           </Link>
-          <SearchForm />
+          <SearchForm initialKeyword={keyword} />
           <Navbar />
         </div>
       </Container>

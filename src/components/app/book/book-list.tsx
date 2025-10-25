@@ -8,7 +8,7 @@ export default function BookList({
   books,
   loading
 }: {
-  title: string;
+  title?: string;
   books: ProductAutoType[];
   loading: boolean;
 }) {

@@ -3,77 +3,78 @@ import { StarRating } from '@/components/star-rating';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
+import { ageRatings, languageOptions } from '@/constants';
+import { useCategoryListQuery } from '@/queries';
+import { FiltersType } from '@/types';
 import { formatPrice } from '@/utils';
 import { SlidersHorizontal } from 'lucide-react';
 import { useState } from 'react';
+import ExpandableList from './expandable-list';
 
-export default function FilterSidebar() {
-  const [minPrice, setMinPrice] = useState<number>(0);
-  const [maxPrice, setMaxPrice] = useState<number>(10000000);
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-  const [selectedLanguages, setSelectedLanguages] = useState<string[]>([]);
-  const [selectedRatings, setSelectedRatings] = useState<number[]>([]);
+export default function FilterSidebar({
+  defaultFilters,
+  onApply
+}: {
+  defaultFilters: any;
+  onApply: (filters: any) => void;
+}) {
+  const [filters, setFilters] = useState<FiltersType>(defaultFilters);
 
-  const categories = [
-    { id: '1', name: 'Văn học' },
-    { id: '2', name: 'Đời sống' }
-  ];
-
-  const languages = [
-    { id: 'vi', name: 'Tiếng Việt' },
-    { id: 'en', name: 'Tiếng Anh' }
-  ];
+  const categoryAutoComplete = useCategoryListQuery({ enabled: true });
+  const categories = categoryAutoComplete?.data?.data?.content || [];
 
   const handleMinChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = parseInt(e.target.value);
-    if (value <= maxPrice) {
-      setMinPrice(value);
+    if (value <= filters.maxPrice) {
+      setFilters((prev) => ({ ...prev, minPrice: value }));
     }
   };
 
   const handleMaxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = parseInt(e.target.value);
-    if (value >= minPrice) {
-      setMaxPrice(value);
+    if (value >= filters.minPrice) {
+      setFilters((prev) => ({ ...prev, maxPrice: value }));
     }
   };
 
   const toggleCategory = (categoryId: string) => {
-    setSelectedCategories((prev) =>
-      prev.includes(categoryId)
-        ? prev.filter((c) => c !== categoryId)
-        : [...prev, categoryId]
-    );
+    setFilters((prev) => ({
+      ...prev,
+      categoryId: prev.categoryId === categoryId ? null : categoryId
+    }));
   };
 
-  const toggleLanguage = (languageId: string) => {
-    setSelectedLanguages((prev) =>
-      prev.includes(languageId)
-        ? prev.filter((c) => c !== languageId)
-        : [...prev, languageId]
-    );
+  const toggleLanguage = (language: string) => {
+    setFilters((prev) => ({
+      ...prev,
+      language: prev.language === language ? null : language
+    }));
   };
 
-  const toggleRating = (rating: number) => {
-    setSelectedRatings((prev) =>
-      prev.includes(rating)
-        ? prev.filter((r) => r !== rating)
-        : [...prev, rating]
-    );
+  const toggleAgeRating = (rating: number) => {
+    setFilters((prev) => ({
+      ...prev,
+      ageRating: prev.ageRating === rating ? null : rating
+    }));
   };
 
   const handleClearAll = () => {
-    setMinPrice(0);
-    setMaxPrice(10000000);
-    setSelectedCategories([]);
-    setSelectedRatings([]);
+    setFilters({
+      minPrice: 0,
+      maxPrice: 0,
+      categoryId: null,
+      language: null,
+      ageRating: null
+    });
   };
 
-  const handleApplyFilters = () => {};
+  const handleApply = () => {
+    onApply(filters);
+  };
 
   return (
     <div className='w-72 flex-shrink-0'>
-      <div className='sticky top-24 flex flex-col gap-4 rounded-lg bg-white p-5 shadow-sm'>
+      <div className='flex flex-col gap-4 rounded-lg bg-white p-5 shadow-sm'>
         <div className='flex items-center justify-between'>
           <h2 className='flex items-center gap-2 text-lg font-semibold'>
             <SlidersHorizontal className='h-5 w-5' />
@@ -81,7 +82,7 @@ export default function FilterSidebar() {
           </h2>
           <button
             onClick={handleClearAll}
-            className='text-green-primary cursor-pointer text-sm hover:underline'
+            className='text-green-primary cursor-pointer text-sm'
           >
             Xóa tất cả
           </button>
@@ -91,17 +92,18 @@ export default function FilterSidebar() {
 
         <div>
           <h3 className='mb-3 font-medium'>Danh mục</h3>
-          <div className='space-y-2.5'>
-            {categories?.map((category) => (
+          <ExpandableList
+            items={categories}
+            renderItem={(cat) => (
               <label
-                key={category.id}
+                key={cat.id}
                 className='group flex cursor-pointer items-center gap-2'
               >
                 <label className='relative flex cursor-pointer items-center'>
                   <input
-                    checked={selectedCategories.includes(category.id)}
+                    checked={filters.categoryId === cat.id}
                     type='checkbox'
-                    onChange={() => toggleCategory(category.id)}
+                    onChange={() => toggleCategory(cat.id)}
                     className='peer checked:bg-green-primary h-5 w-5 cursor-pointer appearance-none rounded border border-slate-300 shadow transition-all hover:shadow-md'
                   />
                   <span className='pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 transform text-white opacity-0 peer-checked:opacity-100'>
@@ -122,7 +124,48 @@ export default function FilterSidebar() {
                   </span>
                 </label>
                 <span className='hover:text-green-primary text-sm'>
-                  {category.name}
+                  {cat.name}
+                </span>
+              </label>
+            )}
+          />
+        </div>
+        <Separator />
+
+        <div>
+          <h3 className='mb-3 font-medium'>Lứa tuổi</h3>
+          <div className='space-y-2.5'>
+            {ageRatings?.map((ar) => (
+              <label
+                key={ar.value}
+                className='group flex cursor-pointer items-center gap-2'
+              >
+                <label className='relative flex cursor-pointer items-center'>
+                  <input
+                    checked={filters.ageRating === ar.value}
+                    type='checkbox'
+                    onChange={() => toggleAgeRating(ar.value)}
+                    className='peer checked:bg-green-primary h-5 w-5 cursor-pointer appearance-none rounded border border-slate-300 shadow transition-all hover:shadow-md'
+                  />
+                  <span className='pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 transform text-white opacity-0 peer-checked:opacity-100'>
+                    <svg
+                      xmlns='http://www.w3.org/2000/svg'
+                      className='h-3.5 w-3.5'
+                      viewBox='0 0 20 20'
+                      fill='currentColor'
+                      stroke='currentColor'
+                      strokeWidth='1'
+                    >
+                      <path
+                        fillRule='evenodd'
+                        clipRule='evenodd'
+                        d='M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z'
+                      />
+                    </svg>
+                  </span>
+                </label>
+                <span className='hover:text-green-primary text-sm'>
+                  {ar.label}
                 </span>
               </label>
             ))}
@@ -139,26 +182,26 @@ export default function FilterSidebar() {
                 <div
                   className='bg-green-primary absolute h-2 rounded-full'
                   style={{
-                    left: `${(minPrice / 10000000) * 100}%`,
-                    right: `${100 - (maxPrice / 10000000) * 100}%`
+                    left: `${(filters.minPrice / 5000000) * 100}%`,
+                    right: `${100 - (filters.maxPrice / 5000000) * 100}%`
                   }}
                 ></div>
               </div>
               <input
                 type='range'
                 min='0'
-                max='10000000'
-                step='100000'
-                value={minPrice}
+                max='5000000'
+                step='50000'
+                value={filters.minPrice}
                 onChange={handleMinChange}
                 className='pointer-events-none absolute top-1 h-2 w-full appearance-none bg-transparent [&::-moz-range-thumb]:pointer-events-auto [&::-moz-range-thumb]:h-4 [&::-moz-range-thumb]:w-4 [&::-moz-range-thumb]:cursor-pointer [&::-moz-range-thumb]:appearance-none [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:border-0 [&::-moz-range-thumb]:bg-green-700 [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-green-700'
               />
               <input
                 type='range'
                 min='0'
-                max='10000000'
-                step='100000'
-                value={maxPrice}
+                max='5000000'
+                step='50000'
+                value={filters.maxPrice}
                 onChange={handleMaxChange}
                 className='pointer-events-none absolute top-1 h-2 w-full appearance-none bg-transparent [&::-moz-range-thumb]:pointer-events-auto [&::-moz-range-thumb]:h-4 [&::-moz-range-thumb]:w-4 [&::-moz-range-thumb]:cursor-pointer [&::-moz-range-thumb]:appearance-none [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:border-0 [&::-moz-range-thumb]:bg-green-700 [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-green-700'
               />
@@ -166,14 +209,14 @@ export default function FilterSidebar() {
             <div className='mt-6 flex items-center gap-2 text-sm'>
               <Input
                 type='text'
-                value={formatPrice(minPrice)}
+                value={formatPrice(filters.minPrice)}
                 readOnly
                 className='flex-1 rounded border bg-gray-50 px-2 py-1.5 text-center'
               />
               <span>-</span>
               <Input
                 type='text'
-                value={formatPrice(maxPrice)}
+                value={formatPrice(filters.maxPrice)}
                 readOnly
                 className='flex-1 rounded border bg-gray-50 px-2 py-1.5 text-center'
               />
@@ -185,17 +228,18 @@ export default function FilterSidebar() {
 
         <div>
           <h3 className='mb-3 font-medium'>Ngôn ngữ</h3>
-          <div className='space-y-2.5'>
-            {languages?.map((language) => (
+          <ExpandableList
+            items={languageOptions}
+            renderItem={(language) => (
               <label
-                key={language.id}
+                key={language.value}
                 className='group flex cursor-pointer items-center gap-2'
               >
                 <label className='relative flex cursor-pointer items-center'>
                   <input
-                    checked={selectedLanguages.includes(language.id)}
+                    checked={filters.language === language.value}
                     type='checkbox'
-                    onChange={() => toggleLanguage(language.id)}
+                    onChange={() => toggleLanguage(language.value)}
                     className='peer checked:bg-green-primary h-5 w-5 cursor-pointer appearance-none rounded border border-slate-300 shadow transition-all hover:shadow-md'
                   />
                   <span className='pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 transform text-white opacity-0 peer-checked:opacity-100'>
@@ -216,11 +260,11 @@ export default function FilterSidebar() {
                   </span>
                 </label>
                 <span className='hover:text-green-primary text-sm'>
-                  {language.name}
+                  {language.label}
                 </span>
               </label>
-            ))}
-          </div>
+            )}
+          />
         </div>
 
         <Separator />
@@ -235,9 +279,9 @@ export default function FilterSidebar() {
               >
                 <label className='relative flex cursor-pointer items-center'>
                   <input
-                    checked={selectedRatings.includes(5 - index)}
+                    checked={filters.ageRating === 5 - index}
                     type='checkbox'
-                    onChange={() => toggleRating(5 - index)}
+                    onChange={() => toggleAgeRating(5 - index)}
                     className='peer checked:bg-green-primary h-5 w-5 cursor-pointer appearance-none rounded border border-slate-300 shadow transition-all hover:shadow-md'
                   />
                   <span className='pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 transform text-white opacity-0 peer-checked:opacity-100'>
@@ -265,7 +309,10 @@ export default function FilterSidebar() {
 
         <Separator />
 
-        <Button className='bg-green-primary w-full cursor-pointer rounded-lg py-2.5 font-medium text-white transition'>
+        <Button
+          onClick={handleApply}
+          className='bg-green-primary w-full cursor-pointer rounded-lg py-2.5 font-medium text-white transition'
+        >
           Áp dụng bộ lọc
         </Button>
       </div>

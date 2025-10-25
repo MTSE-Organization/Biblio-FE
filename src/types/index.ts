@@ -24,3 +24,4 @@ export * from './favorite-product.type';
 export * from './group.type';
 export * from './viewed-product.type';
 export * from './review.type';
+export * from './filters.type';

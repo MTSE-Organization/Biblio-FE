@@ -356,6 +356,8 @@ export const languageOptions: { label: string; value: string }[] = [
   { label: 'Tiếng Zulu', value: 'zu' }
 ];
 
+export const languageValues = languageOptions.map((o) => o.value);
+
 export const ageRatings = [
   { label: 'Mọi lứa tuổi', value: AGE_RATING_ALL },
   { label: '0 - 2 tuổi', value: AGE_RATING_0_2 },
@@ -365,6 +367,8 @@ export const ageRatings = [
   { label: '16 - 18 tuổi', value: AGE_RATING_16_18 },
   { label: '18+', value: AGE_RATING_18_OVER }
 ];
+
+export const ageValues = ageRatings.map((ageRating) => ageRating.value);
 
 export const productVariantConditions = [
   {
@@ -495,4 +499,27 @@ export const orderDetailStatuses = [
     value: ORDER_DETAIL_STATUS_COMPLETED,
     icon: RiStarLine
   }
+];
+
+export const SORT_OPTIONS = [
+  { value: 'relevance', label: 'Liên quan nhất', sortBy: '', sortOrder: '' },
+  {
+    value: 'priceAsc',
+    label: 'Giá tăng dần',
+    sortBy: 'price',
+    sortOrder: 'asc'
+  },
+  {
+    value: 'priceDesc',
+    label: 'Giá giảm dần',
+    sortBy: 'price',
+    sortOrder: 'desc'
+  },
+  {
+    value: 'rating',
+    label: 'Đánh giá cao nhất',
+    sortBy: 'averageReview',
+    sortOrder: 'desc'
+  },
+  { value: 'newest', label: 'Mới nhất', sortBy: 'createdAt', sortOrder: 'desc' }
 ];
