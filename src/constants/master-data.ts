@@ -520,6 +520,5 @@ export const SORT_OPTIONS = [
     label: 'Đánh giá cao nhất',
     sortBy: 'averageReview',
     sortOrder: 'desc'
-  },
-  { value: 'newest', label: 'Mới nhất', sortBy: 'createdAt', sortOrder: 'desc' }
+  }
 ];
