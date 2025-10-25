@@ -11,7 +11,6 @@ import { emptyNotification } from '@/assets';
 import route from '@/routes';
 import { List, ListItem } from '@/components/list';
 import { useAuthStore } from '@/store';
-import { logger } from '@/logger';
 import { useQueryClient } from '@tanstack/react-query';
 import {
   useCountUnreadNotificationQuery,
@@ -21,12 +20,13 @@ import {
 } from '@/queries';
 import { notify, renderImageUrl } from '@/utils';
 import { NotificationResType } from '@/types';
-import { DATE_TIME_FORMAT, NOTIFICATION_TYPE_ORDER } from '@/constants';
+import { DATE_TIME_FORMAT } from '@/constants';
 import { formatDate } from 'date-fns';
 import { NoData } from '@/components/no-data';
 import { CheckCheck } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib';
+import { logger } from '@/logger';
 
 export default function DropdownNotification() {
   const { socket, profile } = useAuthStore();
@@ -43,11 +43,11 @@ export default function DropdownNotification() {
   const loading = notificationListQuery.isLoading;
 
   useEffect(() => {
-    socket?.on('notification', (data) => {
-      logger.info('🚀 ~ DropDownNotification ~ data:', data);
-      notify.info('Bạn có thông báo mới !');
-      notificationListQuery.refetch();
-      countUnreadNotificationQuery.refetch();
+    socket?.on('notification', (data: NotificationResType) => {
+      logger.info('🚀 ~ DropdownNotification ~ notification:', data);
+      notify.info(data.title || 'Bạn có thông báo mới !');
+      // notificationListQuery.refetch();
+      // countUnreadNotificationQuery.refetch();
       queryClient.invalidateQueries({ queryKey: ['notification-list'] });
       queryClient.invalidateQueries({
         queryKey: ['count-unread-notification']
@@ -58,8 +58,8 @@ export default function DropdownNotification() {
   const handleReadAllNotification = async () => {
     if (unreadCount) {
       await readAllNotificationMutation.mutateAsync();
-      notificationListQuery.refetch();
-      countUnreadNotificationQuery.refetch();
+      // notificationListQuery.refetch();
+      // countUnreadNotificationQuery.refetch();
       queryClient.invalidateQueries({ queryKey: ['notification-list'] });
       queryClient.invalidateQueries({
         queryKey: ['count-unread-notification']
@@ -128,7 +128,7 @@ export default function DropdownNotification() {
                 <ListItem>
                   <NoData
                     content='Bạn chưa có thông báo nào'
-                    className='min-h-full'
+                    className='min-h-[45vh]'
                   />
                 </ListItem>
               ) : loading ? (
@@ -168,7 +168,7 @@ export default function DropdownNotification() {
                     </Button>
                   </div>
                   <Separator />
-                  <List className='flex min-h-[45vh] flex-col overflow-y-auto rounded-md'>
+                  <List className='flex min-h-[40vh] flex-col overflow-y-auto rounded-md'>
                     {notificationList.slice(0, 4).map((notification) => (
                       <NoficationItem
                         key={notification.id}
@@ -205,9 +205,9 @@ function NoficationItem({
 
   const handleMarkReadNotification = async (id: string) => {
     await markReadNotificationMutation.mutateAsync(id);
-    queryClient.refetchQueries({ queryKey: ['count-unread-notification'] });
+    // queryClient.refetchQueries({ queryKey: ['count-unread-notification'] });
     queryClient.invalidateQueries({ queryKey: ['count-unread-notification'] });
-    queryClient.refetchQueries({ queryKey: ['notification-list'] });
+    // queryClient.refetchQueries({ queryKey: ['notification-list'] });
     queryClient.invalidateQueries({ queryKey: ['notification-list'] });
   };
 
@@ -226,7 +226,7 @@ function NoficationItem({
         className='flex gap-x-4 p-4'
         href={`${route.user.order}/${data.orderId}`}
       >
-        <div className='h-18 w-12'>
+        <div className='h-18 w-12 shrink-0'>
           <Image
             src={renderImageUrl(notification.imageUrl)}
             width={52}
@@ -235,13 +235,13 @@ function NoficationItem({
             unoptimized
             className={
               !notification.seen
-                ? 'h-full w-full bg-gray-50 transition-all duration-200 ease-linear hover:bg-gray-100'
+                ? 'h-full w-full bg-gray-100 transition-all duration-200 ease-linear hover:bg-zinc-200'
                 : 'h-full w-full bg-red-500 object-cover'
             }
           />
         </div>
         <div className='flex flex-col justify-between'>
-          <h3>{generateNotificationTemplate(notification.type)}</h3>
+          <h3>{notification.title}</h3>
           <span className='text-xs text-gray-400'>
             {formatDate(notification.createdDate, DATE_TIME_FORMAT)}
           </span>
@@ -262,12 +262,3 @@ function NotificationItemSkeleton() {
     </ListItem>
   );
 }
-
-export const generateNotificationTemplate = (type: number) => {
-  switch (type) {
-    case NOTIFICATION_TYPE_ORDER:
-      return 'Bạn có thông báo mới';
-    default:
-      return 'Thông báo';
-  }
-};

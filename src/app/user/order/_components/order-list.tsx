@@ -45,19 +45,25 @@ export default function OrderList() {
 
   return (
     <>
-      <div className='mb-4 flex items-center justify-evenly rounded-lg bg-white py-4 shadow-[0px_0px_10px_2px] shadow-gray-200'>
-        {orderStatuses.map((status) => (
-          <Button
-            variant={'ghost'}
-            key={status.value}
-            onClick={() => setCurrentStatus(status.value)}
-            className={cn('hover:text-dark-cyan/80 p-0! text-sm font-medium', {
-              'text-dark-cyan': currentStatus === status.value
-            })}
-          >
-            {status.label}
-          </Button>
-        ))}
+      <div className='mb-4 grid w-full grid-cols-6 flex-wrap items-center justify-start gap-y-1 overflow-x-auto rounded-lg bg-white px-4 py-4 shadow-[0px_0px_10px_2px] shadow-gray-200'>
+        {orderStatuses.map((status) => {
+          const isActive = currentStatus === status.value;
+          return (
+            <Button
+              key={status.value}
+              variant='ghost'
+              onClick={() => setCurrentStatus(status.value)}
+              className={cn(
+                'rounded-full border text-sm font-medium whitespace-nowrap transition-all duration-200',
+                isActive
+                  ? 'border-dark-cyan bg-dark-cyan/10 text-dark-cyan'
+                  : 'border-transparent text-gray-600 hover:bg-gray-50'
+              )}
+            >
+              {status.label}
+            </Button>
+          );
+        })}
       </div>
       <div className='flex flex-col gap-4'>
         {isLoading ? (

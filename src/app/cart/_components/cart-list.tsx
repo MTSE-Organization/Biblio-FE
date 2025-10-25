@@ -12,13 +12,15 @@ import {
   useUpdateCartItemMutation
 } from '@/queries';
 import { useQueryClient } from '@tanstack/react-query';
-import { notify } from '@/utils';
+import { getData, notify, setData } from '@/utils';
 import { logger } from '@/logger';
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import { Check } from 'lucide-react';
 import CartItem from '@/app/cart/_components/cart-item';
 import CouponList from '@/app/cart/_components/coupon-list';
 import { useAppLoadingStore } from '@/store/use-app-loading-store';
+import { storageKeys } from '@/constants';
+import { CartItemResType } from '@/types';
 
 export default function CartList() {
   const { withLoading } = useAppLoadingStore();
@@ -77,6 +79,14 @@ export default function CartList() {
         ? []
         : cart?.cartItems?.map((item) => item.id) || []
     );
+    setData(
+      storageKeys.SELECTED_CART_ITEMS,
+      JSON.stringify(
+        selectedCartItems.length === 0
+          ? cart?.cartItems?.map((item) => item.id)
+          : []
+      )
+    );
   }, [cart, selectedCartItems, setSelectedCartItems]);
 
   const totalPrice =
@@ -92,6 +102,21 @@ export default function CartList() {
             100,
         0
       ) ?? 0;
+
+  useEffect(() => {
+    const selectedCartItemsFromLocalStorage = getData(
+      storageKeys.SELECTED_CART_ITEMS
+    );
+    if (!selectedCartItemsFromLocalStorage) return;
+    const cartItems = JSON.parse(
+      selectedCartItemsFromLocalStorage
+    ) as unknown as string[];
+    setSelectedCartItems(
+      cartItems.length === cart?.cartItems?.map((item) => item.id).length
+        ? cart?.cartItems?.map((item) => item.id)
+        : []
+    );
+  }, [cart?.cartItems, setSelectedCartItems]);
 
   if (!profile) {
     return (
