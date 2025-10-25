@@ -111,6 +111,11 @@ const apiConfig = defineApiConfig({
       baseUrl: `${AppConstants.apiUrl}v1/product/top-views`,
       headers: baseHeader,
       method: 'GET'
+    },
+    search: {
+      baseUrl: `${AppConstants.apiUrl}v1/product/search`,
+      headers: baseHeader,
+      method: 'GET'
     }
   },
   category: {
@@ -121,6 +126,11 @@ const apiConfig = defineApiConfig({
     },
     getById: {
       baseUrl: `${AppConstants.apiUrl}v1/category/get/:id`,
+      headers: baseHeader,
+      method: 'GET'
+    },
+    autoComplete: {
+      baseUrl: `${AppConstants.apiUrl}v1/category/auto-complete`,
       headers: baseHeader,
       method: 'GET'
     }

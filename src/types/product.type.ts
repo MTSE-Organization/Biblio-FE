@@ -52,5 +52,31 @@ export type ProductAutoType = {
   totalViews: number;
   totalReviews: number;
   averageReview: number;
+  ageRating: number;
   status: number;
+};
+
+export type SearchType = {
+  keyword?: string;
+  minPrice?: number;
+  maxPrice?: number;
+  ageRating?: number;
+  language?: string;
+  categoryId?: string;
+  sortBy?: string;
+  sortOrder?: string;
+} & BaseSearchType;
+
+export type SearchResType = {
+  id: string;
+  name: string;
+  slug: string;
+  price: number;
+  createdDate: string;
+  ageRating: number;
+  language: string;
+  discount: number;
+  imageUrl: string;
+  image: ProductImageAutoType;
+  category: CategoryAutoType;
 };
