@@ -221,20 +221,20 @@ export default function OrderDetail() {
       {orderItems.map((orderItem) => (
         <div key={orderItem.id}>
           <div className='flex items-center py-4'>
-            <div className='flex h-20 w-full items-center'>
+            <div className='flex h-22.5 w-full items-center'>
               <Link
                 href={`${route.book}/${orderItem.productVariant.product.slug}.${orderItem.productVariant.product.id}`}
-                className='flex-shrink-0'
+                className='h-full flex-shrink-0'
               >
                 <Image
                   src={renderImageUrl(orderItem.productVariant.imageUrl)}
-                  width={90}
+                  width={120}
                   height={90}
                   alt={'Sách'}
-                  className='rounded-lg object-contain'
+                  className='h-full w-full rounded object-cover'
                 />
               </Link>
-              <div className='ml-6 flex h-full w-full items-stretch justify-between'>
+              <div className='ml-4 flex h-full w-full items-stretch justify-between'>
                 <div className='flex flex-col justify-between'>
                   <Link
                     href={`${route.book}/${orderItem.productVariant.product.slug}.${orderItem.productVariant.product.id}`}

@@ -25,3 +25,4 @@ export * from './group.type';
 export * from './viewed-product.type';
 export * from './review.type';
 export * from './filters.type';
+export * from './notification.type';

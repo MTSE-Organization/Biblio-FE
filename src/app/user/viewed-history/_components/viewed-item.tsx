@@ -28,11 +28,13 @@ export default function ViewedItem({
     if (!viewedProduct?.id) return;
     await withLoading(
       deleteViewedProductMutation.mutateAsync(viewedProduct?.id, {
-        onSuccess: () => {
-          notify.success('Xóa sách khỏi lịch sử xem thành công');
-          queryClient.invalidateQueries({
-            queryKey: ['viewed-product-list']
-          });
+        onSuccess: (res) => {
+          if (res.result) {
+            notify.success('Xóa sách khỏi lịch sử xem thành công');
+            queryClient.invalidateQueries({
+              queryKey: ['viewed-product-list']
+            });
+          }
         },
         onError: (error) => {
           notify.error('Đã có lỗi xảy ra');

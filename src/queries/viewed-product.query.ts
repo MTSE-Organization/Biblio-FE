@@ -27,7 +27,7 @@ export const useInfiniteViewedProductListQuery = ({
   enabled?: boolean;
 } = {}) => {
   return useInfiniteQuery({
-    queryKey: ['order-list', params],
+    queryKey: ['viewed-product-list', params],
     queryFn: ({ pageParam = 0 }) =>
       viewedProductApiRequest.getList({ ...params, page: pageParam }),
     initialPageParam: 0,
