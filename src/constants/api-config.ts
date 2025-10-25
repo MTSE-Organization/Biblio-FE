@@ -333,6 +333,11 @@ const apiConfig = defineApiConfig({
       baseUrl: `${AppConstants.apiUrl}v1/review/summary/:productId`,
       headers: baseHeader,
       method: 'GET'
+    },
+    checkReview: {
+      baseUrl: `${AppConstants.apiUrl}v1/review/check-review`,
+      headers: baseHeader,
+      method: 'POST'
     }
   },
   payment: {

@@ -2,6 +2,8 @@ import { apiConfig } from '@/constants';
 import {
   ApiResponse,
   ApiResponseList,
+  CheckReviewBody,
+  CheckReviewResType,
   ReviewBodyType,
   ReviewResType,
   ReviewSearchType,
@@ -21,6 +23,10 @@ const reviewApiRequest = {
   summary: (productId: string) =>
     http.get<ApiResponseList<ReviewSummaryResType>>(apiConfig.review.summary, {
       pathParams: { productId }
+    }),
+  checkReview: (body: CheckReviewBody) =>
+    http.post<ApiResponse<CheckReviewResType>>(apiConfig.review.checkReview, {
+      body
     })
 };
 

@@ -22,7 +22,17 @@ import { X } from 'lucide-react';
 import Image from 'next/image';
 import { useState } from 'react';
 
-export default function ReviewButton({ productId }: { productId: string }) {
+export default function ReviewButton({
+  productId,
+  productVariantId,
+  orderId,
+  onSuccess
+}: {
+  productId: string;
+  productVariantId: string;
+  orderId: string;
+  onSuccess: () => void;
+}) {
   const { opened, open, close } = useDisclosure();
   const handleOpenReviewModal = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -37,7 +47,14 @@ export default function ReviewButton({ productId }: { productId: string }) {
       >
         Đánh giá
       </Button>
-      <ReviewModal opened={opened} onClose={close} productId={productId} />
+      <ReviewModal
+        opened={opened}
+        onClose={close}
+        productId={productId}
+        productVariantId={productVariantId}
+        orderId={orderId}
+        onSuccess={onSuccess}
+      />
     </>
   );
 }
@@ -53,11 +70,17 @@ const ratings = [
 function ReviewModal({
   opened,
   onClose,
-  productId
+  productId,
+  productVariantId,
+  orderId,
+  onSuccess
 }: {
   opened: boolean;
   onClose: () => void;
   productId: string;
+  productVariantId: string;
+  orderId: string;
+  onSuccess: () => void;
 }) {
   const [selectedRating, setSelectedRating] = useState<number>(5);
   const [content, setContent] = useState('');
@@ -73,13 +96,11 @@ function ReviewModal({
   const handleCreateReview = async () => {
     await withLoading(
       reviewMutation.mutateAsync(
-        { productId, rate: selectedRating, content },
+        { productId, rate: selectedRating, content, productVariantId, orderId },
         {
           onSuccess: () => {
             notify.success('Đánh giá sách thành công');
-            queryClient.invalidateQueries({
-              queryKey: ['review-list', { productId }]
-            });
+            onSuccess();
             onClose();
           },
           onError: (error) => {
