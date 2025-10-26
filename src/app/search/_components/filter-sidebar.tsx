@@ -6,7 +6,6 @@ import { Separator } from '@/components/ui/separator';
 import { ageRatings, languageOptions } from '@/constants';
 import { useCategoryListQuery } from '@/queries';
 import { FiltersType } from '@/types';
-import { formatPrice } from '@/utils';
 import { SlidersHorizontal } from 'lucide-react';
 import { useState } from 'react';
 import ExpandableList from './expandable-list';
@@ -20,21 +19,33 @@ export default function FilterSidebar({
 }) {
   const [filters, setFilters] = useState<FiltersType>(defaultFilters);
 
-  const categoryAutoComplete = useCategoryListQuery({ enabled: true });
-  const categories = categoryAutoComplete?.data?.data?.content || [];
+  const categoryListQuery = useCategoryListQuery({ enabled: true });
+  const categories = categoryListQuery?.data?.data?.content || [];
 
   const handleMinChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = parseInt(e.target.value);
-    if (value <= filters.maxPrice) {
-      setFilters((prev) => ({ ...prev, minPrice: value }));
-    }
+    let value = Number(e.target.value);
+    if (isNaN(value) || value < 0) value = 0;
+
+    if (value > 5000000) value = 5000000;
+
+    setFilters((prev) => ({
+      ...prev,
+      minPrice: value,
+      maxPrice: Math.max(value, prev.maxPrice)
+    }));
   };
 
   const handleMaxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = parseInt(e.target.value);
-    if (value >= filters.minPrice) {
-      setFilters((prev) => ({ ...prev, maxPrice: value }));
-    }
+    let value = Number(e.target.value);
+    if (isNaN(value) || value < 0) value = 0;
+
+    if (value > 5000000) value = 5000000;
+
+    setFilters((prev) => ({
+      ...prev,
+      maxPrice: value,
+      minPrice: Math.min(value, prev.minPrice)
+    }));
   };
 
   const toggleCategory = (categoryId: string) => {
@@ -66,6 +77,7 @@ export default function FilterSidebar({
       language: null,
       ageRating: null
     });
+    onApply(filters);
   };
 
   const handleApply = () => {
@@ -209,16 +221,18 @@ export default function FilterSidebar({
             <div className='mt-6 flex items-center gap-2 text-sm'>
               <Input
                 type='text'
-                value={formatPrice(filters.minPrice)}
-                readOnly
-                className='flex-1 rounded border bg-gray-50 px-2 py-1.5 text-center'
+                value={filters.minPrice}
+                onChange={handleMinChange}
+                minLength={1}
+                className='border text-center'
               />
               <span>-</span>
               <Input
                 type='text'
-                value={formatPrice(filters.maxPrice)}
-                readOnly
-                className='flex-1 rounded border bg-gray-50 px-2 py-1.5 text-center'
+                value={filters.maxPrice}
+                onChange={handleMaxChange}
+                minLength={1}
+                className='border text-center'
               />
             </div>
           </div>

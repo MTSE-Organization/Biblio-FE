@@ -61,7 +61,12 @@ export default function SearchPage() {
   const books = data?.data?.content || [];
 
   const handleApplyFilters = (newFilters: FiltersType) => {
-    const nextParams = formatSearchParams({ keyword, ...newFilters });
+    const nextParams = formatSearchParams({
+      keyword,
+      ...newFilters,
+      sortBy,
+      sortOrder
+    });
     router.push(`/search?${new URLSearchParams(nextParams).toString()}`);
   };
 
