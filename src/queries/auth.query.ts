@@ -64,3 +64,10 @@ export const useLoginGoogleMutation = () => {
     mutationFn: (code: string) => authApiRequest.loginGoogle(code)
   });
 };
+
+export const useResendOtpMutation = () => {
+  return useMutation({
+    mutationKey: ['resend-otp'],
+    mutationFn: (email: string) => authApiRequest.resendOtp(email)
+  });
+};

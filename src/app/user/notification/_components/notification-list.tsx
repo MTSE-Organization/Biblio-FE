@@ -35,7 +35,7 @@ import { useAppLoadingStore } from '@/store/use-app-loading-store';
 export default function NotificationList() {
   const { withLoading } = useAppLoadingStore();
   const loadMoreRef = useRef<HTMLDivElement | null>(null);
-  const { socket } = useAuthStore();
+  const { socket, profile } = useAuthStore();
   const queryClient = useQueryClient();
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
@@ -45,7 +45,9 @@ export default function NotificationList() {
     });
 
   const readAllNotificationMutation = useReadAllNotificationMutation();
-  const countUnreadNotificationQuery = useCountUnreadNotificationQuery();
+  const countUnreadNotificationQuery = useCountUnreadNotificationQuery({
+    enabled: !!profile
+  });
   const deleteAllNotificationMutation = useDeleteAllNotificationMutation();
   const deleteNotificationMutation = useDeleteNotificationMutation();
 

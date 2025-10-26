@@ -39,6 +39,10 @@ const authApiRequest = {
   loginGoogle: (code: string) =>
     http.post<ApiResponse<{ token: string }>>(apiConfig.auth.loginGoogle, {
       params: { code }
+    }),
+  resendOtp: (email: string) =>
+    http.post<ApiResponse<any>>(apiConfig.auth.resendOtp, {
+      body: { email }
     })
 };
 export default authApiRequest;

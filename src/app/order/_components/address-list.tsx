@@ -61,7 +61,9 @@ export default function AddressList() {
           <div className='flex items-center justify-between'>
             {defaultAddress ? (
               <div className='flex flex-wrap gap-3 text-sm'>
-                <span className='font-bold'>Lê Tấn Trụ | 099999999</span>
+                <span className='font-bold'>
+                  {defaultAddress.receiverName} | {defaultAddress.phoneNumber}
+                </span>
                 <p className='mr-5 text-gray-700'>
                   {defaultAddress.detail}, {defaultAddress.hamlet}, &nbsp;
                   {defaultAddress.ward}, {defaultAddress.district}, &nbsp;

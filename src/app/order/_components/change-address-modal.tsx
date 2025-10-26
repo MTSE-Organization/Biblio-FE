@@ -72,6 +72,7 @@ export default function ChangeAddressModal({
                     />
                     <div>
                       <p className='text-sm leading-tight'>
+                        {address.receiverName} | {address.phoneNumber}, &nbsp;
                         {address.detail}, {address.hamlet}, {address.ward},{' '}
                         {address.district}, {address.city}
                       </p>

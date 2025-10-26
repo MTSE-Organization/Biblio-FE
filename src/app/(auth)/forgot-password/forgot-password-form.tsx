@@ -1,15 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { whiteLogo } from '@/assets';
-import {
-  Breadcrumb,
-  Button,
-  Col,
-  InputField,
-  OtpField,
-  Row
-} from '@/components/form';
+import { Button, Col, InputField, OtpField, Row } from '@/components/form';
 import { BaseForm } from '@/components/form/base-form';
 import PasswordField from '@/components/form/password-field';
 import route from '@/routes';
@@ -20,7 +13,8 @@ import {
 } from '@/schemaValidations';
 import {
   useChangePasswordMutation,
-  useForgotPasswordMutation
+  useForgotPasswordMutation,
+  useResendOtpMutation
 } from '@/queries';
 import { logger } from '@/logger';
 import { applyFormErrors, getData, notify, removeData, setData } from '@/utils';
@@ -32,11 +26,22 @@ import { ForgotPasswordBodyType } from '@/types';
 
 type ForgotPasswordStepType = 1 | 2;
 
+const MAX_RESEND = 3;
+const RESEND_INTERVAL = 10 * 60 * 1000;
+
 export default function ForgotPasswordForm() {
   const [step, setStep] = useState<ForgotPasswordStepType>(1);
   const forgotPasswordMutation = useForgotPasswordMutation();
   const changePasswordMutation = useChangePasswordMutation();
+  const resendOtpMutation = useResendOtpMutation();
   const navigate = useNavigate();
+
+  const [resendData, setResendDataState] = useState<{
+    count: number;
+    timestamp: number;
+  }>({ count: 0, timestamp: 0 });
+
+  const [countdown, setCountdown] = useState(0);
 
   const defaultValues: ForgotPasswordBodyType = {
     email: '',
@@ -99,15 +104,83 @@ export default function ForgotPasswordForm() {
     }
   };
 
+  useEffect(() => {
+    if (getData(storageKeys.EMAIL)) setStep(2);
+  }, []);
+
+  useEffect(() => {
+    const data = getResendData();
+    setResendDataState(data);
+  }, []);
+
+  const getResendData = () => {
+    const data = getData(storageKeys.RESEND_OTP);
+    if (!data) return { count: 0, timestamp: 0 };
+    return JSON.parse(data);
+  };
+
+  const setResendData = (count: number, timestamp: number) => {
+    setData(storageKeys.RESEND_OTP, JSON.stringify({ count, timestamp }));
+  };
+
+  const handleResendOtp = async () => {
+    const email = getData(storageKeys.EMAIL);
+    if (!email) return;
+
+    const now = Date.now();
+    let { count, timestamp } = getResendData();
+
+    if (now - timestamp > RESEND_INTERVAL) {
+      count = 0;
+      timestamp = now;
+    }
+
+    if (count >= MAX_RESEND) {
+      notify.error('Bạn đã gửi OTP quá 3 lần, vui lòng thử lại sau 10 phút');
+      return;
+    }
+
+    await resendOtpMutation.mutateAsync(email, {
+      onSuccess: (res) => {
+        if (res.result) {
+          notify.success('Gửi lại OTP thành công');
+          count += 1;
+          timestamp = now;
+          setResendData(count, timestamp);
+          setResendDataState({ count, timestamp });
+        }
+      },
+      onError: (error) => {
+        logger.error('Error whiling re-send OTP', error);
+        notify.error('Có lỗi xảy ra');
+      }
+    });
+  };
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const now = Date.now();
+      const { timestamp } = getResendData();
+      const remaining = RESEND_INTERVAL - (now - timestamp);
+      setCountdown(remaining > 0 ? remaining : 0);
+
+      if (remaining <= 0 && resendData.count > 0) {
+        setResendData(0, 0);
+        setResendDataState({ count: 0, timestamp: 0 });
+      }
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [resendData.count]);
+
+  const formatCountdown = (ms: number) => {
+    const totalSeconds = Math.floor(ms / 1000);
+    const minutes = String(Math.floor(totalSeconds / 60)).padStart(2, '0');
+    const seconds = String(totalSeconds % 60).padStart(2, '0');
+    return `${minutes}:${seconds}`;
+  };
   return (
     <div>
-      {/* <Breadcrumb
-        items={[
-          { label: 'Trang chủ', href: route.home },
-          { label: 'Quên mật khẩu' }
-        ]}
-        separator='/'
-      /> */}
       <div className='mx-auto max-w-120 rounded-lg bg-white p-7.5 shadow-[0px_0px_10px_2px] shadow-gray-200'>
         <div className='mb-7.5 flex h-full w-full items-center justify-center'>
           <Image
@@ -129,19 +202,17 @@ export default function ForgotPasswordForm() {
           {(form) => (
             <>
               {step === 1 && (
-                <>
-                  <Row>
-                    <Col>
-                      <InputField
-                        name='email'
-                        control={form.control}
-                        label='Email'
-                        placeholder='Nhập email...'
-                        type='text'
-                        required
-                      />
-                    </Col>
-                  </Row>
+                <Row className='flex-col gap-y-6'>
+                  <Col>
+                    <InputField
+                      name='email'
+                      control={form.control}
+                      label='Email'
+                      placeholder='Nhập email...'
+                      type='text'
+                      required
+                    />
+                  </Col>
                   <Button
                     disabled={forgotPasswordMutation.isPending}
                     variant={'primary'}
@@ -153,12 +224,12 @@ export default function ForgotPasswordForm() {
                       'Gửi OTP'
                     )}
                   </Button>
-                </>
+                </Row>
               )}
 
               {step === 2 && (
                 <>
-                  <Row>
+                  <Row className='mb-2'>
                     <Col>
                       <OtpField
                         className='w-full!'
@@ -167,14 +238,51 @@ export default function ForgotPasswordForm() {
                         label='Nhập OTP'
                         required
                         description={
-                          <p className='text-center text-sm'>
-                            Mã OTP đã được gửi đến email của bạn. <br /> Mã có
-                            thời gian sử dụng trong vòng 5 phút
-                          </p>
+                          <>
+                            <span className='text-center text-sm'>
+                              Mã OTP đã được gửi đến email của bạn.
+                            </span>
+                            <br />
+                            <span className='text-center text-sm'>
+                              Mã có thời gian sử dụng trong vòng 5 phút
+                            </span>
+                          </>
                         }
                       />
                     </Col>
                   </Row>
+
+                  <Row className='mt-6 mb-4 flex-col gap-y-2'>
+                    <Col>
+                      <span className='mt-2 block text-center text-sm text-gray-500'>
+                        Số lần đã gửi: {resendData.count} / {MAX_RESEND}
+                        {countdown > 0 && resendData.count >= MAX_RESEND && (
+                          <>
+                            <br />
+                            Bạn có thể gửi lại sau: {formatCountdown(countdown)}
+                          </>
+                        )}
+                      </span>
+                    </Col>
+                    <Col>
+                      <Button
+                        type='button'
+                        variant='primary'
+                        className='mx-auto'
+                        onClick={handleResendOtp}
+                        disabled={
+                          resendData.count >= MAX_RESEND && countdown > 0
+                        }
+                      >
+                        {resendOtpMutation.isPending ? (
+                          <CircleLoading />
+                        ) : (
+                          'Gửi lại OTP'
+                        )}
+                      </Button>
+                    </Col>
+                  </Row>
+
                   <Row>
                     <Col>
                       <PasswordField
@@ -200,7 +308,10 @@ export default function ForgotPasswordForm() {
                   <Row>
                     <Col>
                       <Button
-                        disabled={changePasswordMutation.isPending}
+                        disabled={
+                          changePasswordMutation.isPending ||
+                          form.getValues('otp').length < 6
+                        }
                         variant={'primary'}
                         className={'w-full'}
                       >
