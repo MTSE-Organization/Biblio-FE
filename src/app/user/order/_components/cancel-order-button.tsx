@@ -38,7 +38,9 @@ export default function CancelOrderButton({
         onSuccess: (res) => {
           if (res.result) {
             notify.success('Hủy đơn hàng thành công');
-            queryClient.refetchQueries({ queryKey: ['order-list'] });
+            queryClient.refetchQueries({
+              queryKey: ['order-list']
+            });
           }
         },
         onError: (error) => {

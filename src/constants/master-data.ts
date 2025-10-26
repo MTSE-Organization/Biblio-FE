@@ -24,6 +24,8 @@ import {
   ORDER_STATUS_PACKING,
   ORDER_STATUS_RECEIVED,
   ORDER_STATUS_REFUNDED,
+  ORDER_STATUS_REJECT_ORDER,
+  ORDER_STATUS_REJECT_REFUND,
   ORDER_STATUS_REQUEST_REFUND,
   ORDER_STATUS_SHIPPING,
   ORDER_STATUS_WAITING,
@@ -407,14 +409,9 @@ export const paymentMethods = [
 
 export const orderStatuses = [
   {
-    label: 'Tất cả',
-    value: ORDER_STATUS_ALL,
-    color: 'bg-gray-200 text-gray-700'
-  },
-  {
     label: 'Đơn hàng đã đặt',
     value: ORDER_STATUS_WAITING,
-    color: 'bg-yellow-100 text-yellow-800'
+    color: 'bg-yellow-100 text-yellow-600'
   },
   {
     label: 'Chờ xác nhận',
@@ -460,6 +457,16 @@ export const orderStatuses = [
     label: 'Đã hoàn tiền',
     value: ORDER_STATUS_REFUNDED,
     color: 'bg-emerald-100 text-emerald-800'
+  },
+  {
+    label: 'Đơn hàng bị từ chối',
+    value: ORDER_STATUS_REJECT_ORDER,
+    color: 'bg-red-100 text-red-800'
+  },
+  {
+    label: 'Đơn hàng bị từ chối hoàn trả',
+    value: ORDER_STATUS_REJECT_REFUND,
+    color: 'bg-orange-100 text-orange-800'
   }
 ];
 
