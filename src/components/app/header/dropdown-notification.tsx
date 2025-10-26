@@ -46,8 +46,8 @@ export default function DropdownNotification() {
     socket?.on('notification', (data: NotificationResType) => {
       logger.info('🚀 ~ DropdownNotification ~ notification:', data);
       notify.info(data.title || 'Bạn có thông báo mới !');
-      // notificationListQuery.refetch();
-      // countUnreadNotificationQuery.refetch();
+      notificationListQuery.refetch();
+      countUnreadNotificationQuery.refetch();
       queryClient.invalidateQueries({ queryKey: ['notification-list'] });
       queryClient.invalidateQueries({
         queryKey: ['count-unread-notification']
@@ -134,7 +134,7 @@ export default function DropdownNotification() {
               ) : loading ? (
                 <>
                   <div className='flex items-center justify-between px-4'>
-                    <span>Thông báo</span>
+                    <span>Thông báo (0)</span>
                     <Button
                       variant='ghost'
                       onClick={handleReadAllNotification}
@@ -157,7 +157,7 @@ export default function DropdownNotification() {
               ) : (
                 <>
                   <div className='flex items-center justify-between px-4'>
-                    <span>Thông báo</span>
+                    <span>Thông báo ({unreadCount})</span>
                     <Button
                       variant='ghost'
                       onClick={handleReadAllNotification}
@@ -235,8 +235,8 @@ function NoficationItem({
             unoptimized
             className={
               !notification.seen
-                ? 'h-full w-full bg-gray-100 transition-all duration-200 ease-linear hover:bg-zinc-200'
-                : 'h-full w-full bg-red-500 object-cover'
+                ? 'h-full w-full bg-gray-100 object-cover transition-all duration-200 ease-linear hover:bg-zinc-200'
+                : 'h-full w-full object-cover'
             }
           />
         </div>

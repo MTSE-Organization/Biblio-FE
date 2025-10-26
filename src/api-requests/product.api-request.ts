@@ -5,7 +5,6 @@ import {
   ProductAutoType,
   ProductResType,
   ProductSearchType,
-  SearchResType,
   SearchType
 } from '@/types';
 import { http } from '@/utils';

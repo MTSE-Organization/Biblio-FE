@@ -234,6 +234,10 @@ export default function BookDetailInfo({ book }: { book?: ProductResType }) {
           <span>{book?.totalViews} lượt xem</span>
         </div>
         <Separator orientation='vertical' />
+        <div className='flex items-center gap-1 text-gray-600'>
+          <span>{book?.totalSold} đã bán</span>
+        </div>
+        <Separator orientation='vertical' />
         <div
           onClick={handleAddAndRemoveFavorite}
           className='flex cursor-pointer items-center gap-1 text-gray-600'

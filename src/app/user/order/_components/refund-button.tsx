@@ -21,14 +21,14 @@ export default function RefundButton({
   onSuccess?: () => void;
 }) {
   const { opened, open, close } = useDisclosure();
-  const handleOpenReviewModal = (e: React.MouseEvent) => {
+  const handleOpenRefundOrderModal = (e: React.MouseEvent) => {
     e.stopPropagation();
     open();
   };
   return (
     <>
       <Button
-        onClick={handleOpenReviewModal}
+        onClick={handleOpenRefundOrderModal}
         className='bg-amber-500 hover:bg-amber-500/80'
         variant={'primary'}
       >
