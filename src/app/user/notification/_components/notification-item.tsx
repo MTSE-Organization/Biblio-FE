@@ -77,7 +77,7 @@ export default function NotificationItem({
             height={72}
             alt={notification.title}
             unoptimized
-            className={cn('h-full w-full bg-red-500 object-cover', {
+            className={cn('h-full w-full object-cover', {
               'cursor-pointer bg-gray-50 transition-all duration-200 ease-linear hover:bg-gray-100':
                 !notification.seen
             })}
