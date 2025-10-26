@@ -492,7 +492,9 @@ export default function OrderDetail() {
         {/* Re-order when status is cancelled or received */}
         {(orderStatus?.value === ORDER_STATUS_CANCELLED ||
           orderStatus?.value === ORDER_STATUS_RECEIVED ||
-          orderStatus?.value === ORDER_STATUS_REFUNDED) && (
+          orderStatus?.value === ORDER_STATUS_REFUNDED ||
+          orderStatus?.value === ORDER_STATUS_REJECT_ORDER ||
+          orderStatus?.value === ORDER_STATUS_REJECT_REFUND) && (
           <ReOrderButton orderItems={order.orderItems} />
         )}
       </div>
