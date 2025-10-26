@@ -38,7 +38,7 @@ export default function AppProvider({
     handleGetProfile();
 
     connectSocket(accessToken);
-    const interval = setInterval(() => connectSocket(accessToken), 50 * 1000);
+    const interval = setInterval(() => connectSocket(accessToken), 30 * 1000);
     return () => clearInterval(interval);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

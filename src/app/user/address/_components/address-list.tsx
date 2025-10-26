@@ -417,26 +417,6 @@ export default function AddressList() {
             <>
               <Row>
                 <Col span={12}>
-                  <InputField
-                    control={form.control}
-                    name='receiverName'
-                    label='Tên người nhận'
-                    placeholder='Tên người nhận'
-                    required
-                  />
-                </Col>
-                <Col span={12}>
-                  <InputField
-                    control={form.control}
-                    name='phoneNumber'
-                    label='Số điện thoại người nhận'
-                    placeholder='Số điện thoại người nhận'
-                    required
-                  />
-                </Col>
-              </Row>
-              <Row>
-                <Col span={12}>
                   <SelectField
                     control={form.control}
                     name='city'
@@ -534,6 +514,26 @@ export default function AddressList() {
                     onChange={(value) =>
                       debouncedSetDetailSearch(value as string)
                     }
+                  />
+                </Col>
+              </Row>
+              <Row>
+                <Col span={12}>
+                  <InputField
+                    control={form.control}
+                    name='receiverName'
+                    label='Tên người nhận'
+                    placeholder='Tên người nhận'
+                    required
+                  />
+                </Col>
+                <Col span={12}>
+                  <InputField
+                    control={form.control}
+                    name='phoneNumber'
+                    label='Số điện thoại người nhận'
+                    placeholder='Số điện thoại người nhận'
+                    required
                   />
                 </Col>
               </Row>

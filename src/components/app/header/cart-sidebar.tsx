@@ -207,7 +207,7 @@ export default function CartSidebar() {
   const queryClient = useQueryClient();
 
   const cart = cartQuery?.data?.data;
-  const cartItemQuantity = cart?.cartItems.length ?? 0;
+  const cartItemQuantity = cart?.cartItems?.length ?? 0;
 
   const removeFromCartMutation = useDeleteItemMutation();
   const updateCartItem = useUpdateCartItemMutation();
@@ -216,7 +216,7 @@ export default function CartSidebar() {
     await withLoading(
       removeFromCartMutation.mutateAsync(id, {
         onSuccess: () => {
-          notify.success('Xóa sách khỏi giỏ hàng thàng công');
+          notify.success('Xóa sách khỏi giỏ hàng thành công');
           queryClient.invalidateQueries({ queryKey: ['cart'] });
         },
         onError: (error) => {

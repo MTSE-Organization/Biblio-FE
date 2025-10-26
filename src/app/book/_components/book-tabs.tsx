@@ -28,7 +28,7 @@ import ReviewSummarySkeleton from '@/app/book/_components/review-summary-skeleto
 import ReviewSummary from '@/app/book/_components/review-summary';
 
 const BookTabs = ({ book }: { book?: ProductResType }) => {
-  const [activeTab, setActiveTab] = useState('review');
+  const [activeTab, setActiveTab] = useState('description');
 
   const tabs = useMemo(
     () => [

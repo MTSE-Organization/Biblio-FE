@@ -36,13 +36,20 @@ const authApiRequest = {
   logout: () => http.post<ApiResponse<any>>(apiConfig.auth.api.logout),
   getGoogleLoginUrl: () =>
     http.get<ApiResponse<{ url: string }>>(apiConfig.auth.getGoogleLoginUrl),
-  loginGoogle: (code: string) =>
-    http.post<ApiResponse<{ token: string }>>(apiConfig.auth.loginGoogle, {
-      params: { code }
-    }),
+  loginGoogleCallback: (code: string) =>
+    http.post<ApiResponse<{ token: string }>>(
+      apiConfig.auth.loginGoogleCallback,
+      {
+        params: { code }
+      }
+    ),
   resendOtp: (email: string) =>
     http.post<ApiResponse<any>>(apiConfig.auth.resendOtp, {
       body: { email }
+    }),
+  loginGoogle: async (code: string) =>
+    http.post<ApiResponse<any>>(apiConfig.auth.loginGoogle, {
+      body: { code }
     })
 };
 export default authApiRequest;

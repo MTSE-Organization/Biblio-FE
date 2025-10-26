@@ -208,26 +208,6 @@ const AddressModal = ({
           <>
             <Row>
               <Col span={12}>
-                <InputField
-                  control={form.control}
-                  name='receiverName'
-                  label='Tên người nhận'
-                  placeholder='Tên người nhận'
-                  required
-                />
-              </Col>
-              <Col span={12}>
-                <InputField
-                  control={form.control}
-                  name='phoneNumber'
-                  label='Số điện thoại người nhận'
-                  placeholder='Số điện thoại người nhận'
-                  required
-                />
-              </Col>
-            </Row>
-            <Row>
-              <Col span={12}>
                 <SelectField
                   control={form.control}
                   name='city'
@@ -335,6 +315,26 @@ const AddressModal = ({
                   name='detail'
                   label='Địa chỉ chi tiết'
                   placeholder='Nhập địa chỉ chi tiết'
+                  required
+                />
+              </Col>
+            </Row>
+            <Row>
+              <Col span={12}>
+                <InputField
+                  control={form.control}
+                  name='receiverName'
+                  label='Tên người nhận'
+                  placeholder='Tên người nhận'
+                  required
+                />
+              </Col>
+              <Col span={12}>
+                <InputField
+                  control={form.control}
+                  name='phoneNumber'
+                  label='Số điện thoại người nhận'
+                  placeholder='Số điện thoại người nhận'
                   required
                 />
               </Col>
