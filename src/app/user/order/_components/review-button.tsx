@@ -1,5 +1,4 @@
 'use client';
-
 import {
   angryIcon,
   happyIcon,
@@ -17,7 +16,6 @@ import { logger } from '@/logger';
 import { useCreateReviewMutation } from '@/queries/review.query';
 import { useAppLoadingStore } from '@/store/use-app-loading-store';
 import { notify } from '@/utils';
-import { useQueryClient } from '@tanstack/react-query';
 import { X } from 'lucide-react';
 import Image from 'next/image';
 import { useState } from 'react';
@@ -85,7 +83,6 @@ function ReviewModal({
   const [selectedRating, setSelectedRating] = useState<number>(5);
   const [content, setContent] = useState('');
   const { withLoading } = useAppLoadingStore();
-  const queryClient = useQueryClient();
 
   const reviewMutation = useCreateReviewMutation();
 

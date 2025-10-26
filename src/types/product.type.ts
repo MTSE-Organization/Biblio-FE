@@ -12,7 +12,7 @@ export type ProductResType = {
   name: string;
   slug: string;
   description: string;
-  price: string;
+  price: number;
   releaseDate: string;
   ageRating: number;
   language: string;
@@ -23,11 +23,12 @@ export type ProductResType = {
   images: ProductImageResType[];
   publisher: PublisherAutoType;
   contributors: ContributorAutoType[];
-  createdDate: string;
-  modifiedDate: string;
   totalViews: number;
   totalReviews: number;
   averageReview: number;
+  totalSold: number;
+  createdDate: string;
+  modifiedDate: string;
   status: number;
 };
 
@@ -47,13 +48,13 @@ export type ProductAutoType = {
   category: CategoryAutoType;
   price: number;
   slug: string;
-  quantity: number;
+  isFeatured: boolean;
   discount: number;
   totalViews: number;
+  status: number;
   totalReviews: number;
   averageReview: number;
-  ageRating: number;
-  status: number;
+  totalSold: number;
 };
 
 export type SearchType = {

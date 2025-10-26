@@ -1,13 +1,14 @@
 'use client';
 
 import { Button } from '@/components/form';
+import { storageKeys } from '@/constants';
 import { useNavigate } from '@/hooks';
 import { logger } from '@/logger';
 import { useAddItemMutation } from '@/queries';
 import route from '@/routes';
 import { useAppLoadingStore } from '@/store/use-app-loading-store';
 import { OrderItemResType } from '@/types';
-import { notify } from '@/utils';
+import { notify, setData } from '@/utils';
 import { useQueryClient } from '@tanstack/react-query';
 
 export default function ReOrderButton({
@@ -31,6 +32,10 @@ export default function ReOrderButton({
           { productVariantId: item.productVariantId, quantity: item.quantity },
           {
             onSuccess: () => {
+              setData(
+                storageKeys.REORDER_PRODUCT,
+                JSON.stringify({ productVariantId: item.productVariantId })
+              );
               navigate(route.cart);
               queryClient.invalidateQueries({ queryKey: ['cart'] });
             },

@@ -5,7 +5,8 @@ import {
   CreateOrderBodyType,
   OrderBodyType,
   OrderResType,
-  OrderSearchType
+  OrderSearchType,
+  RefundOrderBodyType
 } from '@/types';
 import { http } from '@/utils';
 
@@ -39,6 +40,10 @@ const orderApiRequest = {
       pathParams: {
         id
       }
+    }),
+  refund: (body: RefundOrderBodyType) =>
+    http.put<ApiResponse<any>>(apiConfig.order.refund, {
+      body
     })
 };
 

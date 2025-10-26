@@ -13,7 +13,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger
 } from '@/components/ui/alert-dialog';
-import { DATE_TIME_FORMAT, NOTIFICATION_TYPE_ORDER } from '@/constants';
+import { DATE_TIME_FORMAT } from '@/constants';
 import { cn } from '@/lib';
 import { useMarkReadNotificationMutation } from '@/queries';
 import route from '@/routes';
@@ -38,16 +38,16 @@ export default function NotificationItem({
 
   const handleMarkReadNotification = async (id: string) => {
     await markReadNotificationMutation.mutateAsync(id);
-    queryClient.refetchQueries({
-      queryKey: [`count-unread-notification`]
-    });
+    // queryClient.refetchQueries({
+    //   queryKey: [`count-unread-notification`]
+    // });
     queryClient.invalidateQueries({
       queryKey: [`count-unread-notification`]
     });
 
-    queryClient.refetchQueries({
-      queryKey: [`notification-list`]
-    });
+    // queryClient.refetchQueries({
+    //   queryKey: [`notification-list`]
+    // });
     queryClient.invalidateQueries({
       queryKey: [`notification-list`]
     });
@@ -60,7 +60,7 @@ export default function NotificationItem({
       className={cn(
         'flex items-center justify-between pr-8 not-last:border-b',
         {
-          'cursor-pointer bg-gray-50 transition-all duration-200 ease-linear hover:bg-zinc-100':
+          'cursor-pointer bg-gray-100 transition-all duration-200 ease-linear hover:bg-zinc-200':
             !notification.seen
         }
       )}
@@ -70,21 +70,21 @@ export default function NotificationItem({
         className='flex flex-1 gap-x-4 p-4'
         href={`${route.user.order}/${data.orderId}`}
       >
-        <div className='h-18 w-12'>
+        <div className='h-18 w-12 shrink-0'>
           <Image
             src={renderImageUrl(notification.imageUrl)}
             width={52}
             height={72}
             alt={notification.title}
             unoptimized
-            className={cn('h-full w-full bg-red-500 object-cover', {
+            className={cn('h-full w-full object-cover', {
               'cursor-pointer bg-gray-50 transition-all duration-200 ease-linear hover:bg-gray-100':
                 !notification.seen
             })}
           />
         </div>
         <div className='flex flex-col justify-between'>
-          <h3>{generateNotificationTemplate(notification.type)}</h3>
+          <h3>{notification.content}</h3>
           <span className='text-xs text-gray-400'>
             {formatDate(notification.createdDate, DATE_TIME_FORMAT)}
           </span>
@@ -129,12 +129,3 @@ export default function NotificationItem({
     </ListItem>
   );
 }
-
-export const generateNotificationTemplate = (type: number) => {
-  switch (type) {
-    case NOTIFICATION_TYPE_ORDER:
-      return 'Bạn có thông báo mới';
-    default:
-      return 'Thông báo';
-  }
-};
