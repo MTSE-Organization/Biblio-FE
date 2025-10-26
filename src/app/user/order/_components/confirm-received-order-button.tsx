@@ -34,7 +34,9 @@ export default function ConfirmReceivedOrderButton({
       onSuccess: (res) => {
         if (res.result) {
           notify.success('Xác nhận đã nhận được hàng thành công');
-          queryClient.invalidateQueries({ queryKey: ['order', orderId] });
+          queryClient.refetchQueries({
+            queryKey: ['order-list']
+          });
         }
       },
       onError: (error) => {

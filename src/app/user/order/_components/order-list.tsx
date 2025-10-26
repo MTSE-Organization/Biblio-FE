@@ -7,9 +7,11 @@ import { NoData } from '@/components/no-data';
 import { ORDER_STATUS_ALL, orderStatuses } from '@/constants';
 import { cn } from '@/lib';
 import { useInfiniteOrderListQuery } from '@/queries';
+import { useQueryClient } from '@tanstack/react-query';
 import { useEffect, useRef, useState } from 'react';
 
 export default function OrderList() {
+  const queryClient = useQueryClient();
   const loadMoreRef = useRef<HTMLDivElement | null>(null);
   const [currentStatus, setCurrentStatus] = useState<number | null>(
     ORDER_STATUS_ALL
@@ -45,7 +47,7 @@ export default function OrderList() {
 
   return (
     <>
-      <div className='mb-4 grid w-full grid-cols-6 flex-wrap items-center justify-start gap-y-1 overflow-x-auto rounded-lg bg-white px-4 py-4 shadow-[0px_0px_10px_2px] shadow-gray-200'>
+      <div className='mb-4 flex w-full flex-wrap items-center justify-start gap-y-1 overflow-x-auto rounded-lg bg-white px-4 py-4 shadow-[0px_0px_10px_2px] shadow-gray-200'>
         {orderStatuses.map((status) => {
           const isActive = currentStatus === status.value;
           return (

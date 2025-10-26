@@ -72,8 +72,8 @@ function RefundModal({
           onSuccess: (res) => {
             if (res.result) {
               notify.success('Đã gửi yêu cầu hoàn trả hàng');
-              queryClient.invalidateQueries({
-                queryKey: ['order', orderId]
+              queryClient.refetchQueries({
+                queryKey: ['order-list']
               });
               onClose();
               onSuccess?.();
