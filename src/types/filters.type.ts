@@ -4,4 +4,5 @@ export type FiltersType = {
   categoryId: string | null;
   language: string | null;
   ageRating: number | null;
+  rating: number | null;
 };

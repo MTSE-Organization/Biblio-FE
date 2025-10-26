@@ -22,7 +22,8 @@ export default function SearchPage() {
     maxPrice = 0,
     categoryId = null,
     language = null,
-    ageRating = null
+    ageRating = null,
+    rating = null
   } = paramsObj;
 
   const defaultSelectOption = SORT_OPTIONS.find(

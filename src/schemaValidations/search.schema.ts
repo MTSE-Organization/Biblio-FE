@@ -20,6 +20,7 @@ export const searchSchema = z.object({
     .enum(ageValues.map(String) as [string, ...string[]])
     .transform(Number)
     .optional(),
+  rating: z.coerce.number().min(1).max(5).optional(),
   sortBy: z.string().optional(),
   sortOrder: z.enum(['asc', 'desc']).optional()
 });

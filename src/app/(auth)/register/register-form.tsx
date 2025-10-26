@@ -65,9 +65,9 @@ export default function RegisterForm() {
           <Image
             src={whiteLogo.src}
             alt='Biblio Logo'
-            width={338}
-            height={101.11}
-            className='h-auto w-full object-cover'
+            width={300}
+            height={100}
+            className='object-cover'
           />
         </div>
         <BaseForm

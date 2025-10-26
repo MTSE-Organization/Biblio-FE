@@ -69,15 +69,24 @@ export default function FilterSidebar({
     }));
   };
 
+  const toggleRating = (rating: number) => {
+    setFilters((prev) => ({
+      ...prev,
+      rating: prev.rating === rating ? null : rating
+    }));
+  };
+
   const handleClearAll = () => {
-    setFilters({
+    const cleared = {
       minPrice: 0,
       maxPrice: 0,
       categoryId: null,
       language: null,
-      ageRating: null
-    });
-    onApply(filters);
+      ageRating: null,
+      rating: null
+    };
+    setFilters(cleared);
+    onApply(cleared);
   };
 
   const handleApply = () => {
@@ -293,9 +302,9 @@ export default function FilterSidebar({
               >
                 <label className='relative flex cursor-pointer items-center'>
                   <input
-                    checked={filters.ageRating === 5 - index}
+                    checked={filters.rating === 5 - index}
                     type='checkbox'
-                    onChange={() => toggleAgeRating(5 - index)}
+                    onChange={() => toggleRating(5 - index)}
                     className='peer checked:bg-green-primary h-5 w-5 cursor-pointer appearance-none rounded border border-slate-300 shadow transition-all hover:shadow-md'
                   />
                   <span className='pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 transform text-white opacity-0 peer-checked:opacity-100'>
@@ -316,6 +325,7 @@ export default function FilterSidebar({
                   </span>
                 </label>
                 <StarRating value={5 - index} size={16} />
+                {5 - index !== 5 && <span>trở lên</span>}
               </label>
             ))}
           </div>
