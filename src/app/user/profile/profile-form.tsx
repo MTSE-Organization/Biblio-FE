@@ -19,7 +19,7 @@ import {
   UpdateProfileBodyType,
   UpdateProfileType
 } from '@/types';
-import { applyFormErrors, notify, setData } from '@/utils';
+import { applyFormErrors, notify, removeData, setData } from '@/utils';
 import Image from 'next/image';
 import { useEffect, useMemo, useState } from 'react';
 import { UseFormReturn } from 'react-hook-form';
@@ -191,7 +191,8 @@ export default function ProfileForm() {
                     onClick={handleChangePassword}
                   >
                     <Link
-                      href={route.user.changePassword}
+                      href={route.changePassword}
+                      onClick={() => removeData(storageKeys.EMAIL)}
                       className='block w-full'
                     >
                       Đổi mật khẩu

@@ -6,7 +6,8 @@ enum storageKeys {
   EMAIL = 'email',
   ORDER_ID = 'order_id',
   SELECTED_CART_ITEMS = 'selected_cart_items',
-  REORDER_PRODUCT = 're_order_product'
+  REORDER_PRODUCT = 're_order_product',
+  RESEND_OTP = 'resend_otp'
 }
 
 export default storageKeys;

@@ -4,6 +4,7 @@ import { addressApiRequest } from '@/api-requests';
 import {
   Button,
   Col,
+  InputField,
   Row,
   SelectField,
   TextAreaField,
@@ -141,7 +142,9 @@ export default function AddressList() {
     ward: '',
     latitude: 0,
     longitude: 0,
-    isDefault: false
+    isDefault: false,
+    phoneNumber: '',
+    receiverName: ''
   };
 
   const initialValues: AddressBodyType = useMemo(
@@ -154,7 +157,9 @@ export default function AddressList() {
       detail: address?.detail ?? '',
       isDefault: address?.isDefault ?? false,
       latitude: address?.latitude ?? 0,
-      longitude: address?.longitude ?? 0
+      longitude: address?.longitude ?? 0,
+      phoneNumber: address?.phoneNumber ?? '',
+      receiverName: address?.receiverName ?? ''
     }),
     [
       address?.detail,
@@ -162,6 +167,8 @@ export default function AddressList() {
       address?.isDefault,
       address?.latitude,
       address?.longitude,
+      address?.phoneNumber,
+      address?.receiverName,
       districtId,
       hamletList,
       provinceId,
@@ -227,7 +234,7 @@ export default function AddressList() {
       ward: ward?.name ?? '',
       hamlet: hamlet?.name ?? '',
       district: district?.name ?? '',
-      isDefault: false,
+      isDefault: address?.isDefault ?? false,
       latitude: coords.data?.lat ?? 0,
       longitude: coords.data?.lng ?? 0
     };
@@ -310,7 +317,8 @@ export default function AddressList() {
               >
                 <div className='flex items-start gap-x-2'>
                   <div>
-                    Địa chỉ {index + 1}: {address.detail}, {address.hamlet},
+                    Địa chỉ {index + 1}:&nbsp;{address.receiverName} |{' '}
+                    {address.phoneNumber} | {address.detail}, {address.hamlet},
                     &nbsp;
                     {address.ward}, <br />
                     {address.district},{address.city}
@@ -407,6 +415,26 @@ export default function AddressList() {
         >
           {(form) => (
             <>
+              <Row>
+                <Col span={12}>
+                  <InputField
+                    control={form.control}
+                    name='receiverName'
+                    label='Tên người nhận'
+                    placeholder='Tên người nhận'
+                    required
+                  />
+                </Col>
+                <Col span={12}>
+                  <InputField
+                    control={form.control}
+                    name='phoneNumber'
+                    label='Số điện thoại người nhận'
+                    placeholder='Số điện thoại người nhận'
+                    required
+                  />
+                </Col>
+              </Row>
               <Row>
                 <Col span={12}>
                   <SelectField

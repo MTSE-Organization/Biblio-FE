@@ -80,9 +80,13 @@ export default function OtpField<T extends FieldValues>({
               </InputOTPGroup>
             </InputOTP>
           </FormControl>
-          {description && <FormDescription>{description}</FormDescription>}
+          {description && (
+            <FormDescription className='text-center'>
+              {description}
+            </FormDescription>
+          )}
           {fieldState.error && (
-            <div className='animate-in fade-in absolute -bottom-6 left-2 z-0 mt-1 text-sm text-red-500'>
+            <div className='animate-in fade-in absolute -bottom-6 z-0 mt-1 w-full text-center text-sm text-red-500'>
               <FormMessage />
             </div>
           )}

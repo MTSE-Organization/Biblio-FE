@@ -9,5 +9,10 @@ export const addressSchema = z.object({
   hamlet: z.string().nonempty('Bắt buộc'),
   longitude: z.number(),
   latitude: z.number(),
-  isDefault: z.boolean()
+  isDefault: z.boolean(),
+  receiverName: z.string().nonempty('Bắt buộc'),
+  phoneNumber: z
+    .string({ error: 'Số điện thoại không được để trống' })
+    .trim()
+    .regex(/^\d{10}$/, 'Số điện thoại không hợp lệ')
 });
