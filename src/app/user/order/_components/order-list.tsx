@@ -47,7 +47,7 @@ export default function OrderList() {
 
   return (
     <>
-      <div className='mb-4 flex w-full flex-wrap items-center justify-start gap-y-1 overflow-x-auto rounded-lg bg-white px-4 py-4 shadow-[0px_0px_10px_2px] shadow-gray-200'>
+      <div className='mb-4 flex w-full flex-wrap items-center justify-between gap-y-1 overflow-x-auto rounded-lg bg-white px-4 py-4 shadow-[0px_0px_10px_2px] shadow-gray-200'>
         {orderStatuses.map((status) => {
           const isActive = currentStatus === status.value;
           return (

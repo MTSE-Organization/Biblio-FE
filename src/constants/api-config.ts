@@ -55,10 +55,15 @@ const apiConfig = defineApiConfig({
       headers: baseHeader,
       method: 'GET'
     },
-    loginGoogle: {
+    loginGoogleCallback: {
       baseUrl: `${AppConstants.apiUrl}v1/auth/google/callback`,
       headers: baseHeader,
       method: 'POST'
+    },
+    loginGoogle: {
+      baseUrl: '/api/auth/login/google',
+      method: 'POST',
+      headers: baseHeader
     }
   },
   user: {
@@ -75,7 +80,7 @@ const apiConfig = defineApiConfig({
   },
   file: {
     upload: {
-      baseUrl: `${AppConstants.apiUrl}v1/file/upload`,
+      baseUrl: `${AppConstants.mediaUrl}v1/file/upload`,
       method: 'POST',
       headers: multipartHeader,
       isUpload: true
