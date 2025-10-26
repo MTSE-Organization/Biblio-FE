@@ -14,6 +14,8 @@ import {
   ORDER_STATUS_COMPLETE,
   ORDER_STATUS_RECEIVED,
   ORDER_STATUS_REFUNDED,
+  ORDER_STATUS_REJECT_ORDER,
+  ORDER_STATUS_REJECT_REFUND,
   ORDER_STATUS_SHIPPING,
   ORDER_STATUS_WAITING,
   orderStatuses,
@@ -187,7 +189,9 @@ export default function OrderItem({
         {/* Re-order when status is cancelled or received */}
         {(orderStatus?.value === ORDER_STATUS_CANCELLED ||
           orderStatus?.value === ORDER_STATUS_RECEIVED ||
-          orderStatus?.value === ORDER_STATUS_REFUNDED) && (
+          orderStatus?.value === ORDER_STATUS_REFUNDED ||
+          orderStatus?.value === ORDER_STATUS_REJECT_ORDER ||
+          orderStatus?.value === ORDER_STATUS_REJECT_REFUND) && (
           <ReOrderButton orderItems={order.orderItems} />
         )}
       </div>
