@@ -409,9 +409,14 @@ export const paymentMethods = [
 
 export const orderStatuses = [
   {
+    label: 'Tất cả',
+    value: ORDER_STATUS_ALL,
+    color: 'bg-gray-200 text-gray-700'
+  },
+  {
     label: 'Đơn hàng đã đặt',
     value: ORDER_STATUS_WAITING,
-    color: 'bg-yellow-100 text-yellow-600'
+    color: 'bg-yellow-100 text-yellow-800'
   },
   {
     label: 'Chờ xác nhận',

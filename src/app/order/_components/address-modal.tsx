@@ -4,6 +4,7 @@ import { addressApiRequest } from '@/api-requests';
 import {
   Button,
   Col,
+  InputField,
   Row,
   SelectField,
   TextAreaField
@@ -104,7 +105,9 @@ const AddressModal = ({
     ward: '',
     latitude: 0,
     longitude: 0,
-    isDefault: false
+    isDefault: false,
+    phoneNumber: '',
+    receiverName: ''
   };
 
   const initialValues: AddressBodyType = useMemo(
@@ -117,19 +120,11 @@ const AddressModal = ({
       detail: address?.detail ?? '',
       isDefault: address?.isDefault ?? false,
       latitude: address?.latitude ?? 0,
-      longitude: address?.longitude ?? 0
+      longitude: address?.longitude ?? 0,
+      phoneNumber: address?.phoneNumber ?? '',
+      receiverName: address?.receiverName ?? ''
     }),
-    [
-      address?.detail,
-      address?.hamlet,
-      address?.isDefault,
-      address?.latitude,
-      address?.longitude,
-      districtId,
-      hamletList,
-      provinceId,
-      wardId
-    ]
+    [address, districtId, hamletList, provinceId, wardId]
   );
 
   useEffect(() => {
@@ -183,7 +178,7 @@ const AddressModal = ({
       ward: ward?.name ?? '',
       hamlet: hamlet?.name ?? '',
       district: district?.name ?? '',
-      isDefault: false,
+      isDefault: address?.isDefault ?? false,
       latitude: coords.data?.lat ?? 0,
       longitude: coords.data?.lng ?? 0
     };
@@ -211,6 +206,26 @@ const AddressModal = ({
       >
         {(form) => (
           <>
+            <Row>
+              <Col span={12}>
+                <InputField
+                  control={form.control}
+                  name='receiverName'
+                  label='Tên người nhận'
+                  placeholder='Tên người nhận'
+                  required
+                />
+              </Col>
+              <Col span={12}>
+                <InputField
+                  control={form.control}
+                  name='phoneNumber'
+                  label='Số điện thoại người nhận'
+                  placeholder='Số điện thoại người nhận'
+                  required
+                />
+              </Col>
+            </Row>
             <Row>
               <Col span={12}>
                 <SelectField

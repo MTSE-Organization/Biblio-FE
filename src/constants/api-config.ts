@@ -33,6 +33,11 @@ const apiConfig = defineApiConfig({
       headers: baseHeader,
       method: 'POST'
     },
+    resendOtp: {
+      baseUrl: `${AppConstants.apiUrl}v1/auth/resend-otp`,
+      headers: baseHeader,
+      method: 'POST'
+    },
     api: {
       login: {
         baseUrl: `/api/auth/login`,

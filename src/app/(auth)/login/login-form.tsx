@@ -1,7 +1,7 @@
 'use client';
 
 import { whiteLogo } from '@/assets';
-import { Breadcrumb, Button, Col, InputField, Row } from '@/components/form';
+import { Button, Col, InputField, Row } from '@/components/form';
 import { BaseForm } from '@/components/form/base-form';
 import PasswordField from '@/components/form/password-field';
 import { ErrorCode, storageKeys } from '@/constants';
@@ -10,7 +10,7 @@ import { useLoginMutation, useProfileQuery } from '@/queries';
 import route from '@/routes';
 import { loginSchema } from '@/schemaValidations';
 import { useAuthStore } from '@/store';
-import { notify, setData } from '@/utils';
+import { notify, removeData, setData } from '@/utils';
 import Image from 'next/image';
 import Link from 'next/link';
 import ButtonLoginGoogle from './button-login-google';
@@ -108,6 +108,7 @@ export default function LoginForm() {
                     <Col className='items-end'>
                       <Link
                         href={route.forgotPassword}
+                        onClick={() => removeData(storageKeys.EMAIL)}
                         className='text-green-primary font-medium transition-all ease-linear hover:opacity-80'
                       >
                         Quên mật khẩu?

@@ -38,10 +38,15 @@ export const useInfiniteNotificationListQuery = ({
   });
 };
 
-export const useCountUnreadNotificationQuery = () => {
+export const useCountUnreadNotificationQuery = ({
+  enabled
+}: {
+  enabled: boolean;
+}) => {
   return useQuery({
     queryKey: [`count-unread-notification`],
-    queryFn: () => notificationApiRequest.countUnread()
+    queryFn: () => notificationApiRequest.countUnread(),
+    enabled
   });
 };
 

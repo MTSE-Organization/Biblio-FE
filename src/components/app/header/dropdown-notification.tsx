@@ -34,7 +34,9 @@ export default function DropdownNotification() {
   const queryClient = useQueryClient();
 
   const notificationListQuery = useNotificationListQuery({ enabled: open });
-  const countUnreadNotificationQuery = useCountUnreadNotificationQuery();
+  const countUnreadNotificationQuery = useCountUnreadNotificationQuery({
+    enabled: !!profile
+  });
   const readAllNotificationMutation = useReadAllNotificationMutation();
 
   const notificationList = notificationListQuery.data?.data?.content || [];
@@ -54,6 +56,13 @@ export default function DropdownNotification() {
       });
     });
   }, [socket]);
+
+  useEffect(() => {
+    if (profile) {
+      notificationListQuery.refetch();
+      countUnreadNotificationQuery.refetch();
+    }
+  }, [profile]);
 
   const handleReadAllNotification = async () => {
     if (unreadCount) {

@@ -6,9 +6,9 @@ const route = defineRoute({
   register: '/register',
   forgotPassword: '/forgot-password',
   verifyOtp: '/verify-otp',
+  changePassword: '/change-password',
   user: {
     profile: '/user/profile',
-    changePassword: '/user/change-password',
     order: '/user/order',
     notification: '/user/notification',
     address: '/user/address',
