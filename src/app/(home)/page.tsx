@@ -2,6 +2,7 @@
 
 import { Container } from '@/components/layout';
 import {
+  useBestSellerProductListQuery,
   useLatestProductListQuery,
   useTopDiscountProductListQuery,
   useTopViewProductListQuery
@@ -27,10 +28,11 @@ export default function HomePage() {
           className='mb-5'
           useQueryHook={useLatestProductListQuery}
         />
-        {/* <BookList
+        <LazyBookList
           title='Sách bán chạy nhất'
+          className='mb-5'
           useQueryHook={useBestSellerProductListQuery}
-        /> */}
+        />
         <LazyBookList
           title='Sách có lượt xem nhiều nhất'
           className='mb-5'
