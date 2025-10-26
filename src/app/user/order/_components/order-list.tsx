@@ -7,9 +7,11 @@ import { NoData } from '@/components/no-data';
 import { ORDER_STATUS_ALL, orderStatuses } from '@/constants';
 import { cn } from '@/lib';
 import { useInfiniteOrderListQuery } from '@/queries';
+import { useQueryClient } from '@tanstack/react-query';
 import { useEffect, useRef, useState } from 'react';
 
 export default function OrderList() {
+  const queryClient = useQueryClient();
   const loadMoreRef = useRef<HTMLDivElement | null>(null);
   const [currentStatus, setCurrentStatus] = useState<number | null>(
     ORDER_STATUS_ALL
