@@ -39,7 +39,7 @@ import { useOrderQuery } from '@/queries';
 import { useCheckReviewMutation } from '@/queries/review.query';
 import route from '@/routes';
 import { formatDate, formatPrice, renderImageUrl } from '@/utils';
-import { ChevronLeft, MapPin, Send } from 'lucide-react';
+import { ChevronLeft, MapPin, Phone, Send, User } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
@@ -55,7 +55,6 @@ export default function OrderDetail() {
 
   const order = orderQuery.data?.data;
   const orderStatusList = order?.orderStatuses || [];
-  console.log('🚀 ~ OrderDetail ~ orderStatusList:', orderStatusList);
   const orderItems = order?.orderItems || [];
   const code = orderQuery.data?.code;
 
@@ -294,6 +293,20 @@ export default function OrderDetail() {
         {order.address.city}
       </div>
 
+      <div className='flex items-center'>
+        <User className='size-5' />
+        <span className='ml-1 font-semibold'>Người nhận:</span>
+        &nbsp;
+        {order.address.receiverName}
+      </div>
+
+      <div className='flex items-center py-4'>
+        <Phone className='size-5' />
+        <span className='ml-1 font-semibold'>Số điện thoại:</span>
+        &nbsp;
+        {order.address.phoneNumber}
+      </div>
+
       <Separator />
 
       {order.note && (
@@ -473,6 +486,7 @@ export default function OrderDetail() {
           <ConfirmReceivedOrderButton
             disabled={orderStatus?.value === ORDER_STATUS_SHIPPING}
             orderId={order.id}
+            onSuccess={() => orderQuery.refetch()}
           />
         )}
 

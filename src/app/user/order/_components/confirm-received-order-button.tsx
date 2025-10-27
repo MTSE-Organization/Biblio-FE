@@ -21,10 +21,12 @@ import { Info } from 'lucide-react';
 
 export default function ConfirmReceivedOrderButton({
   orderId,
-  disabled = false
+  disabled = false,
+  onSuccess
 }: {
   orderId: string;
   disabled?: boolean;
+  onSuccess?: () => void;
 }) {
   const completeOrderMutation = useCompleteOrderMutation();
   const queryClient = useQueryClient();
@@ -37,6 +39,7 @@ export default function ConfirmReceivedOrderButton({
           queryClient.refetchQueries({
             queryKey: ['order-list']
           });
+          onSuccess?.();
         }
       },
       onError: (error) => {
