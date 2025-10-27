@@ -21,7 +21,7 @@ export default function DropdownAccount() {
   const [open, setOpen] = useState(false);
   const accessToken = getData(storageKeys.ACCESS_TOKEN);
   const navigate = useNavigate();
-  const { profile, setAuthenticated, setProfile } = useAuthStore();
+  const { profile, setAuthenticated, setProfile, socket } = useAuthStore();
 
   const handleLogout = async () => {
     await logoutMutation.mutateAsync(undefined, {
@@ -33,6 +33,7 @@ export default function DropdownAccount() {
           setProfile(null);
           setOpen(false);
           navigate(route.home);
+          socket?.disconnect();
         }
       },
       onError: (error) => {
