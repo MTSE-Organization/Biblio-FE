@@ -309,17 +309,6 @@ const AddressModal = ({
               </Col>
             </Row>
             <Row>
-              <Col span={24} gutter={0}>
-                <TextAreaField
-                  control={form.control}
-                  name='detail'
-                  label='Địa chỉ chi tiết'
-                  placeholder='Nhập địa chỉ chi tiết'
-                  required
-                />
-              </Col>
-            </Row>
-            <Row>
               <Col span={12}>
                 <InputField
                   control={form.control}
@@ -339,6 +328,18 @@ const AddressModal = ({
                 />
               </Col>
             </Row>
+            <Row>
+              <Col span={24} gutter={0}>
+                <TextAreaField
+                  control={form.control}
+                  name='detail'
+                  label='Địa chỉ chi tiết'
+                  placeholder='Nhập địa chỉ chi tiết'
+                  required
+                />
+              </Col>
+            </Row>
+
             <Row className='mb-0 justify-end'>
               <Col span={4}>
                 <Button

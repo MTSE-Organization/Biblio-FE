@@ -58,11 +58,11 @@ export default function DropdownNotification() {
   }, [socket]);
 
   useEffect(() => {
-    if (profile) {
+    if (profile && open) {
       notificationListQuery.refetch();
       countUnreadNotificationQuery.refetch();
     }
-  }, [profile]);
+  }, [profile, open]);
 
   const handleReadAllNotification = async () => {
     if (unreadCount) {

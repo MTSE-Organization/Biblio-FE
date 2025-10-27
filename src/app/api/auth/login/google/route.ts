@@ -8,7 +8,7 @@ export async function POST(request: Request) {
   const cookieStore = await cookies();
   const code = req.code;
   try {
-    const response = await authApiRequest.loginGoogle(code);
+    const response = await authApiRequest.loginGoogleCallback(code);
     const accessToken = response?.data?.token!;
     cookieStore.set(storageKeys.ACCESS_TOKEN, accessToken, {
       path: '/',
@@ -19,7 +19,7 @@ export async function POST(request: Request) {
     });
 
     return Response.json(
-      { data: response },
+      { data: response.data },
       {
         status: 200
       }

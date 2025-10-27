@@ -62,6 +62,7 @@ export default function ButtonLoginGoogle() {
     const handleLogin = async (code: string) => {
       try {
         const response = await loginGoogleMutation.mutateAsync(code);
+        console.log('🚀 ~ handleLogin ~ response:', response);
 
         setAccessTokenToLocalStorage(response.data?.token!);
         const profileRes = await profileQuery.refetch();
