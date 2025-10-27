@@ -55,7 +55,6 @@ export default function OrderDetail() {
 
   const order = orderQuery.data?.data;
   const orderStatusList = order?.orderStatuses || [];
-  console.log('🚀 ~ OrderDetail ~ orderStatusList:', orderStatusList);
   const orderItems = order?.orderItems || [];
   const code = orderQuery.data?.code;
 
@@ -473,6 +472,7 @@ export default function OrderDetail() {
           <ConfirmReceivedOrderButton
             disabled={orderStatus?.value === ORDER_STATUS_SHIPPING}
             orderId={order.id}
+            onSuccess={() => orderQuery.refetch()}
           />
         )}
 
